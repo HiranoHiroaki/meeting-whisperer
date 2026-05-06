@@ -13,10 +13,16 @@
 [
   {
     "term": "ADR",
-    "summary": "設計判断履歴"
+    "summary": "設計判断履歴のことを指す可能性",
+    "score": 0.92,
+    "reasons": ["uppercase", "acronym", "domain_specific"]
   }
 ]
 ```
+
+### Rules
+- 返却件数は最大5件
+- 候補は断定ではなく推定として扱う
 
 ## POST /api/explainTerm
 ### Request
@@ -30,15 +36,22 @@
 ### Response
 ```json
 {
-  "detail": "この案件では..."
+  "detail": "この会議では ADR は設計判断履歴を指している可能性があります。"
 }
 ```
+
+### Rules
+- 社内語・固有語は推定表現を使う
+- 断定文を返さない
 
 ## POST /api/generateNotes
 ### Request
 ```json
 {
-  "clickedTerms": ["ADR", "SKU"],
+  "clickedTerms": [
+    { "term": "ADR", "action": "unknown" },
+    { "term": "SKU", "action": "interest" }
+  ],
   "meetingText": "..."
 }
 ```

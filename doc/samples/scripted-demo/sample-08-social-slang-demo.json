@@ -1,0 +1,685 @@
+{
+  "id": "sample-08-social-slang",
+  "category": "特殊例（略語地獄・界隈会話）",
+  "meeting_title": "渋谷カフェ 雑談ログ",
+  "source_file": "doc/samples/sample-08-social-slang.md",
+  "clean_file": "doc/samples/scripted-clean/sample-08-social-slang-clean.md",
+  "line_interval_ms": 2200,
+  "max_term_chips": 5,
+  "utterance_count": 51,
+  "removed_utterance_count": 5,
+  "expected_terms": [
+    "既読スルー",
+    "DM",
+    "MBTI",
+    "ENTP",
+    "BeReal",
+    "Zenly",
+    "Life360",
+    "港区女子",
+    "ラウンジ",
+    "ハイブラ",
+    "GRWM",
+    "親しい友達",
+    "本垢",
+    "サブ垢",
+    "オタ垢",
+    "愚痴垢",
+    "匂わせ",
+    "アフヌン",
+    "SNOW",
+    "BeautyPlus",
+    "Y2K",
+    "ルーズ",
+    "純欲",
+    "多幸感メイク",
+    "PR",
+    "案件"
+  ],
+  "expected_weak_contexts": [
+    "SNS文化",
+    "ギャル界隈用語",
+    "インフルエンサー文化",
+    "MBTI会話文脈",
+    "界隈コミュニケーション",
+    "匂わせ文化"
+  ],
+  "events": [
+    {
+      "at_ms": 0,
+      "type": "line",
+      "index": 1,
+      "speaker": "美優",
+      "text": "え、てか昨日のあの件どうなったの？\n普通に既読スルーなんだけど。",
+      "highlight_terms": [
+        "既読スルー"
+      ]
+    },
+    {
+      "at_ms": 450,
+      "type": "term_chip",
+      "terms": [
+        "既読スルー"
+      ]
+    },
+    {
+      "at_ms": 2200,
+      "type": "line",
+      "index": 2,
+      "speaker": "梨乃",
+      "text": "いやそれ脈ナシ寄りじゃない？\nでもインスタは見てるんでしょ？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 4400,
+      "type": "line",
+      "index": 3,
+      "speaker": "美優",
+      "text": "見てる。\nしかもノートだけ秒で反応くる。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 6600,
+      "type": "line",
+      "index": 4,
+      "speaker": "沙耶",
+      "text": "それキープじゃん。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 8800,
+      "type": "line",
+      "index": 5,
+      "speaker": "美優",
+      "text": "えーでもこの前DMで、\n「またご飯行こ」って来たよ？",
+      "highlight_terms": [
+        "DM"
+      ]
+    },
+    {
+      "at_ms": 9250,
+      "type": "term_chip",
+      "terms": [
+        "DM"
+      ]
+    },
+    {
+      "at_ms": 11000,
+      "type": "line",
+      "index": 6,
+      "speaker": "梨乃",
+      "text": "社交辞令の可能性ある。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 13200,
+      "type": "line",
+      "index": 7,
+      "speaker": "沙耶",
+      "text": "てかそもそもMBTI何？",
+      "highlight_terms": [
+        "MBTI"
+      ]
+    },
+    {
+      "at_ms": 13650,
+      "type": "term_chip",
+      "terms": [
+        "MBTI"
+      ]
+    },
+    {
+      "at_ms": 15400,
+      "type": "line",
+      "index": 8,
+      "speaker": "美優",
+      "text": "ENTPだった気がする。",
+      "highlight_terms": [
+        "ENTP"
+      ]
+    },
+    {
+      "at_ms": 15850,
+      "type": "term_chip",
+      "terms": [
+        "ENTP"
+      ]
+    },
+    {
+      "at_ms": 17600,
+      "type": "line",
+      "index": 9,
+      "speaker": "梨乃",
+      "text": "あー無理かも。\nENTP、返信テンションで生きてる。",
+      "highlight_terms": [
+        "ENTP"
+      ]
+    },
+    {
+      "at_ms": 18050,
+      "type": "term_chip",
+      "terms": [
+        "ENTP"
+      ]
+    },
+    {
+      "at_ms": 19800,
+      "type": "line",
+      "index": 10,
+      "speaker": "沙耶",
+      "text": "しかもEN系、\n急に冷める。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 22000,
+      "type": "line",
+      "index": 11,
+      "speaker": "美優",
+      "text": "いやでもBeRealは普通に上げてるんだよね。",
+      "highlight_terms": [
+        "BeReal"
+      ]
+    },
+    {
+      "at_ms": 22450,
+      "type": "term_chip",
+      "terms": [
+        "BeReal"
+      ]
+    },
+    {
+      "at_ms": 24200,
+      "type": "line",
+      "index": 12,
+      "speaker": "梨乃",
+      "text": "それ別腹。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 26400,
+      "type": "line",
+      "index": 13,
+      "speaker": "沙耶",
+      "text": "あと位置情報ONなのか気になる。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 28600,
+      "type": "line",
+      "index": 14,
+      "speaker": "美優",
+      "text": "Zenly亡霊まだいるんだ。",
+      "highlight_terms": [
+        "Zenly"
+      ]
+    },
+    {
+      "at_ms": 29050,
+      "type": "term_chip",
+      "terms": [
+        "Zenly"
+      ]
+    },
+    {
+      "at_ms": 30800,
+      "type": "line",
+      "index": 15,
+      "speaker": "梨乃",
+      "text": "いやLife360入れてる勢まだ結構いる。",
+      "highlight_terms": [
+        "Life360"
+      ]
+    },
+    {
+      "at_ms": 31250,
+      "type": "term_chip",
+      "terms": [
+        "Life360"
+      ]
+    },
+    {
+      "at_ms": 33000,
+      "type": "line",
+      "index": 16,
+      "speaker": "沙耶",
+      "text": "それ束縛強め界隈じゃない？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 35200,
+      "type": "line",
+      "index": 17,
+      "speaker": "美優",
+      "text": "てかこの前、\n界隈飲み行ったんだけど、\nあの子普通に港区女子感強かった。",
+      "highlight_terms": [
+        "港区女子"
+      ]
+    },
+    {
+      "at_ms": 35650,
+      "type": "term_chip",
+      "terms": [
+        "港区女子"
+      ]
+    },
+    {
+      "at_ms": 37400,
+      "type": "line",
+      "index": 18,
+      "speaker": "梨乃",
+      "text": "え、ラウンジ系？",
+      "highlight_terms": [
+        "ラウンジ"
+      ]
+    },
+    {
+      "at_ms": 37850,
+      "type": "term_chip",
+      "terms": [
+        "ラウンジ"
+      ]
+    },
+    {
+      "at_ms": 39600,
+      "type": "line",
+      "index": 19,
+      "speaker": "美優",
+      "text": "そこまではわかんない。\nでもハイブラ率高かった。",
+      "highlight_terms": [
+        "ハイブラ"
+      ]
+    },
+    {
+      "at_ms": 40050,
+      "type": "term_chip",
+      "terms": [
+        "ハイブラ"
+      ]
+    },
+    {
+      "at_ms": 41800,
+      "type": "line",
+      "index": 20,
+      "speaker": "沙耶",
+      "text": "TikTokのおすすめ完全に夜職寄りになってそう。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 44000,
+      "type": "line",
+      "index": 21,
+      "speaker": "美優",
+      "text": "いやもうGRWMばっか出てくる。",
+      "highlight_terms": [
+        "GRWM"
+      ]
+    },
+    {
+      "at_ms": 44450,
+      "type": "term_chip",
+      "terms": [
+        "GRWM"
+      ]
+    },
+    {
+      "at_ms": 46200,
+      "type": "line",
+      "index": 22,
+      "speaker": "梨乃",
+      "text": "終わったじゃん。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 48400,
+      "type": "line",
+      "index": 23,
+      "speaker": "沙耶",
+      "text": "あと最近みんな、\nストーリーの親しい友達使い分けすぎじゃない？",
+      "highlight_terms": [
+        "親しい友達"
+      ]
+    },
+    {
+      "at_ms": 48850,
+      "type": "term_chip",
+      "terms": [
+        "親しい友達"
+      ]
+    },
+    {
+      "at_ms": 50600,
+      "type": "line",
+      "index": 24,
+      "speaker": "美優",
+      "text": "わかる。\n本垢、サブ垢、オタ垢、愚痴垢で人格違う。",
+      "highlight_terms": [
+        "本垢",
+        "サブ垢",
+        "オタ垢",
+        "愚痴垢"
+      ]
+    },
+    {
+      "at_ms": 51050,
+      "type": "term_chip",
+      "terms": [
+        "本垢",
+        "サブ垢",
+        "オタ垢",
+        "愚痴垢"
+      ]
+    },
+    {
+      "at_ms": 52800,
+      "type": "line",
+      "index": 25,
+      "speaker": "梨乃",
+      "text": "位置情報つきノートとか普通に怖い。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 55000,
+      "type": "line",
+      "index": 26,
+      "speaker": "沙耶",
+      "text": "でもそれで匂わせするの楽しいんだよ。",
+      "highlight_terms": [
+        "匂わせ"
+      ]
+    },
+    {
+      "at_ms": 55450,
+      "type": "term_chip",
+      "terms": [
+        "匂わせ"
+      ]
+    },
+    {
+      "at_ms": 57200,
+      "type": "line",
+      "index": 27,
+      "speaker": "美優",
+      "text": "あとさ、\nこの前のアフヌン写真、\n加工強すぎて誰かわかんなかった。",
+      "highlight_terms": [
+        "アフヌン"
+      ]
+    },
+    {
+      "at_ms": 57650,
+      "type": "term_chip",
+      "terms": [
+        "アフヌン"
+      ]
+    },
+    {
+      "at_ms": 59400,
+      "type": "line",
+      "index": 28,
+      "speaker": "梨乃",
+      "text": "SNOW通しすぎ問題。",
+      "highlight_terms": [
+        "SNOW"
+      ]
+    },
+    {
+      "at_ms": 59850,
+      "type": "term_chip",
+      "terms": [
+        "SNOW"
+      ]
+    },
+    {
+      "at_ms": 61600,
+      "type": "line",
+      "index": 29,
+      "speaker": "沙耶",
+      "text": "いや最近BeautyPlus戻ってきてる。",
+      "highlight_terms": [
+        "BeautyPlus"
+      ]
+    },
+    {
+      "at_ms": 62050,
+      "type": "term_chip",
+      "terms": [
+        "BeautyPlus"
+      ]
+    },
+    {
+      "at_ms": 63800,
+      "type": "line",
+      "index": 30,
+      "speaker": "美優",
+      "text": "平成感。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 66000,
+      "type": "line",
+      "index": 31,
+      "speaker": "梨乃",
+      "text": "でもY2Kまた流行ってるし。",
+      "highlight_terms": [
+        "Y2K"
+      ]
+    },
+    {
+      "at_ms": 66450,
+      "type": "term_chip",
+      "terms": [
+        "Y2K"
+      ]
+    },
+    {
+      "at_ms": 68200,
+      "type": "line",
+      "index": 32,
+      "speaker": "沙耶",
+      "text": "てか最近、\n平成リバイバルでルーズまた来てるよね。",
+      "highlight_terms": [
+        "ルーズ"
+      ]
+    },
+    {
+      "at_ms": 68650,
+      "type": "term_chip",
+      "terms": [
+        "ルーズ"
+      ]
+    },
+    {
+      "at_ms": 70400,
+      "type": "line",
+      "index": 33,
+      "speaker": "美優",
+      "text": "あとカラコン直径デカいの減った。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 72600,
+      "type": "line",
+      "index": 34,
+      "speaker": "梨乃",
+      "text": "ナチュ盛れ時代。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 74800,
+      "type": "line",
+      "index": 35,
+      "speaker": "沙耶",
+      "text": "韓国系メイクも若干変わった。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 77000,
+      "type": "line",
+      "index": 36,
+      "speaker": "美優",
+      "text": "純欲っぽいの減った気する。",
+      "highlight_terms": [
+        "純欲"
+      ]
+    },
+    {
+      "at_ms": 77450,
+      "type": "term_chip",
+      "terms": [
+        "純欲"
+      ]
+    },
+    {
+      "at_ms": 79200,
+      "type": "line",
+      "index": 37,
+      "speaker": "梨乃",
+      "text": "あと多幸感メイク増えた。",
+      "highlight_terms": [
+        "多幸感メイク"
+      ]
+    },
+    {
+      "at_ms": 79650,
+      "type": "term_chip",
+      "terms": [
+        "多幸感メイク"
+      ]
+    },
+    {
+      "at_ms": 81400,
+      "type": "line",
+      "index": 38,
+      "speaker": "美優",
+      "text": "略語と界隈ワード多すぎる。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 83600,
+      "type": "line",
+      "index": 39,
+      "speaker": "梨乃",
+      "text": "MBTI、GRWM、PR、案件、\n普通の人わからん。",
+      "highlight_terms": [
+        "MBTI",
+        "GRWM",
+        "PR",
+        "案件"
+      ]
+    },
+    {
+      "at_ms": 84050,
+      "type": "term_chip",
+      "terms": [
+        "MBTI",
+        "GRWM",
+        "PR",
+        "案件"
+      ]
+    },
+    {
+      "at_ms": 85800,
+      "type": "line",
+      "index": 40,
+      "speaker": "沙耶",
+      "text": "しかも文脈共有速度速い。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 88000,
+      "type": "line",
+      "index": 41,
+      "speaker": "美優",
+      "text": "「それもう周知だよね」\nで会話進む。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 90200,
+      "type": "line",
+      "index": 42,
+      "speaker": "梨乃",
+      "text": "あとTikTok文化、\n知らないと会話ついてけない。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 92400,
+      "type": "line",
+      "index": 43,
+      "speaker": "沙耶",
+      "text": "界隈ごとに言葉意味違うし。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 94600,
+      "type": "line",
+      "index": 44,
+      "speaker": "梨乃",
+      "text": "でも黒歴史化しそう。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 96800,
+      "type": "line",
+      "index": 45,
+      "speaker": "沙耶",
+      "text": "「2026年、港区女子を学習」\nとか残るの嫌すぎる。",
+      "highlight_terms": [
+        "港区女子"
+      ]
+    },
+    {
+      "at_ms": 97250,
+      "type": "term_chip",
+      "terms": [
+        "港区女子"
+      ]
+    },
+    {
+      "at_ms": 99000,
+      "type": "line",
+      "index": 46,
+      "speaker": "美優",
+      "text": "それは確かに嫌。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 101200,
+      "type": "line",
+      "index": 47,
+      "speaker": "美優",
+      "text": "無理じゃない？\n全員同時に喋るし。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 103400,
+      "type": "line",
+      "index": 48,
+      "speaker": "梨乃",
+      "text": "しかも途中で主語消える。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 105600,
+      "type": "line",
+      "index": 49,
+      "speaker": "沙耶",
+      "text": "「あの件のあれ」だけで会話成立する。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 107800,
+      "type": "line",
+      "index": 50,
+      "speaker": "梨乃",
+      "text": "ギャルAI爆誕。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 110000,
+      "type": "line",
+      "index": 51,
+      "speaker": "沙耶",
+      "text": "でもちょっと使ってみたい。",
+      "highlight_terms": []
+    }
+  ]
+}

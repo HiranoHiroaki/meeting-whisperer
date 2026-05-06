@@ -1,0 +1,668 @@
+{
+  "id": "sample-07-homelab",
+  "category": "特殊例（自作PC・ホームラボ）",
+  "meeting_title": "自作PC・ホームラボ雑談ログ",
+  "source_file": "doc/samples/sample-07-homelab.md",
+  "clean_file": "doc/samples/scripted-clean/sample-07-homelab-clean.md",
+  "line_interval_ms": 2200,
+  "max_term_chips": 5,
+  "utterance_count": 44,
+  "removed_utterance_count": 4,
+  "expected_terms": [
+    "7900X3D",
+    "7800X3D",
+    "CCD",
+    "ESXi",
+    "Proxmox",
+    "NIC",
+    "Realtek",
+    "2.5GbE",
+    "N100",
+    "Pi-hole",
+    "Immich",
+    "GitLab",
+    "transcoding",
+    "iGPU",
+    "Arc",
+    "AV1",
+    "TrueNAS SCALE",
+    "ZFS",
+    "ECC",
+    "ECC UDIMM",
+    "ASRock Rack",
+    "OLED",
+    "HDR",
+    "DP2.1",
+    "HDMI 2.1",
+    "USB4",
+    "Thunderbolt",
+    "NAS",
+    "UPS",
+    "SAS",
+    "HBA",
+    "K8s",
+    "IaC",
+    "LXC",
+    "QEMU"
+  ],
+  "expected_weak_contexts": [
+    "ホームラボ構成",
+    "仮想化基盤",
+    "ネットワーク機材",
+    "NAS/ZFS文化",
+    "GPU transcoding",
+    "PCオタク略語文化"
+  ],
+  "events": [
+    {
+      "at_ms": 0,
+      "type": "line",
+      "index": 1,
+      "speaker": "藤崎",
+      "text": "いや7900X3D行くくらいなら7800X3Dで良くない？\nCCD跨ぎ結局だるいし。",
+      "highlight_terms": [
+        "7900X3D",
+        "7800X3D",
+        "CCD"
+      ]
+    },
+    {
+      "at_ms": 450,
+      "type": "term_chip",
+      "terms": [
+        "7900X3D",
+        "7800X3D",
+        "CCD"
+      ]
+    },
+    {
+      "at_ms": 2200,
+      "type": "line",
+      "index": 2,
+      "speaker": "宮本",
+      "text": "ゲームだけならそうなんだけど、\n仮想環境常時立てるからコア数欲しいんだよね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 4400,
+      "type": "line",
+      "index": 3,
+      "speaker": "石川",
+      "text": "でもESXiもう個人用途だいぶ微妙じゃない？\n最近Proxmox寄せてる人多い。",
+      "highlight_terms": [
+        "ESXi",
+        "Proxmox"
+      ]
+    },
+    {
+      "at_ms": 4850,
+      "type": "term_chip",
+      "terms": [
+        "ESXi",
+        "Proxmox"
+      ]
+    },
+    {
+      "at_ms": 6600,
+      "type": "line",
+      "index": 4,
+      "speaker": "藤崎",
+      "text": "それな。\nしかもIntel NICじゃないと地味にハマる。",
+      "highlight_terms": [
+        "NIC"
+      ]
+    },
+    {
+      "at_ms": 7050,
+      "type": "term_chip",
+      "terms": [
+        "NIC"
+      ]
+    },
+    {
+      "at_ms": 8800,
+      "type": "line",
+      "index": 5,
+      "speaker": "宮本",
+      "text": "Realtek掴むと突然地獄始まる。",
+      "highlight_terms": [
+        "Realtek"
+      ]
+    },
+    {
+      "at_ms": 9250,
+      "type": "term_chip",
+      "terms": [
+        "Realtek"
+      ]
+    },
+    {
+      "at_ms": 11000,
+      "type": "line",
+      "index": 6,
+      "speaker": "石川",
+      "text": "あと最近2.5GbE増えたせいで、\nスイッチ側の発熱やばくない？",
+      "highlight_terms": [
+        "2.5GbE"
+      ]
+    },
+    {
+      "at_ms": 11450,
+      "type": "term_chip",
+      "terms": [
+        "2.5GbE"
+      ]
+    },
+    {
+      "at_ms": 13200,
+      "type": "line",
+      "index": 7,
+      "speaker": "藤崎",
+      "text": "ファンレス中華スイッチ、\n夏場普通に死ぬ。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 15400,
+      "type": "line",
+      "index": 8,
+      "speaker": "宮本",
+      "text": "いやそれよりMini PC界隈、\nN100で遊び始めると止まらない。",
+      "highlight_terms": [
+        "N100"
+      ]
+    },
+    {
+      "at_ms": 15850,
+      "type": "term_chip",
+      "terms": [
+        "N100"
+      ]
+    },
+    {
+      "at_ms": 17600,
+      "type": "line",
+      "index": 9,
+      "speaker": "石川",
+      "text": "わかる。\nProxmox、Pi-hole、Immich、GitLab全部載せ始まる。",
+      "highlight_terms": [
+        "Proxmox",
+        "Pi-hole",
+        "Immich",
+        "GitLab"
+      ]
+    },
+    {
+      "at_ms": 18050,
+      "type": "term_chip",
+      "terms": [
+        "Proxmox",
+        "Pi-hole",
+        "Immich",
+        "GitLab"
+      ]
+    },
+    {
+      "at_ms": 19800,
+      "type": "line",
+      "index": 10,
+      "speaker": "藤崎",
+      "text": "でもImmich結局GPU transcoding欲しくならない？",
+      "highlight_terms": [
+        "Immich",
+        "transcoding"
+      ]
+    },
+    {
+      "at_ms": 20250,
+      "type": "term_chip",
+      "terms": [
+        "Immich",
+        "transcoding"
+      ]
+    },
+    {
+      "at_ms": 22000,
+      "type": "line",
+      "index": 11,
+      "speaker": "宮本",
+      "text": "なる。\niGPUで逃げるかArc積むか悩んでる。",
+      "highlight_terms": [
+        "iGPU",
+        "Arc"
+      ]
+    },
+    {
+      "at_ms": 22450,
+      "type": "term_chip",
+      "terms": [
+        "iGPU",
+        "Arc"
+      ]
+    },
+    {
+      "at_ms": 24200,
+      "type": "line",
+      "index": 12,
+      "speaker": "石川",
+      "text": "Arc、\nAV1強いけどドライバまだ若干怖い。",
+      "highlight_terms": [
+        "Arc",
+        "AV1"
+      ]
+    },
+    {
+      "at_ms": 24650,
+      "type": "term_chip",
+      "terms": [
+        "Arc",
+        "AV1"
+      ]
+    },
+    {
+      "at_ms": 26400,
+      "type": "line",
+      "index": 13,
+      "speaker": "藤崎",
+      "text": "あとLinux側たまに謎挙動する。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 28600,
+      "type": "line",
+      "index": 14,
+      "speaker": "宮本",
+      "text": "最近TrueNAS SCALE気になってるんだけど、\nZFSメモリ食いすぎ問題どうなん？",
+      "highlight_terms": [
+        "TrueNAS SCALE",
+        "ZFS",
+        "NAS"
+      ]
+    },
+    {
+      "at_ms": 29050,
+      "type": "term_chip",
+      "terms": [
+        "TrueNAS SCALE",
+        "ZFS",
+        "NAS"
+      ]
+    },
+    {
+      "at_ms": 30800,
+      "type": "line",
+      "index": 15,
+      "speaker": "石川",
+      "text": "ECC前提で考えた方が精神衛生良い。",
+      "highlight_terms": [
+        "ECC"
+      ]
+    },
+    {
+      "at_ms": 31250,
+      "type": "term_chip",
+      "terms": [
+        "ECC"
+      ]
+    },
+    {
+      "at_ms": 33000,
+      "type": "line",
+      "index": 16,
+      "speaker": "藤崎",
+      "text": "いやZFS始めるとECC信者になる。",
+      "highlight_terms": [
+        "ZFS",
+        "ECC"
+      ]
+    },
+    {
+      "at_ms": 33450,
+      "type": "term_chip",
+      "terms": [
+        "ZFS",
+        "ECC"
+      ]
+    },
+    {
+      "at_ms": 35200,
+      "type": "line",
+      "index": 17,
+      "speaker": "宮本",
+      "text": "でもDDR5 ECC UDIMMまだ地味に高くない？",
+      "highlight_terms": [
+        "ECC",
+        "ECC UDIMM"
+      ]
+    },
+    {
+      "at_ms": 35650,
+      "type": "term_chip",
+      "terms": [
+        "ECC",
+        "ECC UDIMM"
+      ]
+    },
+    {
+      "at_ms": 37400,
+      "type": "line",
+      "index": 18,
+      "speaker": "石川",
+      "text": "しかもマザボ対応がわかりにくい。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 39600,
+      "type": "line",
+      "index": 19,
+      "speaker": "藤崎",
+      "text": "ASRock Rack行くと突然世界変わるけど、\n価格も突然変わる。",
+      "highlight_terms": [
+        "ASRock Rack"
+      ]
+    },
+    {
+      "at_ms": 40050,
+      "type": "term_chip",
+      "terms": [
+        "ASRock Rack"
+      ]
+    },
+    {
+      "at_ms": 41800,
+      "type": "line",
+      "index": 20,
+      "speaker": "宮本",
+      "text": "あと最近OLEDモニタ欲しいんだけど、\n焼き付き怖くて踏み切れない。",
+      "highlight_terms": [
+        "OLED"
+      ]
+    },
+    {
+      "at_ms": 42250,
+      "type": "term_chip",
+      "terms": [
+        "OLED"
+      ]
+    },
+    {
+      "at_ms": 44000,
+      "type": "line",
+      "index": 21,
+      "speaker": "石川",
+      "text": "テキスト用途多いなら微妙かも。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 46200,
+      "type": "line",
+      "index": 22,
+      "speaker": "藤崎",
+      "text": "でもHDR体験すると戻れない。",
+      "highlight_terms": [
+        "HDR"
+      ]
+    },
+    {
+      "at_ms": 46650,
+      "type": "term_chip",
+      "terms": [
+        "HDR"
+      ]
+    },
+    {
+      "at_ms": 48400,
+      "type": "line",
+      "index": 23,
+      "speaker": "宮本",
+      "text": "DP2.1環境揃えようとしたら、\nケーブル沼始まった。",
+      "highlight_terms": [
+        "DP2.1"
+      ]
+    },
+    {
+      "at_ms": 48850,
+      "type": "term_chip",
+      "terms": [
+        "DP2.1"
+      ]
+    },
+    {
+      "at_ms": 50600,
+      "type": "line",
+      "index": 24,
+      "speaker": "石川",
+      "text": "HDMI 2.1も結局認証怪しいの多いし。",
+      "highlight_terms": [
+        "HDMI 2.1"
+      ]
+    },
+    {
+      "at_ms": 51050,
+      "type": "term_chip",
+      "terms": [
+        "HDMI 2.1"
+      ]
+    },
+    {
+      "at_ms": 52800,
+      "type": "line",
+      "index": 25,
+      "speaker": "藤崎",
+      "text": "しかもDisplayPort、\nモニタ相性問題たまにある。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 55000,
+      "type": "line",
+      "index": 26,
+      "speaker": "宮本",
+      "text": "あとUSB4とThunderbolt、\n未だに完全理解してない。",
+      "highlight_terms": [
+        "USB4",
+        "Thunderbolt"
+      ]
+    },
+    {
+      "at_ms": 55450,
+      "type": "term_chip",
+      "terms": [
+        "USB4",
+        "Thunderbolt"
+      ]
+    },
+    {
+      "at_ms": 57200,
+      "type": "line",
+      "index": 27,
+      "speaker": "石川",
+      "text": "実装側も理解してない説ある。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 59400,
+      "type": "line",
+      "index": 28,
+      "speaker": "藤崎",
+      "text": "それな。\n同じUSB-C穴なのに全部違う。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 61600,
+      "type": "line",
+      "index": 29,
+      "speaker": "石川",
+      "text": "略語会話多すぎる。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 63800,
+      "type": "line",
+      "index": 30,
+      "speaker": "藤崎",
+      "text": "NAS、UPS、SAS、HBA、ECC、\n普通の人もう会話聞いてるだけで死ぬ。",
+      "highlight_terms": [
+        "ECC",
+        "NAS",
+        "UPS",
+        "SAS",
+        "HBA"
+      ]
+    },
+    {
+      "at_ms": 64250,
+      "type": "term_chip",
+      "terms": [
+        "ECC",
+        "NAS",
+        "UPS",
+        "SAS",
+        "HBA"
+      ]
+    },
+    {
+      "at_ms": 66000,
+      "type": "line",
+      "index": 31,
+      "speaker": "宮本",
+      "text": "しかもオタク、\n説明しないで会話進めるから。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 68200,
+      "type": "line",
+      "index": 32,
+      "speaker": "石川",
+      "text": "「そんなの当然知ってるよね」\n圧強い。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 70400,
+      "type": "line",
+      "index": 33,
+      "speaker": "藤崎",
+      "text": "あとLinux系、\n略語とプロジェクト名だけで会話成立する。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 72600,
+      "type": "line",
+      "index": 34,
+      "speaker": "宮本",
+      "text": "K8s、IaC、LXC、QEMU、\n全部空気で流れる。",
+      "highlight_terms": [
+        "K8s",
+        "IaC",
+        "LXC",
+        "QEMU"
+      ]
+    },
+    {
+      "at_ms": 73050,
+      "type": "term_chip",
+      "terms": [
+        "K8s",
+        "IaC",
+        "LXC",
+        "QEMU"
+      ]
+    },
+    {
+      "at_ms": 74800,
+      "type": "line",
+      "index": 35,
+      "speaker": "藤崎",
+      "text": "でも絶対知識マウント用途に使われるな…。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 77000,
+      "type": "line",
+      "index": 36,
+      "speaker": "宮本",
+      "text": "そこ怖い。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 79200,
+      "type": "line",
+      "index": 37,
+      "speaker": "石川",
+      "text": "だから完全に個人ローカル限定の方が良いかも。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 81400,
+      "type": "line",
+      "index": 38,
+      "speaker": "藤崎",
+      "text": "「最近キャッチアップした概念」\nくらいがちょうど良さそう。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 83600,
+      "type": "line",
+      "index": 39,
+      "speaker": "藤崎",
+      "text": "オタク3人集まると、\n同時に喋り始めるから文字起こし死ぬ。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 85800,
+      "type": "line",
+      "index": 40,
+      "speaker": "宮本",
+      "text": "しかも途中で突然別の話飛ぶ。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 88000,
+      "type": "line",
+      "index": 41,
+      "speaker": "石川",
+      "text": "GPUの話してたのに急にUPSの話になる。",
+      "highlight_terms": [
+        "UPS"
+      ]
+    },
+    {
+      "at_ms": 88450,
+      "type": "term_chip",
+      "terms": [
+        "UPS"
+      ]
+    },
+    {
+      "at_ms": 90200,
+      "type": "line",
+      "index": 42,
+      "speaker": "藤崎",
+      "text": "そのあとNAS容量戦争始まる。",
+      "highlight_terms": [
+        "NAS"
+      ]
+    },
+    {
+      "at_ms": 90650,
+      "type": "term_chip",
+      "terms": [
+        "NAS"
+      ]
+    },
+    {
+      "at_ms": 92400,
+      "type": "line",
+      "index": 43,
+      "speaker": "宮本",
+      "text": "最終的に「電気代やばい」で終わる。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 94600,
+      "type": "line",
+      "index": 44,
+      "speaker": "石川",
+      "text": "ホームラボ界隈、\n全員そこに帰結する。",
+      "highlight_terms": []
+    }
+  ]
+}

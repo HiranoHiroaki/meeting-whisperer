@@ -1,0 +1,557 @@
+{
+  "id": "sample-06-healthcare",
+  "category": "看護・医療",
+  "meeting_title": "北棟カンファレンス 病棟連携ミーティングログ",
+  "source_file": "doc/samples/sample-06-healthcare.md",
+  "clean_file": "doc/samples/scripted-clean/sample-06-healthcare-clean.md",
+  "line_interval_ms": 2200,
+  "max_term_chips": 5,
+  "utterance_count": 43,
+  "removed_utterance_count": 8,
+  "expected_terms": [
+    "SpO2",
+    "CRP",
+    "WBC",
+    "CT",
+    "ABPC/SBT",
+    "ADL",
+    "PT",
+    "OT",
+    "NRS",
+    "せん妄",
+    "CAM",
+    "DNAR",
+    "MSW",
+    "ショート",
+    "医療区分",
+    "褥瘡",
+    "DESIGN-R",
+    "SOAP"
+  ],
+  "expected_weak_contexts": [
+    "医療略語",
+    "病棟連携",
+    "リハビリ職種",
+    "医療制度",
+    "DNAR文脈",
+    "医療現場コミュニケーション"
+  ],
+  "events": [
+    {
+      "at_ms": 0,
+      "type": "line",
+      "index": 1,
+      "speaker": "西田",
+      "text": "305の田辺さん、今朝SpO2少し落ちてます。\n酸素2L入れて今94。",
+      "highlight_terms": [
+        "SpO2"
+      ]
+    },
+    {
+      "at_ms": 450,
+      "type": "term_chip",
+      "terms": [
+        "SpO2"
+      ]
+    },
+    {
+      "at_ms": 2200,
+      "type": "line",
+      "index": 2,
+      "speaker": "岡本",
+      "text": "昨日の採血どうでした？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 4400,
+      "type": "line",
+      "index": 3,
+      "speaker": "西田",
+      "text": "CRPまだ高めです。\nWBCは横ばい。",
+      "highlight_terms": [
+        "CRP",
+        "WBC"
+      ]
+    },
+    {
+      "at_ms": 4850,
+      "type": "term_chip",
+      "terms": [
+        "CRP",
+        "WBC"
+      ]
+    },
+    {
+      "at_ms": 6600,
+      "type": "line",
+      "index": 4,
+      "speaker": "加藤",
+      "text": "抗菌薬このまま継続ですか？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 8800,
+      "type": "line",
+      "index": 5,
+      "speaker": "森",
+      "text": "とりあえずCT結果待ちですね。\n肺炎像広がってたらABPC/SBT戻すかも。",
+      "highlight_terms": [
+        "CT",
+        "ABPC/SBT"
+      ]
+    },
+    {
+      "at_ms": 9250,
+      "type": "term_chip",
+      "terms": [
+        "CT",
+        "ABPC/SBT"
+      ]
+    },
+    {
+      "at_ms": 11000,
+      "type": "line",
+      "index": 6,
+      "speaker": "岡本",
+      "text": "ADLかなり落ちてますよね。",
+      "highlight_terms": [
+        "ADL"
+      ]
+    },
+    {
+      "at_ms": 11450,
+      "type": "term_chip",
+      "terms": [
+        "ADL"
+      ]
+    },
+    {
+      "at_ms": 13200,
+      "type": "line",
+      "index": 7,
+      "speaker": "西田",
+      "text": "昨日トイレ介助でふらつき強かったです。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 15400,
+      "type": "line",
+      "index": 8,
+      "speaker": "加藤",
+      "text": "リハ側共有済みでしたっけ？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 17600,
+      "type": "line",
+      "index": 9,
+      "speaker": "森",
+      "text": "PTには連絡済みです。\nOTまだ。",
+      "highlight_terms": [
+        "PT",
+        "OT"
+      ]
+    },
+    {
+      "at_ms": 18050,
+      "type": "term_chip",
+      "terms": [
+        "PT",
+        "OT"
+      ]
+    },
+    {
+      "at_ms": 19800,
+      "type": "line",
+      "index": 10,
+      "speaker": "岡本",
+      "text": "NRSどれくらいでした？",
+      "highlight_terms": [
+        "NRS"
+      ]
+    },
+    {
+      "at_ms": 20250,
+      "type": "term_chip",
+      "terms": [
+        "NRS"
+      ]
+    },
+    {
+      "at_ms": 22000,
+      "type": "line",
+      "index": 11,
+      "speaker": "西田",
+      "text": "疼痛は4〜5くらい。\nただ夜間せん妄少し出てます。",
+      "highlight_terms": [
+        "せん妄"
+      ]
+    },
+    {
+      "at_ms": 22450,
+      "type": "term_chip",
+      "terms": [
+        "せん妄"
+      ]
+    },
+    {
+      "at_ms": 24200,
+      "type": "line",
+      "index": 12,
+      "speaker": "加藤",
+      "text": "せん妄スケール取りました？",
+      "highlight_terms": [
+        "せん妄"
+      ]
+    },
+    {
+      "at_ms": 24650,
+      "type": "term_chip",
+      "terms": [
+        "せん妄"
+      ]
+    },
+    {
+      "at_ms": 26400,
+      "type": "line",
+      "index": 13,
+      "speaker": "西田",
+      "text": "CAM陽性です。",
+      "highlight_terms": [
+        "CAM"
+      ]
+    },
+    {
+      "at_ms": 26850,
+      "type": "term_chip",
+      "terms": [
+        "CAM"
+      ]
+    },
+    {
+      "at_ms": 28600,
+      "type": "line",
+      "index": 14,
+      "speaker": "森",
+      "text": "家族説明って今日でしたっけ？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 30800,
+      "type": "line",
+      "index": 15,
+      "speaker": "岡本",
+      "text": "14時予定です。\nDNARの話も少し触れるかもしれません。",
+      "highlight_terms": [
+        "DNAR"
+      ]
+    },
+    {
+      "at_ms": 31250,
+      "type": "term_chip",
+      "terms": [
+        "DNAR"
+      ]
+    },
+    {
+      "at_ms": 33000,
+      "type": "line",
+      "index": 16,
+      "speaker": "加藤",
+      "text": "そこかなり慎重にいきたいですね…。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 35200,
+      "type": "line",
+      "index": 17,
+      "speaker": "西田",
+      "text": "あと退院調整、\nMSW側まだ動けてないみたいです。",
+      "highlight_terms": [
+        "MSW"
+      ]
+    },
+    {
+      "at_ms": 35650,
+      "type": "term_chip",
+      "terms": [
+        "MSW"
+      ]
+    },
+    {
+      "at_ms": 37400,
+      "type": "line",
+      "index": 18,
+      "speaker": "森",
+      "text": "施設空き待ちですよね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 39600,
+      "type": "line",
+      "index": 19,
+      "speaker": "岡本",
+      "text": "ショートも今かなり埋まってる。",
+      "highlight_terms": [
+        "ショート"
+      ]
+    },
+    {
+      "at_ms": 40050,
+      "type": "term_chip",
+      "terms": [
+        "ショート"
+      ]
+    },
+    {
+      "at_ms": 41800,
+      "type": "line",
+      "index": 20,
+      "speaker": "加藤",
+      "text": "医療区分どこまで取れるかで変わりそう。",
+      "highlight_terms": [
+        "医療区分"
+      ]
+    },
+    {
+      "at_ms": 42250,
+      "type": "term_chip",
+      "terms": [
+        "医療区分"
+      ]
+    },
+    {
+      "at_ms": 44000,
+      "type": "line",
+      "index": 21,
+      "speaker": "西田",
+      "text": "あと褥瘡、\n仙骨部少し悪化してます。",
+      "highlight_terms": [
+        "褥瘡"
+      ]
+    },
+    {
+      "at_ms": 44450,
+      "type": "term_chip",
+      "terms": [
+        "褥瘡"
+      ]
+    },
+    {
+      "at_ms": 46200,
+      "type": "line",
+      "index": 22,
+      "speaker": "森",
+      "text": "DESIGN-R更新しました？",
+      "highlight_terms": [
+        "DESIGN-R"
+      ]
+    },
+    {
+      "at_ms": 46650,
+      "type": "term_chip",
+      "terms": [
+        "DESIGN-R"
+      ]
+    },
+    {
+      "at_ms": 48400,
+      "type": "line",
+      "index": 23,
+      "speaker": "西田",
+      "text": "まだです。\n午後処置後入れます。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 50600,
+      "type": "line",
+      "index": 24,
+      "speaker": "加藤",
+      "text": "略語多すぎる。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 52800,
+      "type": "line",
+      "index": 25,
+      "speaker": "森",
+      "text": "新人、\nSOAPの時点でまず止まる。",
+      "highlight_terms": [
+        "SOAP"
+      ]
+    },
+    {
+      "at_ms": 53250,
+      "type": "term_chip",
+      "terms": [
+        "SOAP"
+      ]
+    },
+    {
+      "at_ms": 55000,
+      "type": "line",
+      "index": 26,
+      "speaker": "西田",
+      "text": "SpO2、CRP、WBC、\n普通の人絶対わからない。",
+      "highlight_terms": [
+        "SpO2",
+        "CRP",
+        "WBC"
+      ]
+    },
+    {
+      "at_ms": 55450,
+      "type": "term_chip",
+      "terms": [
+        "SpO2",
+        "CRP",
+        "WBC"
+      ]
+    },
+    {
+      "at_ms": 57200,
+      "type": "line",
+      "index": 27,
+      "speaker": "岡本",
+      "text": "しかも会議スピード速い。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 59400,
+      "type": "line",
+      "index": 28,
+      "speaker": "加藤",
+      "text": "聞き返す空気もない。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 61600,
+      "type": "line",
+      "index": 29,
+      "speaker": "森",
+      "text": "「みんな知ってる前提」\nで進むので。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 63800,
+      "type": "line",
+      "index": 30,
+      "speaker": "西田",
+      "text": "あと医療、\n同じ略語でも診療科で意味変わることありますよね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 66000,
+      "type": "line",
+      "index": 31,
+      "speaker": "岡本",
+      "text": "あります。\nPTとか典型。",
+      "highlight_terms": [
+        "PT"
+      ]
+    },
+    {
+      "at_ms": 66450,
+      "type": "term_chip",
+      "terms": [
+        "PT"
+      ]
+    },
+    {
+      "at_ms": 68200,
+      "type": "line",
+      "index": 32,
+      "speaker": "加藤",
+      "text": "理学療法なのかプロトロンビン時間なのか。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 70400,
+      "type": "line",
+      "index": 33,
+      "speaker": "岡本",
+      "text": "そこかなり危険。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 72600,
+      "type": "line",
+      "index": 34,
+      "speaker": "加藤",
+      "text": "「この人理解不足です」\nみたいに感じると終わる。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 74800,
+      "type": "line",
+      "index": 35,
+      "speaker": "森",
+      "text": "完全に補助限定。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 77000,
+      "type": "line",
+      "index": 36,
+      "speaker": "西田",
+      "text": "「最近確認した概念」\nくらいが限界かな。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 79200,
+      "type": "line",
+      "index": 37,
+      "speaker": "森",
+      "text": "それ正解だと思います。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 81400,
+      "type": "line",
+      "index": 38,
+      "speaker": "岡本",
+      "text": "ナースステーション常に音鳴ってるし。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 83600,
+      "type": "line",
+      "index": 39,
+      "speaker": "森",
+      "text": "それだけでも十分価値あると思う。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 85800,
+      "type": "line",
+      "index": 40,
+      "speaker": "西田",
+      "text": "途中参加スタッフかなり助かりそう。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 88000,
+      "type": "line",
+      "index": 41,
+      "speaker": "岡本",
+      "text": "研修医とか特に。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 90200,
+      "type": "line",
+      "index": 42,
+      "speaker": "森",
+      "text": "真面目すぎると監視システム感出る。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 92400,
+      "type": "line",
+      "index": 43,
+      "speaker": "西田",
+      "text": "それめっちゃわかる。",
+      "highlight_terms": []
+    }
+  ]
+}

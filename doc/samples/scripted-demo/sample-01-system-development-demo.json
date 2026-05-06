@@ -1,0 +1,392 @@
+{
+  "id": "sample-01-system-development",
+  "category": "システム開発",
+  "meeting_title": "Aegis SKU同期 定例ミーティングログ",
+  "source_file": "doc/samples/sample-01-system-development.md",
+  "clean_file": "doc/samples/scripted-clean/sample-01-system-development-clean.md",
+  "line_interval_ms": 2200,
+  "max_term_chips": 5,
+  "utterance_count": 28,
+  "removed_utterance_count": 13,
+  "expected_terms": [
+    "ADR",
+    "SKU",
+    "RAG",
+    "Embedding",
+    "RBAC",
+    "Blob",
+    "Managed Identity",
+    "Entra",
+    "EKS",
+    "Azure Functions",
+    "Container Apps",
+    "Event Grid",
+    "SAP",
+    "PoC",
+    "token"
+  ],
+  "expected_weak_contexts": [
+    "Azure権限管理",
+    "RAG構成",
+    "SKU同期",
+    "Managed Identity",
+    "Event Grid"
+  ],
+  "events": [
+    {
+      "at_ms": 0,
+      "type": "line",
+      "index": 1,
+      "speaker": "佐藤",
+      "text": "Aegis側のADRってまだ切ってないんだっけ？",
+      "highlight_terms": [
+        "ADR"
+      ]
+    },
+    {
+      "at_ms": 450,
+      "type": "term_chip",
+      "terms": [
+        "ADR"
+      ]
+    },
+    {
+      "at_ms": 2200,
+      "type": "line",
+      "index": 2,
+      "speaker": "高橋",
+      "text": "いや、一応ドラフトはあるんですけど、SKU同期の責務境界まだFIXしてなくて、そこ曖昧なままADR残すと後で死ぬかなって。",
+      "highlight_terms": [
+        "ADR",
+        "SKU"
+      ]
+    },
+    {
+      "at_ms": 2650,
+      "type": "term_chip",
+      "terms": [
+        "ADR",
+        "SKU"
+      ]
+    },
+    {
+      "at_ms": 4400,
+      "type": "line",
+      "index": 3,
+      "speaker": "村上",
+      "text": "でも先にRAG構成だけでも決めないと、Embedding周り全部後ろ倒しになりますよね。",
+      "highlight_terms": [
+        "RAG",
+        "Embedding"
+      ]
+    },
+    {
+      "at_ms": 4850,
+      "type": "term_chip",
+      "terms": [
+        "RAG",
+        "Embedding"
+      ]
+    },
+    {
+      "at_ms": 6600,
+      "type": "line",
+      "index": 4,
+      "speaker": "田中",
+      "text": "その前にRBAC整理しないとまずくないですか？\n今の構成だと、SKU同期サービスが普通にBlob読めちゃうんで。",
+      "highlight_terms": [
+        "SKU",
+        "RBAC",
+        "Blob"
+      ]
+    },
+    {
+      "at_ms": 7050,
+      "type": "term_chip",
+      "terms": [
+        "SKU",
+        "RBAC",
+        "Blob"
+      ]
+    },
+    {
+      "at_ms": 8800,
+      "type": "line",
+      "index": 5,
+      "speaker": "高橋",
+      "text": "あーそこ、Managed Identityに寄せる方向で考えてます。\nただEntra側のグループ整理まだ終わってなくて…。",
+      "highlight_terms": [
+        "Managed Identity",
+        "Entra"
+      ]
+    },
+    {
+      "at_ms": 9250,
+      "type": "term_chip",
+      "terms": [
+        "Managed Identity",
+        "Entra"
+      ]
+    },
+    {
+      "at_ms": 11000,
+      "type": "line",
+      "index": 6,
+      "speaker": "佐藤",
+      "text": "EKS側じゃなくてFunctionsに寄せるんだっけ最終？",
+      "highlight_terms": [
+        "EKS"
+      ]
+    },
+    {
+      "at_ms": 11450,
+      "type": "term_chip",
+      "terms": [
+        "EKS"
+      ]
+    },
+    {
+      "at_ms": 13200,
+      "type": "line",
+      "index": 7,
+      "speaker": "高橋",
+      "text": "今のところそうですね。\nKubernetes維持コストが想像以上に重かったんで。\nただContainer Appsに逃がす案はまだ残ってます。",
+      "highlight_terms": [
+        "Container Apps"
+      ]
+    },
+    {
+      "at_ms": 13650,
+      "type": "term_chip",
+      "terms": [
+        "Container Apps"
+      ]
+    },
+    {
+      "at_ms": 15400,
+      "type": "line",
+      "index": 8,
+      "speaker": "村上",
+      "text": "でもFunctionsだとリアルタイム同期厳しくないです？\nSKU更新イベントかなり飛ぶ想定ですよね。",
+      "highlight_terms": [
+        "SKU"
+      ]
+    },
+    {
+      "at_ms": 15850,
+      "type": "term_chip",
+      "terms": [
+        "SKU"
+      ]
+    },
+    {
+      "at_ms": 17600,
+      "type": "line",
+      "index": 9,
+      "speaker": "高橋",
+      "text": "そこEvent Grid挟む予定です。\nSKU更新 → Queue → 非同期同期。",
+      "highlight_terms": [
+        "SKU",
+        "Event Grid"
+      ]
+    },
+    {
+      "at_ms": 18050,
+      "type": "term_chip",
+      "terms": [
+        "SKU",
+        "Event Grid"
+      ]
+    },
+    {
+      "at_ms": 19800,
+      "type": "line",
+      "index": 10,
+      "speaker": "田中",
+      "text": "SAP側のレート制限って確認済みでしたっけ？",
+      "highlight_terms": [
+        "SAP"
+      ]
+    },
+    {
+      "at_ms": 20250,
+      "type": "term_chip",
+      "terms": [
+        "SAP"
+      ]
+    },
+    {
+      "at_ms": 22000,
+      "type": "line",
+      "index": 11,
+      "speaker": "高橋",
+      "text": "まだです。\n前回たしか1分1000reqくらいって話でしたけど、正式回答待ちです。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 24200,
+      "type": "line",
+      "index": 12,
+      "speaker": "佐藤",
+      "text": "いやそこ死ぬと全部死ぬな…。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 26400,
+      "type": "line",
+      "index": 13,
+      "speaker": "村上",
+      "text": "あとRAG側なんですけど、Embeddingモデル切り替えるなら今のうちじゃないです？\n後でindex再生成地獄になる気が。",
+      "highlight_terms": [
+        "RAG",
+        "Embedding"
+      ]
+    },
+    {
+      "at_ms": 26850,
+      "type": "term_chip",
+      "terms": [
+        "RAG",
+        "Embedding"
+      ]
+    },
+    {
+      "at_ms": 28600,
+      "type": "line",
+      "index": 14,
+      "speaker": "高橋",
+      "text": "いや本当はそこ先に決めたいんですけど、Azure OpenAIのコスト感まだ読めてないんですよね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 30800,
+      "type": "line",
+      "index": 15,
+      "speaker": "田中",
+      "text": "ちなみに今回のPoC、トークン量どれくらい見積もってます？",
+      "highlight_terms": [
+        "PoC"
+      ]
+    },
+    {
+      "at_ms": 31250,
+      "type": "term_chip",
+      "terms": [
+        "PoC"
+      ]
+    },
+    {
+      "at_ms": 33000,
+      "type": "line",
+      "index": 16,
+      "speaker": "高橋",
+      "text": "ざっくりですけど、1会議ログあたり平均15k〜20k tokenくらい想定してます。",
+      "highlight_terms": [
+        "token"
+      ]
+    },
+    {
+      "at_ms": 33450,
+      "type": "term_chip",
+      "terms": [
+        "token"
+      ]
+    },
+    {
+      "at_ms": 35200,
+      "type": "line",
+      "index": 17,
+      "speaker": "佐藤",
+      "text": "それ長時間定例だと普通に爆発しそう。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 37400,
+      "type": "line",
+      "index": 18,
+      "speaker": "村上",
+      "text": "要約じゃなくて「未知語抽出」だけ先にやれば結構削れる気はします。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 39600,
+      "type": "line",
+      "index": 19,
+      "speaker": "高橋",
+      "text": "あーたしかに。\n全文投げずにterm extractionだけ別Functionに切るか…。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 41800,
+      "type": "line",
+      "index": 20,
+      "speaker": "村上",
+      "text": "個人的には「あとで読む」に逃がせると嬉しいです。\n会議中深掘りすると置いていかれるので。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 44000,
+      "type": "line",
+      "index": 21,
+      "speaker": "高橋",
+      "text": "ですね。\nBot会話形式にすると逆に会議止まりそう。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 46200,
+      "type": "line",
+      "index": 22,
+      "speaker": "佐藤",
+      "text": "あと社内略語問題どうします？\nうちPJ名だけで意味不明なの大量にありますよ。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 48400,
+      "type": "line",
+      "index": 23,
+      "speaker": "村上",
+      "text": "Aegis、Orion、Helios、Atlas…。\n知らない人マジで何もわからない。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 50600,
+      "type": "line",
+      "index": 24,
+      "speaker": "佐藤",
+      "text": "でもそれ評価システムっぽく見えると怖くない？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 52800,
+      "type": "line",
+      "index": 25,
+      "speaker": "村上",
+      "text": "「あなたは理解不足です」って出たら炎上しそう。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 55000,
+      "type": "line",
+      "index": 26,
+      "speaker": "高橋",
+      "text": "なのでUI上は：\n「最近キャッチアップした概念」\nくらいに留める予定です。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 57200,
+      "type": "line",
+      "index": 27,
+      "speaker": "田中",
+      "text": "それならかなり良さそう。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 59400,
+      "type": "line",
+      "index": 28,
+      "speaker": "佐藤",
+      "text": "いや名前ほんとそれで行くんだ…。",
+      "highlight_terms": []
+    }
+  ]
+}
