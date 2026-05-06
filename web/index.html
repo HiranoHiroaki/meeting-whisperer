@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meeting Whisperer | Scripted Demo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Meeting Whisperer</p>
+        <h1>Scripted Demo Console</h1>
+      </div>
+      <div class="header-controls">
+        <label>
+          Mode
+          <select id="modeSelect">
+            <option value="scripted" selected>Scripted Demo</option>
+            <option value="live">Live API (WIP)</option>
+          </select>
+        </label>
+      </div>
+    </header>
+
+    <section class="toolbar">
+      <label>
+        Sample
+        <select id="sampleSelect"></select>
+      </label>
+      <label>
+        Speed
+        <select id="speedSelect">
+          <option value="0.8">0.8x</option>
+          <option value="1" selected>1.0x</option>
+          <option value="1.25">1.25x</option>
+          <option value="1.5">1.5x</option>
+        </select>
+      </label>
+      <button id="startBtn">Start</button>
+      <button id="resetBtn" class="ghost">Reset</button>
+    </section>
+
+    <p id="modeNotice" class="notice hidden"></p>
+
+    <main class="layout">
+      <section class="panel stream-panel">
+        <h2>Meeting Stream</h2>
+        <div id="streamList" class="stream-list"></div>
+      </section>
+
+      <section class="panel side-panel">
+        <h2>Detected Terms</h2>
+        <div id="termChips" class="term-chips"></div>
+
+        <div class="term-detail">
+          <h3 id="termTitle">No term selected</h3>
+          <p id="termDetail">Run demo and click a term chip.</p>
+          <div class="actions">
+            <button id="unknownBtn" disabled>Unknown</button>
+            <button id="interestBtn" disabled>Interest</button>
+          </div>
+        </div>
+
+        <div class="profile-box">
+          <h3>Local Learning Signal</h3>
+          <p id="profileSummary">No clicks yet.</p>
+        </div>
+
+        <div class="notes-box">
+          <div class="notes-head">
+            <h3>Today's Catch-up Notes</h3>
+            <button id="notesBtn" class="ghost">Generate</button>
+          </div>
+          <p id="notesOutput">No notes generated yet.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>Tip: Start with Scripted Demo mode for stable judging demos.</p>
+    </footer>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

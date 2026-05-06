@@ -1,0 +1,269 @@
+:root {
+  --bg: #f7f8fb;
+  --bg-accent: radial-gradient(circle at 10% 10%, #d4e8ff 0%, transparent 48%),
+    radial-gradient(circle at 85% 20%, #ffe3c8 0%, transparent 42%),
+    radial-gradient(circle at 50% 90%, #d7f3e9 0%, transparent 46%);
+  --panel: #ffffffcc;
+  --text: #1b1f2a;
+  --muted: #5f6a79;
+  --border: #d9dfeb;
+  --brand: #0e7490;
+  --brand-2: #0369a1;
+  --chip: #ecfeff;
+  --danger: #b91c1c;
+  --interest: #854d0e;
+  --shadow: 0 12px 30px rgba(20, 38, 67, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", "Yu Gothic UI", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  background-image: var(--bg-accent);
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+.app-header,
+.toolbar,
+.layout,
+.app-footer,
+.notice {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.app-header {
+  padding-top: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+}
+
+.eyebrow {
+  color: var(--brand-2);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+}
+
+h1 {
+  font-size: clamp(1.4rem, 1.2rem + 1.2vw, 2rem);
+}
+
+.header-controls label,
+.toolbar label {
+  display: grid;
+  gap: 0.3rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.toolbar {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: end;
+}
+
+select,
+button {
+  border: 1px solid var(--border);
+  border-radius: 0.65rem;
+  padding: 0.5rem 0.75rem;
+  background: #fff;
+  font-size: 0.92rem;
+}
+
+button {
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+button.ghost {
+  background: #fff;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.notice {
+  margin-top: 0.7rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 0.8rem;
+  border: 1px solid #f5d0fe;
+  background: #fff7ed;
+  color: #7c2d12;
+}
+
+.hidden {
+  display: none;
+}
+
+.layout {
+  margin-top: 1rem;
+  padding-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 1rem;
+}
+
+.panel {
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1rem;
+  background: var(--panel);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow);
+}
+
+.panel h2 {
+  margin-bottom: 0.8rem;
+}
+
+.stream-list {
+  max-height: 68vh;
+  overflow: auto;
+  padding-right: 0.4rem;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.stream-line {
+  border: 1px solid #dbe3f0;
+  border-radius: 0.8rem;
+  padding: 0.7rem;
+  background: #fff;
+  animation: slideIn 240ms ease-out;
+}
+
+.stream-speaker {
+  font-size: 0.8rem;
+  color: var(--brand-2);
+  margin-bottom: 0.2rem;
+}
+
+.stream-text {
+  white-space: pre-wrap;
+  line-height: 1.45;
+}
+
+mark.term {
+  background: #fde68a;
+  color: #713f12;
+  border-radius: 0.25rem;
+  padding: 0 0.15rem;
+}
+
+.term-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.9rem;
+}
+
+.term-chip {
+  background: var(--chip);
+  color: #0f172a;
+  border: 1px solid #bae6fd;
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.82rem;
+}
+
+.term-chip.active {
+  border-color: var(--brand-2);
+  box-shadow: 0 0 0 2px #bae6fd;
+}
+
+.term-detail,
+.profile-box,
+.notes-box {
+  border: 1px solid #dbe3f0;
+  border-radius: 0.8rem;
+  background: #fff;
+  padding: 0.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.term-detail h3,
+.profile-box h3,
+.notes-box h3 {
+  margin-bottom: 0.4rem;
+  font-size: 0.96rem;
+}
+
+.term-detail p,
+.profile-box p,
+.notes-box p {
+  color: #334155;
+  line-height: 1.45;
+}
+
+.actions {
+  margin-top: 0.7rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+#unknownBtn {
+  background: var(--danger);
+}
+
+#interestBtn {
+  background: var(--interest);
+}
+
+.notes-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.app-footer {
+  padding-bottom: 1.4rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 960px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .stream-list {
+    max-height: 45vh;
+  }
+}

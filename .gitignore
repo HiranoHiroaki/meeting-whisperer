@@ -1,1 +1,13 @@
+# Ignore local/private notes
 doc/mine/
+
+# Node / JS
+node_modules/
+**/node_modules/
+dist/
+coverage/
+
+# Local env
+.env
+.env.*
+api/local.settings.json
