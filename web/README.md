@@ -12,4 +12,5 @@ Open: `http://localhost:8080/web/`
 
 ## Notes
 - Scripted demo JSON is loaded from `doc/samples/scripted-demo/`.
-- Live API mode is a placeholder for later API wiring.
+- Live API mode calls `http://localhost:7071/api` by default.
+- Start Azure Functions locally first, then switch Mode to `Live API`.

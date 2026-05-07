@@ -10,6 +10,7 @@ const SAMPLE_FILES = [
 ];
 
 const STORAGE_KEY = "meeting_whisperer_profile_v1";
+const API_BASE = localStorage.getItem("meeting_whisperer_api_base") || "http://localhost:7071/api";
 
 const state = {
   demoData: null,
@@ -18,6 +19,8 @@ const state = {
   activeTerm: null,
   clickLog: [],
   profile: loadProfile(),
+  liveMeetingText: "",
+  liveDetails: {},
 };
 
 const modeSelect = document.querySelector("#modeSelect");
@@ -54,11 +57,13 @@ function init() {
     updateModeView();
   });
 
-  startBtn.addEventListener("click", () => {
-    if (modeSelect.value !== "scripted") {
+  startBtn.addEventListener("click", async () => {
+    if (modeSelect.value === "scripted") {
+      startPlayback();
       return;
     }
-    startPlayback();
+
+    await startLiveMode();
   });
 
   resetBtn.addEventListener("click", () => {
@@ -73,8 +78,8 @@ function init() {
     recordAction("interest");
   });
 
-  notesBtn.addEventListener("click", () => {
-    generateNotes();
+  notesBtn.addEventListener("click", async () => {
+    await generateNotes();
   });
 
   updateModeView();
@@ -98,15 +103,12 @@ async function loadSample(fileName) {
 
 function updateModeView() {
   if (modeSelect.value === "live") {
-    modeNotice.textContent =
-      "Live API mode is reserved for backend integration. Use Scripted Demo mode during judging for stable playback.";
+    modeNotice.textContent = `Live API mode: ${API_BASE} に接続して抽出・説明・まとめを実行します。`;
     modeNotice.classList.remove("hidden");
-    startBtn.disabled = true;
-    sampleSelect.disabled = true;
+    speedSelect.disabled = true;
   } else {
     modeNotice.classList.add("hidden");
-    startBtn.disabled = false;
-    sampleSelect.disabled = false;
+    speedSelect.disabled = false;
   }
 }
 
@@ -124,6 +126,38 @@ function startPlayback() {
       handleEvent(event);
     }, waitMs);
     state.timers.push(timer);
+  }
+}
+
+async function startLiveMode() {
+  if (!state.demoData) {
+    return;
+  }
+
+  resetPlayback();
+  const lines = state.demoData.events.filter((e) => e.type === "line");
+  state.liveMeetingText = lines.map((x) => `${x.speaker}: ${x.text}`).join("\n");
+
+  for (const line of lines.slice(0, 20)) {
+    appendLine(line);
+  }
+
+  try {
+    const response = await postJson(`${API_BASE}/extractTerms`, {
+      text: state.liveMeetingText,
+    });
+
+    const terms = normalizeExtractTerms(response);
+    if (terms.length === 0) {
+      notesOutput.textContent = "No terms detected from API response.";
+      return;
+    }
+
+    state.terms = terms.slice(0, 5);
+    renderTermChips();
+    notesOutput.textContent = "Terms extracted by Live API. Select one to fetch contextual explanation.";
+  } catch (error) {
+    notesOutput.textContent = `Live API error: ${String(error)}`;
   }
 }
 
@@ -174,13 +208,13 @@ function renderTermChips() {
     chip.addEventListener("click", () => {
       state.activeTerm = term;
       renderTermChips();
-      renderTermDetail();
+      void renderTermDetail();
     });
     termChips.append(chip);
   }
 }
 
-function renderTermDetail() {
+async function renderTermDetail() {
   if (!state.activeTerm || !state.demoData) {
     termTitle.textContent = "No term selected";
     termDetail.textContent = "Run demo and click a term chip.";
@@ -189,11 +223,34 @@ function renderTermDetail() {
     return;
   }
 
-  const hint = state.demoData.expected_weak_contexts?.slice(0, 2).join(" / ") || "meeting context";
   termTitle.textContent = state.activeTerm;
-  termDetail.textContent = `この会議では「${state.activeTerm}」は ${hint} に関連する概念を指している可能性があります。`;
   unknownBtn.disabled = false;
   interestBtn.disabled = false;
+
+  if (modeSelect.value === "live") {
+    const cached = state.liveDetails[state.activeTerm];
+    if (cached) {
+      termDetail.textContent = cached;
+      return;
+    }
+
+    termDetail.textContent = "Loading explanation...";
+    try {
+      const response = await postJson(`${API_BASE}/explainTerm`, {
+        term: state.activeTerm,
+        context: state.liveMeetingText,
+      });
+      const detail = response?.detail || "No detail returned.";
+      state.liveDetails[state.activeTerm] = detail;
+      termDetail.textContent = detail;
+    } catch (error) {
+      termDetail.textContent = `Live explain error: ${String(error)}`;
+    }
+    return;
+  }
+
+  const hint = state.demoData.expected_weak_contexts?.slice(0, 2).join(" / ") || "meeting context";
+  termDetail.textContent = `この会議では「${state.activeTerm}」は ${hint} に関連する概念を指している可能性があります。`;
 }
 
 function recordAction(action) {
@@ -232,7 +289,7 @@ function renderProfileSummary() {
     .join(" | ");
 }
 
-function generateNotes() {
+async function generateNotes() {
   if (!state.demoData) {
     return;
   }
@@ -241,6 +298,21 @@ function generateNotes() {
   if (picked.length === 0) {
     notesOutput.textContent = "No clicked terms yet. Click Unknown/Interest on any term.";
     return;
+  }
+
+  if (modeSelect.value === "live") {
+    try {
+      const clickedTerms = state.clickLog.map((x) => ({ term: x.term, action: x.action }));
+      const response = await postJson(`${API_BASE}/generateNotes`, {
+        clickedTerms,
+        meetingText: state.liveMeetingText,
+      });
+      notesOutput.textContent = response?.notes || "No notes returned.";
+      return;
+    } catch (error) {
+      notesOutput.textContent = `Live notes error: ${String(error)}`;
+      return;
+    }
   }
 
   const preview = picked.slice(0, 5).join(", ");
@@ -252,6 +324,8 @@ function resetPlayback() {
   state.terms = [];
   state.activeTerm = null;
   state.clickLog = [];
+  state.liveMeetingText = "";
+  state.liveDetails = {};
   streamList.innerHTML = "";
   termChips.innerHTML = "";
   renderTermDetail();
@@ -263,6 +337,42 @@ function clearTimers() {
     clearTimeout(timer);
   }
   state.timers = [];
+}
+
+function normalizeExtractTerms(payload) {
+  if (Array.isArray(payload)) {
+    return payload
+      .map((x) => (typeof x?.term === "string" ? x.term.trim() : ""))
+      .filter(Boolean);
+  }
+
+  if (Array.isArray(payload?.terms)) {
+    return payload.terms
+      .map((x) => (typeof x?.term === "string" ? x.term.trim() : ""))
+      .filter(Boolean);
+  }
+
+  return [];
+}
+
+async function postJson(url, body) {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+
+  const text = await response.text();
+  const json = text ? JSON.parse(text) : {};
+
+  if (!response.ok) {
+    const msg = json?.error?.message || `${response.status} ${response.statusText}`;
+    throw new Error(msg);
+  }
+
+  return json;
 }
 
 function highlightText(text, terms) {
