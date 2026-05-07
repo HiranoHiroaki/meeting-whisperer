@@ -37,25 +37,41 @@
           <option value="1.5">1.5x</option>
         </select>
       </label>
+      <label class="api-base-wrap">
+        API Base
+        <input id="apiBaseInput" type="text" placeholder="http://localhost:7071/api" />
+      </label>
+      <button id="saveApiBtn" class="ghost">Save API</button>
+      <button id="pingApiBtn" class="ghost">Ping API</button>
       <button id="startBtn">Start</button>
+      <button id="pauseBtn" class="ghost" disabled>Pause</button>
       <button id="resetBtn" class="ghost">Reset</button>
     </section>
 
     <p id="modeNotice" class="notice hidden"></p>
+    <p id="runStatus" class="status-line">Ready.</p>
 
     <main class="layout">
       <section class="panel stream-panel">
         <h2>Meeting Stream</h2>
+        <div class="stream-meta">
+          <p id="streamMeta">0 / 0 lines</p>
+          <progress id="streamProgress" value="0" max="100"></progress>
+        </div>
         <div id="streamList" class="stream-list"></div>
       </section>
 
       <section class="panel side-panel">
-        <h2>Detected Terms</h2>
+        <div class="panel-head">
+          <h2>Detected Terms</h2>
+          <span id="extractSource" class="source-badge">source: -</span>
+        </div>
         <div id="termChips" class="term-chips"></div>
 
         <div class="term-detail">
           <h3 id="termTitle">No term selected</h3>
           <p id="termDetail">Run demo and click a term chip.</p>
+          <p class="mini-meta">Explain Source: <span id="explainSource">-</span></p>
           <div class="actions">
             <button id="unknownBtn" disabled>Unknown</button>
             <button id="interestBtn" disabled>Interest</button>
@@ -63,8 +79,12 @@
         </div>
 
         <div class="profile-box">
-          <h3>Local Learning Signal</h3>
+          <div class="sub-head">
+            <h3>Local Learning Signal</h3>
+            <button id="clearProfileBtn" class="ghost tiny">Clear</button>
+          </div>
           <p id="profileSummary">No clicks yet.</p>
+          <div id="clickList" class="click-list"></div>
         </div>
 
         <div class="notes-box">
@@ -73,6 +93,7 @@
             <button id="notesBtn" class="ghost">Generate</button>
           </div>
           <p id="notesOutput">No notes generated yet.</p>
+          <p class="mini-meta">Notes Source: <span id="notesSource">-</span></p>
         </div>
       </section>
     </main>

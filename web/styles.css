@@ -21,7 +21,7 @@
 
 body {
   margin: 0;
-  font-family: "Segoe UI", "Yu Gothic UI", sans-serif;
+  font-family: "Noto Sans JP", "Segoe UI", "Yu Gothic UI", sans-serif;
   color: var(--text);
   background: var(--bg);
   background-image: var(--bg-accent);
@@ -39,7 +39,8 @@ p {
 .toolbar,
 .layout,
 .app-footer,
-.notice {
+.notice,
+.status-line {
   width: min(1180px, calc(100% - 2rem));
   margin: 0 auto;
 }
@@ -80,13 +81,23 @@ h1 {
   align-items: end;
 }
 
+.api-base-wrap {
+  min-width: min(380px, 90vw);
+  flex: 1;
+}
+
 select,
+input,
 button {
   border: 1px solid var(--border);
   border-radius: 0.65rem;
   padding: 0.5rem 0.75rem;
   background: #fff;
   font-size: 0.92rem;
+}
+
+.api-base-wrap input {
+  width: 100%;
 }
 
 button {
@@ -116,6 +127,12 @@ button:disabled {
   color: #7c2d12;
 }
 
+.status-line {
+  margin-top: 0.6rem;
+  color: #334155;
+  font-size: 0.86rem;
+}
+
 .hidden {
   display: none;
 }
@@ -137,8 +154,40 @@ button:disabled {
   box-shadow: var(--shadow);
 }
 
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
 .panel h2 {
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.2rem;
+}
+
+.source-badge {
+  border: 1px solid #bfd0ec;
+  background: #eff6ff;
+  color: #1e3a8a;
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.stream-meta {
+  margin-bottom: 0.65rem;
+}
+
+.stream-meta p {
+  color: #4b5563;
+  font-size: 0.82rem;
+  margin-bottom: 0.3rem;
+}
+
+.stream-meta progress {
+  width: 100%;
+  height: 10px;
 }
 
 .stream-list {
@@ -220,6 +269,12 @@ mark.term {
   line-height: 1.45;
 }
 
+.mini-meta {
+  margin-top: 0.55rem;
+  color: #64748b;
+  font-size: 0.78rem;
+}
+
 .actions {
   margin-top: 0.7rem;
   display: flex;
@@ -234,11 +289,32 @@ mark.term {
   background: var(--interest);
 }
 
-.notes-head {
+.notes-head,
+.sub-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.35rem;
+}
+
+.tiny {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.click-list {
+  margin-top: 0.5rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.click-item {
+  border: 1px solid #dbe3f0;
+  border-radius: 0.55rem;
+  background: #f8fafc;
+  padding: 0.3rem 0.45rem;
+  font-size: 0.78rem;
+  color: #475569;
 }
 
 .app-footer {
@@ -265,5 +341,9 @@ mark.term {
 
   .stream-list {
     max-height: 45vh;
+  }
+
+  .api-base-wrap {
+    min-width: 100%;
   }
 }
