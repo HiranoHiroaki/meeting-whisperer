@@ -2,7 +2,7 @@ import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/fu
 import { chatWithAzureOpenAi, getConfiguredAiSource, hasAzureOpenAiConfig, parseJsonFromText } from "./aiClient.js";
 import { type DictionaryEntry, getDictionaryStats, lookupDictionaryTerm } from "./dictionary.js";
 import { postProcessExplainFromAi } from "./postprocessAi.js";
-import { consumeRateLimit, estimateTermMeaning, json, readStringField, resolveAuthLevel, toPromptBlock } from "./shared.js";
+import { consumeRateLimit, corsPreflight, estimateTermMeaning, json, readStringField, resolveAuthLevel, toPromptBlock } from "./shared.js";
 
 type ExplainRequest = {
   term?: string;
@@ -383,6 +383,9 @@ function fallbackStructuredExplain(term: string, context: string, detail: string
 
 export async function explainTerm(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   context.log("explainTerm called");
+  const preflight = corsPreflight(request);
+  if (preflight) return preflight;
+
   const limit = consumeRateLimit(request, "explainTerm");
   if (!limit.allowed) {
     return json(429, { error: { code: "RATE_LIMIT", message: "Too many requests" }, retryAfterSec: limit.retryAfterSec }, request);
@@ -657,7 +660,7 @@ export async function explainTerm(request: HttpRequest, context: InvocationConte
 }
 
 app.http("explainTerm", {
-  methods: ["POST"],
+  methods: ["POST", "OPTIONS"],
   authLevel: resolveAuthLevel(),
   route: "explainTerm",
   handler: explainTerm

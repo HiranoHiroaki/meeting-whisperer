@@ -7,7 +7,7 @@ import {
   getDispatcherPolicy,
   matchFixedDictionaryTerms
 } from "./dictionary.js";
-import { consumeRateLimit, json, rankTerms, readStringField, resolveAuthLevel, toPromptBlock } from "./shared.js";
+import { consumeRateLimit, corsPreflight, json, rankTerms, readStringField, resolveAuthLevel, toPromptBlock } from "./shared.js";
 
 type ExtractRequest = {
   text?: string;
@@ -285,6 +285,8 @@ function parseTermsFromReasoningText(text: string): ExtractedTerm[] {
 
 export async function extractTerms(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   context.log("extractTerms called");
+  const preflight = corsPreflight(request);
+  if (preflight) return preflight;
   const limit = consumeRateLimit(request, "extractTerms");
   if (!limit.allowed) {
     return json(429, { error: { code: "RATE_LIMIT", message: "Too many requests" }, retryAfterSec: limit.retryAfterSec }, request);
@@ -435,7 +437,7 @@ export async function extractTerms(request: HttpRequest, context: InvocationCont
 }
 
 app.http("extractTerms", {
-  methods: ["POST"],
+  methods: ["POST", "OPTIONS"],
   authLevel: resolveAuthLevel(),
   route: "extractTerms",
   handler: extractTerms

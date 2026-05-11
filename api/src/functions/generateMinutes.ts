@@ -1,6 +1,6 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { chatWithAzureOpenAi, getConfiguredAiSource, hasAzureOpenAiConfig } from "./aiClient.js";
-import { consumeRateLimit, json, readStringField, resolveAuthLevel, toPromptBlock } from "./shared.js";
+import { consumeRateLimit, corsPreflight, json, readStringField, resolveAuthLevel, toPromptBlock } from "./shared.js";
 
 type MinutesRequest = {
   meetingText?: string;
@@ -38,6 +38,9 @@ const SYSTEM_PROMPT = `あなたは会議ログから議事録を作成するア
 
 export async function generateMinutes(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   context.log("generateMinutes called");
+  const preflight = corsPreflight(request);
+  if (preflight) return preflight;
+
   const limit = consumeRateLimit(request, "generateMinutes");
   if (!limit.allowed) {
     return json(429, { error: { code: "RATE_LIMIT", message: "Too many requests" }, retryAfterSec: limit.retryAfterSec }, request);
@@ -88,7 +91,7 @@ export async function generateMinutes(request: HttpRequest, context: InvocationC
 }
 
 app.http("generateMinutes", {
-  methods: ["POST"],
+  methods: ["POST", "OPTIONS"],
   authLevel: resolveAuthLevel(),
   route: "generateMinutes",
   handler: generateMinutes,

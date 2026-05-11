@@ -1,6 +1,6 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { chatWithAzureOpenAi, getConfiguredAiSource, hasAzureOpenAiConfig } from "./aiClient.js";
-import { consumeRateLimit, json, readStringField, resolveAuthLevel, toPromptBlock } from "./shared.js";
+import { consumeRateLimit, corsPreflight, json, readStringField, resolveAuthLevel, toPromptBlock } from "./shared.js";
 
 type NotesRequest = {
   meetingText?: string;
@@ -80,6 +80,9 @@ JSONは出力しないでください。
 
 export async function generateNotes(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
   context.log("generateNotes called");
+  const preflight = corsPreflight(request);
+  if (preflight) return preflight;
+
   const limit = consumeRateLimit(request, "generateNotes");
   if (!limit.allowed) {
     return json(429, { error: { code: "RATE_LIMIT", message: "Too many requests" }, retryAfterSec: limit.retryAfterSec }, request);
@@ -160,7 +163,7 @@ export async function generateNotes(request: HttpRequest, context: InvocationCon
 }
 
 app.http("generateNotes", {
-  methods: ["POST"],
+  methods: ["POST", "OPTIONS"],
   authLevel: resolveAuthLevel(),
   route: "generateNotes",
   handler: generateNotes

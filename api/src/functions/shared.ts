@@ -54,6 +54,11 @@ export function json(status: number, body: unknown, request?: HttpRequest): Http
   };
 }
 
+export function corsPreflight(request: HttpRequest): HttpResponseInit | null {
+  if (request.method.toUpperCase() !== "OPTIONS") return null;
+  return json(204, {}, request);
+}
+
 type RateWindow = { startMs: number; count: number };
 const RATE_BUCKET = new Map<string, RateWindow>();
 const RATE_WINDOW_MS = Number(process.env.MW_RATE_WINDOW_MS ?? 60_000);
