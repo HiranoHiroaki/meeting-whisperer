@@ -1,0 +1,670 @@
+{
+  "id": "sample-02-management",
+  "category": "経営",
+  "meeting_title": "FY26 事業戦略レビュー 会議ログ",
+  "source_file": "doc/samples/sample-02-management.md",
+  "clean_file": "doc/samples/scripted-clean/sample-02-management-clean.md",
+  "line_interval_ms": 2200,
+  "max_term_chips": 5,
+  "utterance_count": 50,
+  "removed_utterance_count": 8,
+  "expected_terms": [
+    "ARR",
+    "CAC",
+    "LTV",
+    "SMB",
+    "チャーン率",
+    "NRR",
+    "Burn Rate",
+    "Runway",
+    "Azure OpenAI",
+    "Inference cost",
+    "RAG",
+    "Fabric",
+    "GA",
+    "Preview",
+    "Entra ID",
+    "SSO",
+    "PoC",
+    "Decision Maker",
+    "Champion",
+    "KPI",
+    "MRR",
+    "Retention",
+    "Upsell",
+    "Enterprise",
+    "HR",
+    "AKS"
+  ],
+  "expected_weak_contexts": [
+    "SaaS経営指標",
+    "AI推論コスト",
+    "Enterprise営業",
+    "Microsoft ecosystem",
+    "Retention戦略",
+    "PoC営業構造"
+  ],
+  "events": [
+    {
+      "at_ms": 0,
+      "type": "line",
+      "index": 1,
+      "speaker": "黒田",
+      "text": "とりあえずQ3時点でARRは想定より伸びてます。\nただCACが若干悪化してるので、LTVとのバランス見ないと危ないです。",
+      "highlight_terms": [
+        "ARR",
+        "CAC",
+        "LTV"
+      ]
+    },
+    {
+      "at_ms": 450,
+      "type": "term_chip",
+      "terms": [
+        "ARR",
+        "CAC",
+        "LTV"
+      ]
+    },
+    {
+      "at_ms": 2200,
+      "type": "line",
+      "index": 2,
+      "speaker": "石井",
+      "text": "広告CPAかなり上がってますよね。\n特にSMB向け獲得。",
+      "highlight_terms": [
+        "SMB"
+      ]
+    },
+    {
+      "at_ms": 2650,
+      "type": "term_chip",
+      "terms": [
+        "SMB"
+      ]
+    },
+    {
+      "at_ms": 4400,
+      "type": "line",
+      "index": 3,
+      "speaker": "長谷川",
+      "text": "その代わりチャーン率は改善してます。\nオンボーディング施策かなり効いてる。",
+      "highlight_terms": [
+        "チャーン率"
+      ]
+    },
+    {
+      "at_ms": 4850,
+      "type": "term_chip",
+      "terms": [
+        "チャーン率"
+      ]
+    },
+    {
+      "at_ms": 6600,
+      "type": "line",
+      "index": 4,
+      "speaker": "黒田",
+      "text": "NRRどうでしたっけ？",
+      "highlight_terms": [
+        "NRR"
+      ]
+    },
+    {
+      "at_ms": 7050,
+      "type": "term_chip",
+      "terms": [
+        "NRR"
+      ]
+    },
+    {
+      "at_ms": 8800,
+      "type": "line",
+      "index": 5,
+      "speaker": "石井",
+      "text": "現状112%です。\nただEnterprise側がかなり牽引してるので、Mid-market単体で見るとそこまで強くないです。",
+      "highlight_terms": [
+        "Enterprise"
+      ]
+    },
+    {
+      "at_ms": 9250,
+      "type": "term_chip",
+      "terms": [
+        "Enterprise"
+      ]
+    },
+    {
+      "at_ms": 11000,
+      "type": "line",
+      "index": 6,
+      "speaker": "高田",
+      "text": "Burn Rateはまだ許容範囲？",
+      "highlight_terms": [
+        "Burn Rate"
+      ]
+    },
+    {
+      "at_ms": 11450,
+      "type": "term_chip",
+      "terms": [
+        "Burn Rate"
+      ]
+    },
+    {
+      "at_ms": 13200,
+      "type": "line",
+      "index": 7,
+      "speaker": "石井",
+      "text": "現状Runway的には18ヶ月。\nただAI推論コスト想定以上です。",
+      "highlight_terms": [
+        "Runway"
+      ]
+    },
+    {
+      "at_ms": 13650,
+      "type": "term_chip",
+      "terms": [
+        "Runway"
+      ]
+    },
+    {
+      "at_ms": 15400,
+      "type": "line",
+      "index": 8,
+      "speaker": "黒田",
+      "text": "Azure OpenAI側？",
+      "highlight_terms": [
+        "Azure OpenAI"
+      ]
+    },
+    {
+      "at_ms": 15850,
+      "type": "term_chip",
+      "terms": [
+        "Azure OpenAI"
+      ]
+    },
+    {
+      "at_ms": 17600,
+      "type": "line",
+      "index": 9,
+      "speaker": "石井",
+      "text": "はい。\nInference costが結構重いです。\nRAGの再検索頻度が高くて。",
+      "highlight_terms": [
+        "Inference cost",
+        "RAG"
+      ]
+    },
+    {
+      "at_ms": 18050,
+      "type": "term_chip",
+      "terms": [
+        "Inference cost",
+        "RAG"
+      ]
+    },
+    {
+      "at_ms": 19800,
+      "type": "line",
+      "index": 10,
+      "speaker": "長谷川",
+      "text": "でもあそこ削るとUX落ちません？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 22000,
+      "type": "line",
+      "index": 11,
+      "speaker": "黒田",
+      "text": "いや、Retention落ちる方がまずい。\n今一番重要なの継続率なので。",
+      "highlight_terms": [
+        "Retention"
+      ]
+    },
+    {
+      "at_ms": 22450,
+      "type": "term_chip",
+      "terms": [
+        "Retention"
+      ]
+    },
+    {
+      "at_ms": 24200,
+      "type": "line",
+      "index": 12,
+      "speaker": "高田",
+      "text": "ところでFabric連携っていつGA予定なんでしたっけ？",
+      "highlight_terms": [
+        "Fabric",
+        "GA"
+      ]
+    },
+    {
+      "at_ms": 24650,
+      "type": "term_chip",
+      "terms": [
+        "Fabric",
+        "GA"
+      ]
+    },
+    {
+      "at_ms": 26400,
+      "type": "line",
+      "index": 13,
+      "speaker": "石井",
+      "text": "たしかFY26 H2想定だったと思います。\nまだPreviewです。",
+      "highlight_terms": [
+        "Preview"
+      ]
+    },
+    {
+      "at_ms": 26850,
+      "type": "term_chip",
+      "terms": [
+        "Preview"
+      ]
+    },
+    {
+      "at_ms": 28600,
+      "type": "line",
+      "index": 14,
+      "speaker": "黒田",
+      "text": "そこGAしないと大手導入止まりませんよね。",
+      "highlight_terms": [
+        "GA"
+      ]
+    },
+    {
+      "at_ms": 29050,
+      "type": "term_chip",
+      "terms": [
+        "GA"
+      ]
+    },
+    {
+      "at_ms": 30800,
+      "type": "line",
+      "index": 15,
+      "speaker": "長谷川",
+      "text": "特に金融系。\nガバナンス周りかなり厳しいので。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 33000,
+      "type": "line",
+      "index": 16,
+      "speaker": "石井",
+      "text": "あとEntra ID連携必須って言われるケース増えてます。",
+      "highlight_terms": [
+        "Entra ID"
+      ]
+    },
+    {
+      "at_ms": 33450,
+      "type": "term_chip",
+      "terms": [
+        "Entra ID"
+      ]
+    },
+    {
+      "at_ms": 35200,
+      "type": "line",
+      "index": 17,
+      "speaker": "高田",
+      "text": "SSOなしだと通らない？",
+      "highlight_terms": [
+        "SSO"
+      ]
+    },
+    {
+      "at_ms": 35650,
+      "type": "term_chip",
+      "terms": [
+        "SSO"
+      ]
+    },
+    {
+      "at_ms": 37400,
+      "type": "line",
+      "index": 18,
+      "speaker": "石井",
+      "text": "最近ほぼ無理ですね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 39600,
+      "type": "line",
+      "index": 19,
+      "speaker": "黒田",
+      "text": "代理店経由案件どうなってます？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 41800,
+      "type": "line",
+      "index": 20,
+      "speaker": "長谷川",
+      "text": "今月2件PoC入ってます。\nただ片方、Decision Makerまだ見えてないです。",
+      "highlight_terms": [
+        "PoC",
+        "Decision Maker"
+      ]
+    },
+    {
+      "at_ms": 42250,
+      "type": "term_chip",
+      "terms": [
+        "PoC",
+        "Decision Maker"
+      ]
+    },
+    {
+      "at_ms": 44000,
+      "type": "line",
+      "index": 21,
+      "speaker": "石井",
+      "text": "Championはいるんですけどね。",
+      "highlight_terms": [
+        "Champion"
+      ]
+    },
+    {
+      "at_ms": 44450,
+      "type": "term_chip",
+      "terms": [
+        "Champion"
+      ]
+    },
+    {
+      "at_ms": 46200,
+      "type": "line",
+      "index": 22,
+      "speaker": "黒田",
+      "text": "それ一番危ないやつだ…。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 48400,
+      "type": "line",
+      "index": 23,
+      "speaker": "高田",
+      "text": "ちなみに今期KPIって結局何優先なんでしたっけ？",
+      "highlight_terms": [
+        "KPI"
+      ]
+    },
+    {
+      "at_ms": 48850,
+      "type": "term_chip",
+      "terms": [
+        "KPI"
+      ]
+    },
+    {
+      "at_ms": 50600,
+      "type": "line",
+      "index": 24,
+      "speaker": "黒田",
+      "text": "MRRよりRetention。\n新規獲得競争かなりレッドオーシャン化してるので。",
+      "highlight_terms": [
+        "MRR",
+        "Retention"
+      ]
+    },
+    {
+      "at_ms": 51050,
+      "type": "term_chip",
+      "terms": [
+        "MRR",
+        "Retention"
+      ]
+    },
+    {
+      "at_ms": 52800,
+      "type": "line",
+      "index": 25,
+      "speaker": "長谷川",
+      "text": "とはいえPL的には新規売上も欲しいですよね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 55000,
+      "type": "line",
+      "index": 26,
+      "speaker": "高田",
+      "text": "あー、Copilot文脈に乗せる感じか。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 57200,
+      "type": "line",
+      "index": 27,
+      "speaker": "黒田",
+      "text": "そう。\n単体AIツールだと差別化難しいので。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 59400,
+      "type": "line",
+      "index": 28,
+      "speaker": "長谷川",
+      "text": "あと最近「AI導入したいけど社員が使いこなせない」相談かなり増えてます。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 61600,
+      "type": "line",
+      "index": 29,
+      "speaker": "石井",
+      "text": "結局そこなんですよね。\nみんな知識ギャップで会議止まる。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 63800,
+      "type": "line",
+      "index": 30,
+      "speaker": "高田",
+      "text": "新人教育コストも減りそうですよね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 66000,
+      "type": "line",
+      "index": 31,
+      "speaker": "長谷川",
+      "text": "ただHR評価に見えると危ない気はします。",
+      "highlight_terms": [
+        "HR"
+      ]
+    },
+    {
+      "at_ms": 66450,
+      "type": "term_chip",
+      "terms": [
+        "HR"
+      ]
+    },
+    {
+      "at_ms": 68200,
+      "type": "line",
+      "index": 32,
+      "speaker": "黒田",
+      "text": "絶対「理解力スコア化」はやらない方がいい。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 70400,
+      "type": "line",
+      "index": 33,
+      "speaker": "高田",
+      "text": "炎上する未来しか見えない。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 72600,
+      "type": "line",
+      "index": 34,
+      "speaker": "長谷川",
+      "text": "あと多分ユーザー、知らないって認めたくないですよ。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 74800,
+      "type": "line",
+      "index": 35,
+      "speaker": "石井",
+      "text": "若干ふざけてる名前の方が心理障壁下がるかなと。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 77000,
+      "type": "line",
+      "index": 36,
+      "speaker": "高田",
+      "text": "たしかに「Knowledge Gap Optimizer」より押しやすい。",
+      "highlight_terms": [
+        "GA"
+      ]
+    },
+    {
+      "at_ms": 77450,
+      "type": "term_chip",
+      "terms": [
+        "GA"
+      ]
+    },
+    {
+      "at_ms": 79200,
+      "type": "line",
+      "index": 37,
+      "speaker": "長谷川",
+      "text": "逆に親しみある。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 81400,
+      "type": "line",
+      "index": 38,
+      "speaker": "石井",
+      "text": "略語だらけ会議ログ流します。\nADR、SKU、RAG、ARR、EBITDA全部入り。",
+      "highlight_terms": [
+        "ARR",
+        "RAG"
+      ]
+    },
+    {
+      "at_ms": 81850,
+      "type": "term_chip",
+      "terms": [
+        "ARR",
+        "RAG"
+      ]
+    },
+    {
+      "at_ms": 83600,
+      "type": "line",
+      "index": 39,
+      "speaker": "高田",
+      "text": "地獄みたいな会議だな…。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 85800,
+      "type": "line",
+      "index": 40,
+      "speaker": "石井",
+      "text": "その中で：\n「わからないけど聞けない」\nを再現します。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 88000,
+      "type": "line",
+      "index": 41,
+      "speaker": "長谷川",
+      "text": "かなりリアル。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 90200,
+      "type": "line",
+      "index": 42,
+      "speaker": "黒田",
+      "text": "で、クリックした単語だけ、\n後で個人向け補足生成される？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 92400,
+      "type": "line",
+      "index": 43,
+      "speaker": "石井",
+      "text": "そうです。\n全体議事録じゃなくて、\n「自分が置いていかれた部分だけ」。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 94600,
+      "type": "line",
+      "index": 44,
+      "speaker": "高田",
+      "text": "それ結構面白いですね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 96800,
+      "type": "line",
+      "index": 45,
+      "speaker": "長谷川",
+      "text": "会議後のキャッチアップかなり楽になりそう。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 99000,
+      "type": "line",
+      "index": 46,
+      "speaker": "高田",
+      "text": "賢明。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 101200,
+      "type": "line",
+      "index": 47,
+      "speaker": "石井",
+      "text": "Azure Functions + OpenAIだけでまず成立させます。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 103400,
+      "type": "line",
+      "index": 48,
+      "speaker": "黒田",
+      "text": "その方がいい。\n今回インフラ勝負じゃないので。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 105600,
+      "type": "line",
+      "index": 49,
+      "speaker": "高田",
+      "text": "AKSやり始めたら終わる。",
+      "highlight_terms": [
+        "AKS"
+      ]
+    },
+    {
+      "at_ms": 106050,
+      "type": "term_chip",
+      "terms": [
+        "AKS"
+      ]
+    },
+    {
+      "at_ms": 107800,
+      "type": "line",
+      "index": 50,
+      "speaker": "石井",
+      "text": "完全に同意です。",
+      "highlight_terms": []
+    }
+  ]
+}

@@ -28,7 +28,7 @@ const SPEECH_REGION_STORAGE_KEY = "meeting_whisperer_speech_region";
 const SPEECH_PROVIDER_STORAGE_KEY = "meeting_whisperer_speech_provider";
 const DEBUG_STORAGE_KEY = "meeting_whisperer_debug";
 const SUPPLEMENT_STORAGE_KEY = "meeting_whisperer_supplements_v1";
-const DEFAULT_API_BASE = "http://localhost:7071/api";
+const DEFAULT_API_BASE = "https://shittaka-hpccd6d3gwehbrfb.eastus-01.azurewebsites.net/api";
 const SENSITIVE_STORAGE_KEYS = new Set([API_KEY_STORAGE_KEY, SPEECH_KEY_STORAGE_KEY]);
 
 const debug = createDebugRuntime(DEBUG_CONFIG);
@@ -521,7 +521,7 @@ async function loadSample(fileName) {
   stopPlaybackEngine();
   resetPlayback();
 
-  const path = `../doc/samples/scripted-demo/${fileName}`;
+  const path = `./doc/samples/scripted-demo/${fileName}`;
   const response = await fetch(path);
   debugLog("app", "loadSample fetch completed", { path, status: response.status, ok: response.ok });
   if (!response.ok) {

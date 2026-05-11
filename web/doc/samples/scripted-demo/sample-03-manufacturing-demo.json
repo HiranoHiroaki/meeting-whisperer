@@ -1,0 +1,577 @@
+{
+  "id": "sample-03-manufacturing",
+  "category": "製造業界",
+  "meeting_title": "東海第一工場 MES更新 定例ミーティングログ",
+  "source_file": "doc/samples/sample-03-manufacturing.md",
+  "clean_file": "doc/samples/scripted-clean/sample-03-manufacturing-clean.md",
+  "line_interval_ms": 2200,
+  "max_term_chips": 5,
+  "utterance_count": 43,
+  "removed_utterance_count": 8,
+  "expected_terms": [
+    "PLC",
+    "INV",
+    "MES",
+    "OEE",
+    "歩留まり",
+    "BOM",
+    "ERP",
+    "SKU",
+    "品番マスタ",
+    "SCADA",
+    "IoT Hub",
+    "Edge",
+    "Power BI",
+    "PoC",
+    "アンドン",
+    "MTBF",
+    "SAP",
+    "ロット",
+    "製番"
+  ],
+  "expected_weak_contexts": [
+    "製造業システム構成",
+    "工場監視用語",
+    "ERP/MES連携",
+    "OEE分析",
+    "Azure IoT",
+    "現場運用と管理運用の差"
+  ],
+  "events": [
+    {
+      "at_ms": 0,
+      "type": "line",
+      "index": 1,
+      "speaker": "山口",
+      "text": "昨日の夜勤帯、また3ライン側で停止出てます。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 2200,
+      "type": "line",
+      "index": 2,
+      "speaker": "木下",
+      "text": "PLCログ確認しました？\n前回と同じアラームですか？",
+      "highlight_terms": [
+        "PLC"
+      ]
+    },
+    {
+      "at_ms": 2650,
+      "type": "term_chip",
+      "terms": [
+        "PLC"
+      ]
+    },
+    {
+      "at_ms": 4400,
+      "type": "line",
+      "index": 3,
+      "speaker": "山口",
+      "text": "いや、今回はINV系じゃなくて温調側っぽいです。\nMES上だと一応設備停止扱い。",
+      "highlight_terms": [
+        "INV",
+        "MES"
+      ]
+    },
+    {
+      "at_ms": 4850,
+      "type": "term_chip",
+      "terms": [
+        "INV",
+        "MES"
+      ]
+    },
+    {
+      "at_ms": 6600,
+      "type": "line",
+      "index": 4,
+      "speaker": "中村",
+      "text": "OEEかなり落ちますねそれ…。",
+      "highlight_terms": [
+        "OEE"
+      ]
+    },
+    {
+      "at_ms": 7050,
+      "type": "term_chip",
+      "terms": [
+        "OEE"
+      ]
+    },
+    {
+      "at_ms": 8800,
+      "type": "line",
+      "index": 5,
+      "speaker": "伊藤",
+      "text": "今月歩留まりも悪化してるので、停止増えるとかなりまずいです。",
+      "highlight_terms": [
+        "歩留まり"
+      ]
+    },
+    {
+      "at_ms": 9250,
+      "type": "term_chip",
+      "terms": [
+        "歩留まり"
+      ]
+    },
+    {
+      "at_ms": 11000,
+      "type": "line",
+      "index": 6,
+      "speaker": "木下",
+      "text": "BOM更新タイミングずれてる件まだ直ってないんでしたっけ？",
+      "highlight_terms": [
+        "BOM"
+      ]
+    },
+    {
+      "at_ms": 11450,
+      "type": "term_chip",
+      "terms": [
+        "BOM"
+      ]
+    },
+    {
+      "at_ms": 13200,
+      "type": "line",
+      "index": 7,
+      "speaker": "中村",
+      "text": "ERP側との同期ズレですね。\n夜間バッチで一回コケると翌朝まで引きずる。",
+      "highlight_terms": [
+        "ERP"
+      ]
+    },
+    {
+      "at_ms": 13650,
+      "type": "term_chip",
+      "terms": [
+        "ERP"
+      ]
+    },
+    {
+      "at_ms": 15400,
+      "type": "line",
+      "index": 8,
+      "speaker": "山口",
+      "text": "SKU追加の影響じゃない？",
+      "highlight_terms": [
+        "SKU"
+      ]
+    },
+    {
+      "at_ms": 15850,
+      "type": "term_chip",
+      "terms": [
+        "SKU"
+      ]
+    },
+    {
+      "at_ms": 17600,
+      "type": "line",
+      "index": 9,
+      "speaker": "伊藤",
+      "text": "たぶんそれです。\n品番マスタだけ先に更新されて、MES側の製番同期遅れてる。",
+      "highlight_terms": [
+        "MES",
+        "品番マスタ",
+        "製番"
+      ]
+    },
+    {
+      "at_ms": 18050,
+      "type": "term_chip",
+      "terms": [
+        "MES",
+        "品番マスタ",
+        "製番"
+      ]
+    },
+    {
+      "at_ms": 19800,
+      "type": "line",
+      "index": 10,
+      "speaker": "木下",
+      "text": "SCADAログ残ってます？",
+      "highlight_terms": [
+        "SCADA"
+      ]
+    },
+    {
+      "at_ms": 20250,
+      "type": "term_chip",
+      "terms": [
+        "SCADA"
+      ]
+    },
+    {
+      "at_ms": 22000,
+      "type": "line",
+      "index": 11,
+      "speaker": "中村",
+      "text": "あります。\nただタグ名古くて何見てるか結構わからないです。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 24200,
+      "type": "line",
+      "index": 12,
+      "speaker": "山口",
+      "text": "あの設備だけ命名規則昔のままなんですよね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 26400,
+      "type": "line",
+      "index": 13,
+      "speaker": "伊藤",
+      "text": "あとPLCベンダー違うので、変数体系バラバラです。",
+      "highlight_terms": [
+        "PLC"
+      ]
+    },
+    {
+      "at_ms": 26850,
+      "type": "term_chip",
+      "terms": [
+        "PLC"
+      ]
+    },
+    {
+      "at_ms": 28600,
+      "type": "line",
+      "index": 14,
+      "speaker": "木下",
+      "text": "それ一番嫌なやつだ…。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 30800,
+      "type": "line",
+      "index": 15,
+      "speaker": "中村",
+      "text": "ちなみに来月から新ライン立ち上げなので、\n今のうちにIoT Hub側整理したいです。",
+      "highlight_terms": [
+        "IoT Hub"
+      ]
+    },
+    {
+      "at_ms": 31250,
+      "type": "term_chip",
+      "terms": [
+        "IoT Hub"
+      ]
+    },
+    {
+      "at_ms": 33000,
+      "type": "line",
+      "index": 16,
+      "speaker": "山口",
+      "text": "Azure側に寄せるんでしたっけ最終？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 35200,
+      "type": "line",
+      "index": 17,
+      "speaker": "中村",
+      "text": "一応その方向です。\nただEdge側残す案もまだあります。",
+      "highlight_terms": [
+        "Edge"
+      ]
+    },
+    {
+      "at_ms": 35650,
+      "type": "term_chip",
+      "terms": [
+        "Edge"
+      ]
+    },
+    {
+      "at_ms": 37400,
+      "type": "line",
+      "index": 18,
+      "speaker": "伊藤",
+      "text": "クラウド全部寄せると遅延怖くないです？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 39600,
+      "type": "line",
+      "index": 19,
+      "speaker": "木下",
+      "text": "リアルタイム制御は無理ですね。\n監視と分析だけAzure。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 41800,
+      "type": "line",
+      "index": 20,
+      "speaker": "山口",
+      "text": "Power BI連携って今どうなってました？",
+      "highlight_terms": [
+        "Power BI"
+      ]
+    },
+    {
+      "at_ms": 42250,
+      "type": "term_chip",
+      "terms": [
+        "Power BI"
+      ]
+    },
+    {
+      "at_ms": 44000,
+      "type": "line",
+      "index": 21,
+      "speaker": "中村",
+      "text": "PoC段階です。\nOEE可視化だけ先にやってます。",
+      "highlight_terms": [
+        "OEE",
+        "PoC"
+      ]
+    },
+    {
+      "at_ms": 44450,
+      "type": "term_chip",
+      "terms": [
+        "OEE",
+        "PoC"
+      ]
+    },
+    {
+      "at_ms": 46200,
+      "type": "line",
+      "index": 22,
+      "speaker": "伊藤",
+      "text": "でも現場側、\nダッシュボード増えても誰も見ない問題ありますよね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 48400,
+      "type": "line",
+      "index": 23,
+      "speaker": "木下",
+      "text": "結局異常通知しか見ない。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 50600,
+      "type": "line",
+      "index": 24,
+      "speaker": "山口",
+      "text": "あとアンドンとの役割被ってません？",
+      "highlight_terms": [
+        "アンドン"
+      ]
+    },
+    {
+      "at_ms": 51050,
+      "type": "term_chip",
+      "terms": [
+        "アンドン"
+      ]
+    },
+    {
+      "at_ms": 52800,
+      "type": "line",
+      "index": 25,
+      "speaker": "中村",
+      "text": "そこ結構あります。\n現場は「今止まってるか」だけ知りたい。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 55000,
+      "type": "line",
+      "index": 26,
+      "speaker": "伊藤",
+      "text": "逆に管理側は稼働率見たい。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 57200,
+      "type": "line",
+      "index": 27,
+      "speaker": "木下",
+      "text": "保全部門はMTBFしか見てないし。",
+      "highlight_terms": [
+        "MTBF"
+      ]
+    },
+    {
+      "at_ms": 57650,
+      "type": "term_chip",
+      "terms": [
+        "MTBF"
+      ]
+    },
+    {
+      "at_ms": 59400,
+      "type": "line",
+      "index": 28,
+      "speaker": "山口",
+      "text": "会話が全員別方向なんだよな…。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 61600,
+      "type": "line",
+      "index": 29,
+      "speaker": "伊藤",
+      "text": "絶対略語多いですもんね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 63800,
+      "type": "line",
+      "index": 30,
+      "speaker": "木下",
+      "text": "新人、\nOEEとMESとSCADAの違いすら最初意味不明だし。",
+      "highlight_terms": [
+        "MES",
+        "OEE",
+        "SCADA"
+      ]
+    },
+    {
+      "at_ms": 64250,
+      "type": "term_chip",
+      "terms": [
+        "MES",
+        "OEE",
+        "SCADA"
+      ]
+    },
+    {
+      "at_ms": 66000,
+      "type": "line",
+      "index": 31,
+      "speaker": "山口",
+      "text": "しかも誰も説明しない。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 68200,
+      "type": "line",
+      "index": 32,
+      "speaker": "中村",
+      "text": "「前提知識として知ってるよね」\nで会議進むんですよね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 70400,
+      "type": "line",
+      "index": 33,
+      "speaker": "伊藤",
+      "text": "SAPとかERPとか普通に飛び交うし。",
+      "highlight_terms": [
+        "ERP",
+        "SAP"
+      ]
+    },
+    {
+      "at_ms": 70850,
+      "type": "term_chip",
+      "terms": [
+        "ERP",
+        "SAP"
+      ]
+    },
+    {
+      "at_ms": 72600,
+      "type": "line",
+      "index": 34,
+      "speaker": "木下",
+      "text": "あと製番、ロット、SKU、BOM全部似たような顔してる。",
+      "highlight_terms": [
+        "BOM",
+        "SKU",
+        "ロット",
+        "製番"
+      ]
+    },
+    {
+      "at_ms": 73050,
+      "type": "term_chip",
+      "terms": [
+        "BOM",
+        "SKU",
+        "ロット",
+        "製番"
+      ]
+    },
+    {
+      "at_ms": 74800,
+      "type": "line",
+      "index": 35,
+      "speaker": "山口",
+      "text": "現場じゃ通じるけど外から来た人絶対無理。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 77000,
+      "type": "line",
+      "index": 36,
+      "speaker": "伊藤",
+      "text": "その人が最近理解した概念見れると、\n教育側かなり助かりそう。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 79200,
+      "type": "line",
+      "index": 37,
+      "speaker": "山口",
+      "text": "そこかなり慎重にやった方が良い。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 81400,
+      "type": "line",
+      "index": 38,
+      "speaker": "中村",
+      "text": "完全に補助限定ですね。\n「最近キャッチアップした用語」扱い。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 83600,
+      "type": "line",
+      "index": 39,
+      "speaker": "伊藤",
+      "text": "あとUI、\n工場系ならタブレット前提の方が良さそう。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 85800,
+      "type": "line",
+      "index": 40,
+      "speaker": "木下",
+      "text": "現場PCほぼ共用だし。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 88000,
+      "type": "line",
+      "index": 41,
+      "speaker": "木下",
+      "text": "フォークリフト通っただけで全部終わる。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 90200,
+      "type": "line",
+      "index": 42,
+      "speaker": "山口",
+      "text": "たしかに。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 92400,
+      "type": "line",
+      "index": 43,
+      "speaker": "伊藤",
+      "text": "十分面白いと思います。",
+      "highlight_terms": []
+    }
+  ]
+}

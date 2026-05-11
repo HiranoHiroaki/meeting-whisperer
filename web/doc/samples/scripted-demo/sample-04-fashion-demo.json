@@ -1,0 +1,536 @@
+{
+  "id": "sample-04-fashion",
+  "category": "服飾",
+  "meeting_title": "2026SS 商品企画・生産進行 ミーティングログ",
+  "source_file": "doc/samples/sample-04-fashion.md",
+  "clean_file": "doc/samples/scripted-clean/sample-04-fashion-clean.md",
+  "line_interval_ms": 2200,
+  "max_term_chips": 5,
+  "utterance_count": 41,
+  "removed_utterance_count": 6,
+  "expected_terms": [
+    "SS",
+    "LOOK",
+    "MD",
+    "SKU",
+    "EC",
+    "POS",
+    "OEM",
+    "副資材",
+    "YKK",
+    "FOB",
+    "MOQ",
+    "LP",
+    "POP",
+    "SharePoint",
+    "Atlas",
+    "DROP",
+    "BrandAssets"
+  ],
+  "expected_weak_contexts": [
+    "アパレル生産管理",
+    "EC在庫同期",
+    "OEM構造",
+    "ブランド運営",
+    "ファッション業界略語",
+    "LOOK/MD文脈"
+  ],
+  "events": [
+    {
+      "at_ms": 0,
+      "type": "line",
+      "index": 1,
+      "speaker": "松井",
+      "text": "2026SSのLOOK、先方確認戻ってきました。\nただMD側からSKU整理もう少し細かくしたいって言われてます。",
+      "highlight_terms": [
+        "SS",
+        "LOOK",
+        "MD",
+        "SKU"
+      ]
+    },
+    {
+      "at_ms": 450,
+      "type": "term_chip",
+      "terms": [
+        "SS",
+        "LOOK",
+        "MD",
+        "SKU"
+      ]
+    },
+    {
+      "at_ms": 2200,
+      "type": "line",
+      "index": 2,
+      "speaker": "藤原",
+      "text": "カラー展開増えるんでしたっけ？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 4400,
+      "type": "line",
+      "index": 3,
+      "speaker": "松井",
+      "text": "生成り追加です。\nあとネイビー微調整。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 6600,
+      "type": "line",
+      "index": 4,
+      "speaker": "高瀬",
+      "text": "それやるとSKUかなり増えません？\nEC側の在庫同期ちょっと怖いです。",
+      "highlight_terms": [
+        "SKU",
+        "EC"
+      ]
+    },
+    {
+      "at_ms": 7050,
+      "type": "term_chip",
+      "terms": [
+        "SKU",
+        "EC"
+      ]
+    },
+    {
+      "at_ms": 8800,
+      "type": "line",
+      "index": 5,
+      "speaker": "藤原",
+      "text": "POS連携まだ夜間バッチですよね。",
+      "highlight_terms": [
+        "POS"
+      ]
+    },
+    {
+      "at_ms": 9250,
+      "type": "term_chip",
+      "terms": [
+        "POS"
+      ]
+    },
+    {
+      "at_ms": 11000,
+      "type": "line",
+      "index": 6,
+      "speaker": "高瀬",
+      "text": "そうです。\nリアルタイムじゃないので、店舗在庫ずれる可能性あります。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 13200,
+      "type": "line",
+      "index": 7,
+      "speaker": "松井",
+      "text": "あとOEM側から、\n副資材の納期ちょっと怪しいって連絡来てます。",
+      "highlight_terms": [
+        "OEM",
+        "副資材"
+      ]
+    },
+    {
+      "at_ms": 13650,
+      "type": "term_chip",
+      "terms": [
+        "OEM",
+        "副資材"
+      ]
+    },
+    {
+      "at_ms": 15400,
+      "type": "line",
+      "index": 8,
+      "speaker": "藤原",
+      "text": "ボタン？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 17600,
+      "type": "line",
+      "index": 9,
+      "speaker": "松井",
+      "text": "いやファスナー。\nYKK側遅れてるみたいです。",
+      "highlight_terms": [
+        "YKK"
+      ]
+    },
+    {
+      "at_ms": 18050,
+      "type": "term_chip",
+      "terms": [
+        "YKK"
+      ]
+    },
+    {
+      "at_ms": 19800,
+      "type": "line",
+      "index": 10,
+      "speaker": "高瀬",
+      "text": "それサンプル出し間に合います？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 22000,
+      "type": "line",
+      "index": 11,
+      "speaker": "松井",
+      "text": "展示会分はギリ。\n量産はまだ読めない。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 24200,
+      "type": "line",
+      "index": 12,
+      "speaker": "藤原",
+      "text": "FOB条件変わる可能性あります？",
+      "highlight_terms": [
+        "FOB"
+      ]
+    },
+    {
+      "at_ms": 24650,
+      "type": "term_chip",
+      "terms": [
+        "FOB"
+      ]
+    },
+    {
+      "at_ms": 26400,
+      "type": "line",
+      "index": 13,
+      "speaker": "高瀬",
+      "text": "円安続くなら普通にありそう。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 28600,
+      "type": "line",
+      "index": 14,
+      "speaker": "松井",
+      "text": "あと今回、中国工場じゃなくてベトナム側寄せる案まだ生きてます。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 30800,
+      "type": "line",
+      "index": 15,
+      "speaker": "藤原",
+      "text": "縫製ライン足りるんでしたっけ？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 33000,
+      "type": "line",
+      "index": 16,
+      "speaker": "高瀬",
+      "text": "そこ今確認中です。\nただMOQ結構高い。",
+      "highlight_terms": [
+        "MOQ"
+      ]
+    },
+    {
+      "at_ms": 33450,
+      "type": "term_chip",
+      "terms": [
+        "MOQ"
+      ]
+    },
+    {
+      "at_ms": 35200,
+      "type": "line",
+      "index": 17,
+      "speaker": "松井",
+      "text": "小ロット展開やりたいのにMOQ高いのつらいな…。",
+      "highlight_terms": [
+        "MOQ"
+      ]
+    },
+    {
+      "at_ms": 35650,
+      "type": "term_chip",
+      "terms": [
+        "MOQ"
+      ]
+    },
+    {
+      "at_ms": 37400,
+      "type": "line",
+      "index": 18,
+      "speaker": "藤原",
+      "text": "あとMD会議で言われたんですけど、\n「世界観統一」って結局どこまでやるんでしたっけ。",
+      "highlight_terms": [
+        "MD"
+      ]
+    },
+    {
+      "at_ms": 37850,
+      "type": "term_chip",
+      "terms": [
+        "MD"
+      ]
+    },
+    {
+      "at_ms": 39600,
+      "type": "line",
+      "index": 19,
+      "speaker": "高瀬",
+      "text": "LOOKBOOK寄せる感じですか？",
+      "highlight_terms": [
+        "LOOK"
+      ]
+    },
+    {
+      "at_ms": 40050,
+      "type": "term_chip",
+      "terms": [
+        "LOOK"
+      ]
+    },
+    {
+      "at_ms": 41800,
+      "type": "line",
+      "index": 20,
+      "speaker": "松井",
+      "text": "いやEC含めて。\nLP、店舗POP、SNS全部。",
+      "highlight_terms": [
+        "EC",
+        "LP",
+        "POP"
+      ]
+    },
+    {
+      "at_ms": 42250,
+      "type": "term_chip",
+      "terms": [
+        "EC",
+        "LP",
+        "POP"
+      ]
+    },
+    {
+      "at_ms": 44000,
+      "type": "line",
+      "index": 21,
+      "speaker": "藤原",
+      "text": "その話、\nブランドガイドライン最新版どこでしたっけ？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 46200,
+      "type": "line",
+      "index": 22,
+      "speaker": "高瀬",
+      "text": "SharePointのBrandAssets配下だった気がします。",
+      "highlight_terms": [
+        "SS",
+        "SharePoint",
+        "BrandAssets"
+      ]
+    },
+    {
+      "at_ms": 46650,
+      "type": "term_chip",
+      "terms": [
+        "SS",
+        "SharePoint",
+        "BrandAssets"
+      ]
+    },
+    {
+      "at_ms": 48400,
+      "type": "line",
+      "index": 23,
+      "speaker": "松井",
+      "text": "あー例のAtlasフォルダ？",
+      "highlight_terms": [
+        "Atlas"
+      ]
+    },
+    {
+      "at_ms": 48850,
+      "type": "term_chip",
+      "terms": [
+        "Atlas"
+      ]
+    },
+    {
+      "at_ms": 50600,
+      "type": "line",
+      "index": 24,
+      "speaker": "藤原",
+      "text": "たぶんです。\nでも最新版どれかわからない。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 52800,
+      "type": "line",
+      "index": 25,
+      "speaker": "高瀬",
+      "text": "毎回フォルダ構造変わるんですよね…。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 55000,
+      "type": "line",
+      "index": 26,
+      "speaker": "藤原",
+      "text": "確かに略語多い。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 57200,
+      "type": "line",
+      "index": 27,
+      "speaker": "高瀬",
+      "text": "MD、OEM、FOB、MOQ、\n普通に外部の人意味わからないと思う。",
+      "highlight_terms": [
+        "MD",
+        "OEM",
+        "FOB",
+        "MOQ"
+      ]
+    },
+    {
+      "at_ms": 57650,
+      "type": "term_chip",
+      "terms": [
+        "MD",
+        "OEM",
+        "FOB",
+        "MOQ"
+      ]
+    },
+    {
+      "at_ms": 59400,
+      "type": "line",
+      "index": 28,
+      "speaker": "松井",
+      "text": "しかも会議スピード速いから、\n聞き返せない。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 61600,
+      "type": "line",
+      "index": 29,
+      "speaker": "藤原",
+      "text": "「なんとなくわかった顔」\nで進みがち。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 63800,
+      "type": "line",
+      "index": 30,
+      "speaker": "高瀬",
+      "text": "新人絶対死ぬ。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 66000,
+      "type": "line",
+      "index": 31,
+      "speaker": "松井",
+      "text": "あと服飾って、\n英語っぽい単語多いけど意味業界独特ですよね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 68200,
+      "type": "line",
+      "index": 32,
+      "speaker": "藤原",
+      "text": "LOOKとか普通の意味と違うし。",
+      "highlight_terms": [
+        "LOOK"
+      ]
+    },
+    {
+      "at_ms": 68650,
+      "type": "term_chip",
+      "terms": [
+        "LOOK"
+      ]
+    },
+    {
+      "at_ms": 70400,
+      "type": "line",
+      "index": 33,
+      "speaker": "高瀬",
+      "text": "DROPとかも。",
+      "highlight_terms": [
+        "DROP"
+      ]
+    },
+    {
+      "at_ms": 70850,
+      "type": "term_chip",
+      "terms": [
+        "DROP"
+      ]
+    },
+    {
+      "at_ms": 72600,
+      "type": "line",
+      "index": 34,
+      "speaker": "藤原",
+      "text": "最近理解した概念一覧あると、\n途中参加メンバー助かりそう。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 74800,
+      "type": "line",
+      "index": 35,
+      "speaker": "高瀬",
+      "text": "でも「理解度管理」に見えると嫌ですね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 77000,
+      "type": "line",
+      "index": 36,
+      "speaker": "松井",
+      "text": "そこかなり注意したいです。\n補助用途限定。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 79200,
+      "type": "line",
+      "index": 37,
+      "speaker": "藤原",
+      "text": "「最近キャッチアップした用語」\nくらいなら自然。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 81400,
+      "type": "line",
+      "index": 38,
+      "speaker": "藤原",
+      "text": "それ正解だと思います。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 83600,
+      "type": "line",
+      "index": 39,
+      "speaker": "藤原",
+      "text": "十分面白い。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 85800,
+      "type": "line",
+      "index": 40,
+      "speaker": "高瀬",
+      "text": "アパレル、\n会議の前提共有不足かなり深刻ですしね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 88000,
+      "type": "line",
+      "index": 41,
+      "speaker": "松井",
+      "text": "みんな知ってる前提で話しすぎるんだよな…。",
+      "highlight_terms": []
+    }
+  ]
+}

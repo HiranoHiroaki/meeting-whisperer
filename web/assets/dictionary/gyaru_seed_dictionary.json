@@ -1,0 +1,76 @@
+[
+  {
+    "term": "盛れる",
+    "aliases": [],
+    "category": "gyaru",
+    "short": "写真や見た目が映えること。",
+    "long": "加工やメイク込みで魅力的に見える状態。",
+    "tags": [
+      "slang"
+    ]
+  },
+  {
+    "term": "ガチ恋",
+    "aliases": [],
+    "category": "gyaru",
+    "short": "本気で恋している状態。",
+    "long": "推しや相手に強い恋愛感情を抱くこと。",
+    "tags": [
+      "culture"
+    ]
+  },
+  {
+    "term": "優勝",
+    "aliases": [],
+    "category": "gyaru",
+    "short": "最高に良い状態。",
+    "long": "食事や見た目などに対して使う賞賛表現。",
+    "tags": [
+      "slang"
+    ]
+  },
+  {
+    "term": "しごでき",
+    "aliases": [
+      "仕事できる"
+    ],
+    "category": "gyaru",
+    "short": "有能な人。",
+    "long": "仕事や対応が非常に優秀な状態。",
+    "tags": [
+      "slang"
+    ]
+  },
+  {
+    "term": "エグい",
+    "aliases": [],
+    "category": "gyaru",
+    "short": "度合いがすごい。",
+    "long": "良い意味でも悪い意味でも強烈さを表す。",
+    "tags": [
+      "slang"
+    ]
+  },
+  {
+    "term": "ワンチャン",
+    "aliases": [
+      "ワンチャンある"
+    ],
+    "category": "gyaru",
+    "short": "可能性がある。",
+    "long": "低確率でもチャンスがある状況。",
+    "tags": [
+      "slang"
+    ]
+  },
+  {
+    "term": "ぴえん",
+    "aliases": [],
+    "category": "gyaru",
+    "short": "悲しい・困った気持ち。",
+    "long": "軽めの悲しみを表現するネットスラング。",
+    "tags": [
+      "slang"
+    ]
+  }
+]

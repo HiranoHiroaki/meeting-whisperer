@@ -1,0 +1,484 @@
+{
+  "id": "sample-05-welfare-services",
+  "category": "福祉サービス",
+  "meeting_title": "地域支援センター ケース連携会議ログ",
+  "source_file": "doc/samples/sample-05-welfare-services.md",
+  "clean_file": "doc/samples/scripted-clean/sample-05-welfare-services-clean.md",
+  "line_interval_ms": 2200,
+  "max_term_chips": 5,
+  "utterance_count": 39,
+  "removed_utterance_count": 9,
+  "expected_terms": [
+    "モニタリング",
+    "ADL",
+    "デイ利用",
+    "区分認定",
+    "サ責",
+    "個別支援計画",
+    "移送支援",
+    "ヘルパー",
+    "居宅",
+    "ショート利用",
+    "レスパイト",
+    "BCP",
+    "福祉タクシー",
+    "多職種連携",
+    "アセスメント"
+  ],
+  "expected_weak_contexts": [
+    "福祉制度",
+    "介護サービス構造",
+    "区分認定",
+    "多職種連携",
+    "制度改正",
+    "福祉業界略語"
+  ],
+  "events": [
+    {
+      "at_ms": 0,
+      "type": "line",
+      "index": 1,
+      "speaker": "井上",
+      "text": "田村さんのモニタリング結果、一旦共有します。\n前回よりADL少し落ちてます。",
+      "highlight_terms": [
+        "モニタリング",
+        "ADL"
+      ]
+    },
+    {
+      "at_ms": 450,
+      "type": "term_chip",
+      "terms": [
+        "モニタリング",
+        "ADL"
+      ]
+    },
+    {
+      "at_ms": 2200,
+      "type": "line",
+      "index": 2,
+      "speaker": "斉藤",
+      "text": "食事ですか？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 4400,
+      "type": "line",
+      "index": 3,
+      "speaker": "井上",
+      "text": "いや移動面ですね。\n最近デイ利用後かなり疲労出てるみたいで。",
+      "highlight_terms": [
+        "デイ利用"
+      ]
+    },
+    {
+      "at_ms": 4850,
+      "type": "term_chip",
+      "terms": [
+        "デイ利用"
+      ]
+    },
+    {
+      "at_ms": 6600,
+      "type": "line",
+      "index": 4,
+      "speaker": "川村",
+      "text": "区分認定更新って来月でしたっけ？",
+      "highlight_terms": [
+        "区分認定"
+      ]
+    },
+    {
+      "at_ms": 7050,
+      "type": "term_chip",
+      "terms": [
+        "区分認定"
+      ]
+    },
+    {
+      "at_ms": 8800,
+      "type": "line",
+      "index": 5,
+      "speaker": "井上",
+      "text": "そうです。\n今のところ区分3維持見込み。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 11000,
+      "type": "line",
+      "index": 6,
+      "speaker": "中島",
+      "text": "サ責側には共有済み？",
+      "highlight_terms": [
+        "サ責"
+      ]
+    },
+    {
+      "at_ms": 11450,
+      "type": "term_chip",
+      "terms": [
+        "サ責"
+      ]
+    },
+    {
+      "at_ms": 13200,
+      "type": "line",
+      "index": 7,
+      "speaker": "井上",
+      "text": "まだです。\n今日この後ケース記録まとめます。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 15400,
+      "type": "line",
+      "index": 8,
+      "speaker": "斉藤",
+      "text": "個別支援計画、\n移送支援増やす方向で見直します？",
+      "highlight_terms": [
+        "個別支援計画",
+        "移送支援"
+      ]
+    },
+    {
+      "at_ms": 15850,
+      "type": "term_chip",
+      "terms": [
+        "個別支援計画",
+        "移送支援"
+      ]
+    },
+    {
+      "at_ms": 17600,
+      "type": "line",
+      "index": 9,
+      "speaker": "川村",
+      "text": "ただヘルパー枠かなり厳しいですよね。",
+      "highlight_terms": [
+        "ヘルパー"
+      ]
+    },
+    {
+      "at_ms": 18050,
+      "type": "term_chip",
+      "terms": [
+        "ヘルパー"
+      ]
+    },
+    {
+      "at_ms": 19800,
+      "type": "line",
+      "index": 10,
+      "speaker": "中島",
+      "text": "今月、\n居宅側かなり埋まってます。",
+      "highlight_terms": [
+        "居宅"
+      ]
+    },
+    {
+      "at_ms": 20250,
+      "type": "term_chip",
+      "terms": [
+        "居宅"
+      ]
+    },
+    {
+      "at_ms": 22000,
+      "type": "line",
+      "index": 11,
+      "speaker": "井上",
+      "text": "あとご家族、\nショート利用ちょっと抵抗感あるみたいです。",
+      "highlight_terms": [
+        "ショート利用"
+      ]
+    },
+    {
+      "at_ms": 22450,
+      "type": "term_chip",
+      "terms": [
+        "ショート利用"
+      ]
+    },
+    {
+      "at_ms": 24200,
+      "type": "line",
+      "index": 12,
+      "speaker": "斉藤",
+      "text": "レスパイト必要そうですけどね…。",
+      "highlight_terms": [
+        "レスパイト"
+      ]
+    },
+    {
+      "at_ms": 24650,
+      "type": "term_chip",
+      "terms": [
+        "レスパイト"
+      ]
+    },
+    {
+      "at_ms": 26400,
+      "type": "line",
+      "index": 13,
+      "speaker": "川村",
+      "text": "前回もその話出ましたよね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 28600,
+      "type": "line",
+      "index": 14,
+      "speaker": "中島",
+      "text": "BCP更新時にも、\n介護者負担リスクかなり上位でした。",
+      "highlight_terms": [
+        "BCP"
+      ]
+    },
+    {
+      "at_ms": 29050,
+      "type": "term_chip",
+      "terms": [
+        "BCP"
+      ]
+    },
+    {
+      "at_ms": 30800,
+      "type": "line",
+      "index": 15,
+      "speaker": "井上",
+      "text": "あと今回、\n福祉タクシー利用条件変わった件共有されてましたっけ？",
+      "highlight_terms": [
+        "福祉タクシー"
+      ]
+    },
+    {
+      "at_ms": 31250,
+      "type": "term_chip",
+      "terms": [
+        "福祉タクシー"
+      ]
+    },
+    {
+      "at_ms": 33000,
+      "type": "line",
+      "index": 16,
+      "speaker": "斉藤",
+      "text": "まだです。\n自治体側通知昨日来たばかり。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 35200,
+      "type": "line",
+      "index": 17,
+      "speaker": "川村",
+      "text": "自己負担割合変わるんでしたっけ？",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 37400,
+      "type": "line",
+      "index": 18,
+      "speaker": "斉藤",
+      "text": "一部だけです。\nただ対象条件結構複雑。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 39600,
+      "type": "line",
+      "index": 19,
+      "speaker": "中島",
+      "text": "また制度説明地獄になりそう…。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 41800,
+      "type": "line",
+      "index": 20,
+      "speaker": "井上",
+      "text": "最近本当に略語と制度用語多すぎる。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 44000,
+      "type": "line",
+      "index": 21,
+      "speaker": "川村",
+      "text": "新人さん、\nサ責と居宅の違いすら最初わからないですよ。",
+      "highlight_terms": [
+        "サ責",
+        "居宅"
+      ]
+    },
+    {
+      "at_ms": 44450,
+      "type": "term_chip",
+      "terms": [
+        "サ責",
+        "居宅"
+      ]
+    },
+    {
+      "at_ms": 46200,
+      "type": "line",
+      "index": 22,
+      "speaker": "斉藤",
+      "text": "あとモニタリングとかアセスメントとか、\n普通の日本語っぽいから逆に意味伝わらない。",
+      "highlight_terms": [
+        "モニタリング",
+        "アセスメント"
+      ]
+    },
+    {
+      "at_ms": 46650,
+      "type": "term_chip",
+      "terms": [
+        "モニタリング",
+        "アセスメント"
+      ]
+    },
+    {
+      "at_ms": 48400,
+      "type": "line",
+      "index": 23,
+      "speaker": "井上",
+      "text": "絶対あると思います。\n会議止めたくない空気強いので。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 50600,
+      "type": "line",
+      "index": 24,
+      "speaker": "川村",
+      "text": "特に多職種連携。",
+      "highlight_terms": [
+        "多職種連携"
+      ]
+    },
+    {
+      "at_ms": 51050,
+      "type": "term_chip",
+      "terms": [
+        "多職種連携"
+      ]
+    },
+    {
+      "at_ms": 52800,
+      "type": "line",
+      "index": 25,
+      "speaker": "斉藤",
+      "text": "医療側、福祉側、行政側で、\n同じ単語でも意味微妙に違うし。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 55000,
+      "type": "line",
+      "index": 26,
+      "speaker": "中島",
+      "text": "しかも制度変更多い。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 57200,
+      "type": "line",
+      "index": 27,
+      "speaker": "斉藤",
+      "text": "「理解不足管理」みたいに見えると嫌。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 59400,
+      "type": "line",
+      "index": 28,
+      "speaker": "中島",
+      "text": "そこかなり慎重にやった方が良いです。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 61600,
+      "type": "line",
+      "index": 29,
+      "speaker": "井上",
+      "text": "完全に補助限定ですね。\n個人学習メモ扱い。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 63800,
+      "type": "line",
+      "index": 30,
+      "speaker": "斉藤",
+      "text": "興味で押すこと普通にある。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 66000,
+      "type": "line",
+      "index": 31,
+      "speaker": "中島",
+      "text": "特に制度改正系。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 68200,
+      "type": "line",
+      "index": 32,
+      "speaker": "井上",
+      "text": "今日の知ったかまとめ、\n結構便利そうなんですよね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 70400,
+      "type": "line",
+      "index": 33,
+      "speaker": "川村",
+      "text": "会議終わった後、\n「結局何わかってなかったか」\n整理できる。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 72600,
+      "type": "line",
+      "index": 34,
+      "speaker": "斉藤",
+      "text": "新人教育にも良さそう。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 74800,
+      "type": "line",
+      "index": 35,
+      "speaker": "中島",
+      "text": "でも監視ツールっぽく見えないUI必要ですね。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 77000,
+      "type": "line",
+      "index": 36,
+      "speaker": "井上",
+      "text": "名前ふざけてるくらいの方が逆に安心感あるかも。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 79200,
+      "type": "line",
+      "index": 37,
+      "speaker": "斉藤",
+      "text": "真面目すぎる名前だと逆に怖い。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 81400,
+      "type": "line",
+      "index": 38,
+      "speaker": "川村",
+      "text": "それ正解だと思います。",
+      "highlight_terms": []
+    },
+    {
+      "at_ms": 83600,
+      "type": "line",
+      "index": 39,
+      "speaker": "井上",
+      "text": "制度説明の心理負荷かなり減りそう。",
+      "highlight_terms": []
+    }
+  ]
+}

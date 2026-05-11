@@ -34,7 +34,7 @@ body {
   margin: 0;
   font-family: "Noto Sans JP", "Segoe UI", "Yu Gothic UI", sans-serif;
   color: var(--text);
-  background: var(--bg) url("../assets/images/backimage.jpg") repeat top left;
+  background: var(--bg) url("./assets/images/backimage.jpg") repeat top left;
   background-size: 450px auto;
   min-height: 100vh;
   height: 100%;
@@ -169,7 +169,7 @@ h1 {
   position: relative;
   overflow: hidden;
   border: 1px solid #d9dfeb;
-  background: url("../assets/images/soreshitteru_backimage.jpg") no-repeat center center;
+  background: url("./assets/images/soreshitteru_backimage.jpg") no-repeat center center;
   background-size: cover;
 }
 
