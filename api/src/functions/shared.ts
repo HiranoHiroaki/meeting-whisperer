@@ -17,7 +17,25 @@ function resolveAllowedOrigins(): string[] {
 function resolveCorsOriginFromRequest(request?: HttpRequest): string {
   const allowed = resolveAllowedOrigins();
   const reqOrigin = String(request?.headers.get("origin") ?? "").trim();
-  if (reqOrigin && allowed.includes(reqOrigin)) {
+  if (!reqOrigin) {
+    return allowed[0] ?? "http://localhost:5173";
+  }
+
+  if (allowed.includes(reqOrigin)) {
+    return reqOrigin;
+  }
+
+  // Allow Azure Static Web Apps default domains without manual env updates.
+  try {
+    const parsed = new URL(reqOrigin);
+    if (parsed.protocol === "https:" && parsed.hostname.endsWith(".azurestaticapps.net")) {
+      return reqOrigin;
+    }
+  } catch {
+    // ignore invalid origin
+  }
+
+  if (allowed.includes("*")) {
     return reqOrigin;
   }
   return allowed[0] ?? "http://localhost:5173";
