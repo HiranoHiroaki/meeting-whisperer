@@ -1,0 +1,1721 @@
+[
+  {
+    "term": "API",
+    "aliases": [
+      "Application Programming Interface"
+    ],
+    "category": "it",
+    "short": "ソフトウェア同士が機能やデータをやり取りするための窓口。",
+    "long": "アプリやサービスが他のシステムの機能を呼び出すための決められた接続口。認証、入力形式、戻り値などの契約が重要になる。",
+    "tags": [
+      "backend",
+      "integration"
+    ]
+  },
+  {
+    "term": "SDK",
+    "aliases": [
+      "Software Development Kit"
+    ],
+    "category": "it",
+    "short": "特定サービスや環境向けの開発キット。",
+    "long": "APIを使いやすくするライブラリ、サンプル、ツール、ドキュメントなどをまとめたもの。",
+    "tags": [
+      "development"
+    ]
+  },
+  {
+    "term": "CLI",
+    "aliases": [
+      "Command Line Interface"
+    ],
+    "category": "it",
+    "short": "コマンドで操作するインターフェース。",
+    "long": "GUIではなくターミナル上のコマンドでツールやクラウド、ビルド処理などを操作する方式。",
+    "tags": [
+      "tooling"
+    ]
+  },
+  {
+    "term": "CI/CD",
+    "aliases": [
+      "CICD",
+      "Continuous Integration",
+      "Continuous Delivery",
+      "Continuous Deployment"
+    ],
+    "category": "it",
+    "short": "ビルド・テスト・デプロイを自動化する仕組み。",
+    "long": "コード変更を継続的に統合し、テストやリリース作業を自動化して、品質とリリース速度を安定させる運用。",
+    "tags": [
+      "devops"
+    ]
+  },
+  {
+    "term": "IaC",
+    "aliases": [
+      "Infrastructure as Code"
+    ],
+    "category": "it",
+    "short": "インフラ構成をコードで管理する考え方。",
+    "long": "サーバ、ネットワーク、権限、クラウドリソースなどを手作業ではなく設定ファイルやコードで再現可能にする方式。",
+    "tags": [
+      "devops",
+      "cloud"
+    ]
+  },
+  {
+    "term": "SLA",
+    "aliases": [
+      "Service Level Agreement"
+    ],
+    "category": "it",
+    "short": "サービス品質の契約値。",
+    "long": "稼働率や応答時間など、サービス提供者が守るべき品質水準を定めた合意。",
+    "tags": [
+      "ops",
+      "business"
+    ]
+  },
+  {
+    "term": "SLO",
+    "aliases": [
+      "Service Level Objective"
+    ],
+    "category": "it",
+    "short": "サービス品質の目標値。",
+    "long": "SLAより内部運用寄りの目標。例として月間可用性99.9%やp95応答時間300ms以下など。",
+    "tags": [
+      "sre",
+      "ops"
+    ]
+  },
+  {
+    "term": "SLI",
+    "aliases": [
+      "Service Level Indicator"
+    ],
+    "category": "it",
+    "short": "サービス品質を測る指標。",
+    "long": "可用性、レイテンシ、エラー率など、SLO達成状況を判断するための実測値。",
+    "tags": [
+      "sre",
+      "ops"
+    ]
+  },
+  {
+    "term": "MTTR",
+    "aliases": [
+      "Mean Time To Recovery",
+      "Mean Time To Repair"
+    ],
+    "category": "it",
+    "short": "障害から復旧するまでの平均時間。",
+    "long": "システム障害が発生してから復旧するまでにかかる平均時間。運用品質の指標として使われる。",
+    "tags": [
+      "ops"
+    ]
+  },
+  {
+    "term": "MTBF",
+    "aliases": [
+      "Mean Time Between Failures"
+    ],
+    "category": "it",
+    "short": "故障と故障の間の平均時間。",
+    "long": "システムや機器がどれくらい安定して稼働するかを表す信頼性指標。",
+    "tags": [
+      "ops"
+    ]
+  },
+  {
+    "term": "RTO",
+    "aliases": [
+      "Recovery Time Objective"
+    ],
+    "category": "it",
+    "short": "復旧までに許容される最大時間。",
+    "long": "災害や障害発生時に、サービスをどの時間内に復旧させるべきかを示す目標。",
+    "tags": [
+      "dr",
+      "ops"
+    ]
+  },
+  {
+    "term": "RPO",
+    "aliases": [
+      "Recovery Point Objective"
+    ],
+    "category": "it",
+    "short": "失ってよいデータ量の時間基準。",
+    "long": "障害時にどの時点までのデータ復旧を保証・目標とするかを示す。例：RPO 15分なら最大15分分のデータ損失を許容。",
+    "tags": [
+      "dr",
+      "ops"
+    ]
+  },
+  {
+    "term": "DR",
+    "aliases": [
+      "Disaster Recovery"
+    ],
+    "category": "it",
+    "short": "災害・大障害から復旧するための仕組み。",
+    "long": "別リージョン、バックアップ、フェイルオーバーなどを使い、重大障害時にサービスを再開できるようにする対策。",
+    "tags": [
+      "ops",
+      "cloud"
+    ]
+  },
+  {
+    "term": "HA",
+    "aliases": [
+      "High Availability"
+    ],
+    "category": "it",
+    "short": "高可用性。止まりにくい構成。",
+    "long": "冗長化や自動切替によって、障害が起きてもサービス停止を最小化する設計。",
+    "tags": [
+      "architecture",
+      "ops"
+    ]
+  },
+  {
+    "term": "Failover",
+    "aliases": [
+      "フェイルオーバー"
+    ],
+    "category": "it",
+    "short": "障害時に予備系へ切り替えること。",
+    "long": "稼働中のサーバやサービスが落ちたとき、待機系や別リージョンへ処理を移して継続する仕組み。",
+    "tags": [
+      "ops"
+    ]
+  },
+  {
+    "term": "Rollback",
+    "aliases": [
+      "ロールバック"
+    ],
+    "category": "it",
+    "short": "変更前の状態へ戻すこと。",
+    "long": "リリースやマイグレーションで問題が起きたとき、以前の安定状態に戻す操作。",
+    "tags": [
+      "release"
+    ]
+  },
+  {
+    "term": "Blue-Green Deployment",
+    "aliases": [
+      "ブルーグリーンデプロイ"
+    ],
+    "category": "it",
+    "short": "新旧環境を切り替えてリリースする方式。",
+    "long": "本番環境と同等の新環境を用意し、問題なければトラフィックを一気に切り替えるデプロイ手法。",
+    "tags": [
+      "release",
+      "devops"
+    ]
+  },
+  {
+    "term": "Canary Release",
+    "aliases": [
+      "カナリアリリース"
+    ],
+    "category": "it",
+    "short": "一部ユーザーだけに先行リリースする方式。",
+    "long": "新機能や新バージョンを小さな割合のユーザーにだけ出し、問題がないか確認しながら段階展開する。",
+    "tags": [
+      "release"
+    ]
+  },
+  {
+    "term": "Feature Flag",
+    "aliases": [
+      "Feature Toggle",
+      "フィーチャーフラグ"
+    ],
+    "category": "it",
+    "short": "機能のON/OFFを設定で切り替える仕組み。",
+    "long": "コードをデプロイ済みにしたまま、ユーザー群や環境ごとに機能公開を制御する。",
+    "tags": [
+      "release"
+    ]
+  },
+  {
+    "term": "Observability",
+    "aliases": [
+      "オブザーバビリティ"
+    ],
+    "category": "it",
+    "short": "システム内部状態を外から把握できる性質。",
+    "long": "ログ、メトリクス、トレースなどから、障害原因や性能劣化を追跡できるようにする考え方。",
+    "tags": [
+      "ops",
+      "sre"
+    ]
+  },
+  {
+    "term": "Telemetry",
+    "aliases": [
+      "テレメトリ"
+    ],
+    "category": "it",
+    "short": "アプリやシステムから収集する動作データ。",
+    "long": "ログ、メトリクス、イベント、トレースなど、運用・分析のために送信される計測データ。",
+    "tags": [
+      "ops"
+    ]
+  },
+  {
+    "term": "Trace",
+    "aliases": [
+      "Distributed Trace",
+      "分散トレース"
+    ],
+    "category": "it",
+    "short": "処理の流れをサービス間で追跡する情報。",
+    "long": "リクエストが複数サービスをまたぐとき、どこで時間がかかったか、どこで失敗したかを追うための記録。",
+    "tags": [
+      "ops",
+      "microservices"
+    ]
+  },
+  {
+    "term": "Metric",
+    "aliases": [
+      "メトリクス"
+    ],
+    "category": "it",
+    "short": "数値で表せる監視指標。",
+    "long": "CPU使用率、メモリ、リクエスト数、エラー率、レイテンシなど、時系列で追える運用データ。",
+    "tags": [
+      "ops"
+    ]
+  },
+  {
+    "term": "Log",
+    "aliases": [
+      "ログ"
+    ],
+    "category": "it",
+    "short": "システムの動作記録。",
+    "long": "処理内容、エラー、ユーザー操作、外部通信などを時系列に記録したもの。障害調査の基本材料。",
+    "tags": [
+      "ops"
+    ]
+  },
+  {
+    "term": "Latency",
+    "aliases": [
+      "レイテンシ"
+    ],
+    "category": "it",
+    "short": "応答までの遅延時間。",
+    "long": "リクエストを送ってから結果が返るまでの時間。ユーザー体感やSLOに直結する。",
+    "tags": [
+      "performance"
+    ]
+  },
+  {
+    "term": "Throughput",
+    "aliases": [
+      "スループット"
+    ],
+    "category": "it",
+    "short": "単位時間あたりの処理量。",
+    "long": "1秒あたりのリクエスト数や転送量など、システムが処理できる量を表す。",
+    "tags": [
+      "performance"
+    ]
+  },
+  {
+    "term": "p95",
+    "aliases": [
+      "95th percentile",
+      "95パーセンタイル"
+    ],
+    "category": "it",
+    "short": "遅い方から見た上位5%を除いた境界値。",
+    "long": "応答時間などで、全体の95%がその値以下に収まることを示す指標。平均より体感遅延を見やすい。",
+    "tags": [
+      "performance",
+      "sre"
+    ]
+  },
+  {
+    "term": "Cache",
+    "aliases": [
+      "キャッシュ"
+    ],
+    "category": "it",
+    "short": "再利用のために一時保存する仕組み。",
+    "long": "毎回重い処理や通信をしないように、計算結果やデータを近い場所に保存して高速化する。",
+    "tags": [
+      "performance"
+    ]
+  },
+  {
+    "term": "CDN",
+    "aliases": [
+      "Content Delivery Network"
+    ],
+    "category": "it",
+    "short": "静的コンテンツを近い拠点から配信する仕組み。",
+    "long": "画像、JS、CSS、動画などを世界中のエッジサーバから配信し、速度改善と負荷分散を行う。",
+    "tags": [
+      "network",
+      "performance"
+    ]
+  },
+  {
+    "term": "Load Balancer",
+    "aliases": [
+      "ロードバランサ"
+    ],
+    "category": "it",
+    "short": "通信を複数サーバへ振り分ける装置やサービス。",
+    "long": "負荷分散や障害時の切り離しにより、サービスの可用性と性能を高める。",
+    "tags": [
+      "network",
+      "ops"
+    ]
+  },
+  {
+    "term": "Reverse Proxy",
+    "aliases": [
+      "リバースプロキシ"
+    ],
+    "category": "it",
+    "short": "サーバの前段で通信を受ける代理サーバ。",
+    "long": "外部からのリクエストを受け、内部のWebサーバやアプリへ転送する。TLS終端、認証、負荷分散にも使われる。",
+    "tags": [
+      "network",
+      "backend"
+    ]
+  },
+  {
+    "term": "Gateway",
+    "aliases": [
+      "ゲートウェイ"
+    ],
+    "category": "it",
+    "short": "異なるネットワークやサービス間の入口。",
+    "long": "API Gatewayのように、認証、ルーティング、レート制限、変換などを担う入口コンポーネント。",
+    "tags": [
+      "architecture"
+    ]
+  },
+  {
+    "term": "API Gateway",
+    "aliases": [
+      "APIゲートウェイ"
+    ],
+    "category": "it",
+    "short": "API群への入口をまとめる仕組み。",
+    "long": "複数サービスへのAPI呼び出しを集約し、認証、ルーティング、ログ、レート制限などを行う。",
+    "tags": [
+      "microservices",
+      "backend"
+    ]
+  },
+  {
+    "term": "Rate Limit",
+    "aliases": [
+      "レート制限"
+    ],
+    "category": "it",
+    "short": "一定時間内の利用回数を制限すること。",
+    "long": "APIやサービスを過剰利用や攻撃から守るため、ユーザーやキーごとに呼び出し回数を制限する。",
+    "tags": [
+      "api",
+      "security"
+    ]
+  },
+  {
+    "term": "Idempotency",
+    "aliases": [
+      "冪等性",
+      "べき等性"
+    ],
+    "category": "it",
+    "short": "同じ操作を何度実行しても結果が変わらない性質。",
+    "long": "決済や注文APIなどで、リトライしても二重処理にならないようにするために重要な性質。",
+    "tags": [
+      "api",
+      "backend"
+    ]
+  },
+  {
+    "term": "Webhook",
+    "aliases": [
+      "ウェブフック"
+    ],
+    "category": "it",
+    "short": "イベント発生時に外部URLへ通知する仕組み。",
+    "long": "決済完了やGit pushなどのイベントを、指定したHTTPエンドポイントへ自動通知する方式。",
+    "tags": [
+      "integration"
+    ]
+  },
+  {
+    "term": "OAuth",
+    "aliases": [
+      "OAuth 2.0"
+    ],
+    "category": "it",
+    "short": "外部サービスに権限を委譲する認可の仕組み。",
+    "long": "パスワードを渡さずに、特定範囲のアクセス権をトークンで許可するための標準的な仕組み。",
+    "tags": [
+      "auth",
+      "security"
+    ]
+  },
+  {
+    "term": "OIDC",
+    "aliases": [
+      "OpenID Connect"
+    ],
+    "category": "it",
+    "short": "OAuth 2.0を拡張したログイン認証の仕組み。",
+    "long": "ユーザーが誰かをIDトークンで確認するための標準。SSOや外部ログインでよく使われる。",
+    "tags": [
+      "auth",
+      "security"
+    ]
+  },
+  {
+    "term": "JWT",
+    "aliases": [
+      "JSON Web Token"
+    ],
+    "category": "it",
+    "short": "署名付きの認証・認可トークン形式。",
+    "long": "ユーザー情報や権限などのclaimsをJSONとして持ち、署名で改ざん検知できるトークン。",
+    "tags": [
+      "auth",
+      "security"
+    ]
+  },
+  {
+    "term": "RBAC",
+    "aliases": [
+      "Role-Based Access Control"
+    ],
+    "category": "it",
+    "short": "役割に基づいて権限を管理する方式。",
+    "long": "管理者、閲覧者、開発者などのロールに権限を紐づけ、ユーザーやグループへ割り当てるアクセス制御。",
+    "tags": [
+      "security",
+      "cloud"
+    ]
+  },
+  {
+    "term": "IAM",
+    "aliases": [
+      "Identity and Access Management"
+    ],
+    "category": "it",
+    "short": "ユーザーや権限を管理する仕組み。",
+    "long": "誰が何にアクセスできるかを管理する領域。クラウドではアカウント、ロール、ポリシー、認証情報を扱う。",
+    "tags": [
+      "security",
+      "cloud"
+    ]
+  },
+  {
+    "term": "SSO",
+    "aliases": [
+      "Single Sign-On"
+    ],
+    "category": "it",
+    "short": "一度のログインで複数サービスを使える仕組み。",
+    "long": "組織のID基盤で認証し、複数の社内外サービスへ再ログインなしでアクセスできるようにする。",
+    "tags": [
+      "auth"
+    ]
+  },
+  {
+    "term": "MFA",
+    "aliases": [
+      "Multi-Factor Authentication",
+      "2FA",
+      "二要素認証",
+      "多要素認証"
+    ],
+    "category": "it",
+    "short": "複数要素を使う認証。",
+    "long": "パスワードに加えてスマホ通知、認証アプリ、物理キーなどを使い、不正ログインを防ぐ。",
+    "tags": [
+      "security"
+    ]
+  },
+  {
+    "term": "Zero Trust",
+    "aliases": [
+      "ゼロトラスト"
+    ],
+    "category": "it",
+    "short": "最初から信頼せず毎回検証するセキュリティ思想。",
+    "long": "社内ネットワーク内だから安全とは見なさず、ユーザー、端末、権限、通信を継続的に確認する考え方。",
+    "tags": [
+      "security"
+    ]
+  },
+  {
+    "term": "Encryption",
+    "aliases": [
+      "暗号化"
+    ],
+    "category": "it",
+    "short": "データを読めない形に変換して保護すること。",
+    "long": "通信中や保存中のデータを、鍵なしでは読めない形式にして漏えいリスクを下げる。",
+    "tags": [
+      "security"
+    ]
+  },
+  {
+    "term": "TLS",
+    "aliases": [
+      "Transport Layer Security",
+      "SSL"
+    ],
+    "category": "it",
+    "short": "通信を暗号化する仕組み。",
+    "long": "HTTPSなどで使われ、通信相手の確認とデータの暗号化・改ざん検知を行う。",
+    "tags": [
+      "security",
+      "network"
+    ]
+  },
+  {
+    "term": "Secret",
+    "aliases": [
+      "シークレット"
+    ],
+    "category": "it",
+    "short": "APIキーやパスワードなどの機密値。",
+    "long": "アプリが外部サービスへ接続するためのキーや認証情報。コードやGitに直接書かず、Secret Managerや環境変数で管理する。",
+    "tags": [
+      "security",
+      "devops"
+    ]
+  },
+  {
+    "term": "Environment Variable",
+    "aliases": [
+      "環境変数",
+      "env var"
+    ],
+    "category": "it",
+    "short": "実行環境ごとの設定値。",
+    "long": "APIキー、接続先URL、モードなどをコード外から渡すための変数。ローカル、本番、検証環境で切り替える。",
+    "tags": [
+      "config"
+    ]
+  },
+  {
+    "term": "Container",
+    "aliases": [
+      "コンテナ",
+      "Docker container"
+    ],
+    "category": "it",
+    "short": "アプリと実行環境をまとめて隔離実行する単位。",
+    "long": "OS全体ではなく、必要なライブラリや設定をまとめ、どこでも同じように動かしやすくする仕組み。",
+    "tags": [
+      "infra",
+      "devops"
+    ]
+  },
+  {
+    "term": "Docker",
+    "aliases": [],
+    "category": "it",
+    "short": "コンテナを作成・実行する代表的なツール。",
+    "long": "アプリと依存関係をイメージ化し、ローカルやサーバで再現性高く実行するために使われる。",
+    "tags": [
+      "container",
+      "devops"
+    ]
+  },
+  {
+    "term": "Kubernetes",
+    "aliases": [
+      "K8s"
+    ],
+    "category": "it",
+    "short": "コンテナを多数管理するための基盤。",
+    "long": "コンテナの配置、スケーリング、再起動、ロードバランシングなどを自動化するオーケストレーションシステム。",
+    "tags": [
+      "container",
+      "infra"
+    ]
+  },
+  {
+    "term": "Serverless",
+    "aliases": [
+      "サーバーレス"
+    ],
+    "category": "it",
+    "short": "サーバ管理を意識せずコードを実行する方式。",
+    "long": "実行基盤の管理をクラウド側に任せ、関数やイベント単位で処理を動かす設計。Azure FunctionsやAWS Lambdaが代表例。",
+    "tags": [
+      "cloud"
+    ]
+  },
+  {
+    "term": "Function App",
+    "aliases": [
+      "Azure Functions App"
+    ],
+    "category": "it",
+    "short": "Azure Functionsをまとめて動かす単位。",
+    "long": "複数の関数、設定、デプロイ、スケール設定をまとめて管理するAzure上のアプリ単位。",
+    "tags": [
+      "azure",
+      "serverless"
+    ]
+  },
+  {
+    "term": "Cold Start",
+    "aliases": [
+      "コールドスタート"
+    ],
+    "category": "it",
+    "short": "サーバーレス等で初回起動が遅くなる現象。",
+    "long": "待機状態の関数やコンテナが初回リクエストで起動するため、通常より応答が遅くなること。",
+    "tags": [
+      "serverless",
+      "performance"
+    ]
+  },
+  {
+    "term": "Managed Identity",
+    "aliases": [
+      "マネージドID"
+    ],
+    "category": "it",
+    "short": "クラウドリソースに付与する管理されたID。",
+    "long": "アプリやVMがパスワードなしで他のAzureリソースへ安全にアクセスするためのID。",
+    "tags": [
+      "azure",
+      "security"
+    ]
+  },
+  {
+    "term": "Resource Group",
+    "aliases": [
+      "リソースグループ"
+    ],
+    "category": "it",
+    "short": "Azureリソースをまとめる管理単位。",
+    "long": "Function App、Storage、AIサービスなど関連リソースをまとめて管理・削除・権限設定する単位。",
+    "tags": [
+      "azure",
+      "cloud"
+    ]
+  },
+  {
+    "term": "Region",
+    "aliases": [
+      "リージョン"
+    ],
+    "category": "it",
+    "short": "クラウドの物理的な提供地域。",
+    "long": "Japan EastやEast USのようなデータセンター地域。利用可能なサービス、価格、クォータが変わることがある。",
+    "tags": [
+      "cloud"
+    ]
+  },
+  {
+    "term": "Quota",
+    "aliases": [
+      "クォータ"
+    ],
+    "category": "it",
+    "short": "利用できる上限枠。",
+    "long": "CPU、VM、AIモデルのTPMなど、サブスクリプションやリージョンごとに割り当てられる利用上限。",
+    "tags": [
+      "cloud",
+      "ops"
+    ]
+  },
+  {
+    "term": "SKU",
+    "aliases": [
+      "Stock Keeping Unit"
+    ],
+    "category": "it",
+    "short": "クラウドや製品の料金・性能プラン識別子。",
+    "long": "VMサイズやサービスプランなど、提供条件や価格が異なる選択肢を表すコード。",
+    "tags": [
+      "cloud",
+      "business"
+    ]
+  },
+  {
+    "term": "Endpoint",
+    "aliases": [
+      "エンドポイント"
+    ],
+    "category": "it",
+    "short": "APIやサービスへアクセスする接続先。",
+    "long": "URLやホスト名など、クライアントがリクエストを送る先。クラウドAIやWeb APIでよく使われる。",
+    "tags": [
+      "api",
+      "cloud"
+    ]
+  },
+  {
+    "term": "VNet",
+    "aliases": [
+      "Virtual Network",
+      "仮想ネットワーク"
+    ],
+    "category": "it",
+    "short": "クラウド上の仮想ネットワーク。",
+    "long": "Azure上でリソース同士を分離・接続するためのネットワーク境界。サブネットやNSGと組み合わせる。",
+    "tags": [
+      "azure",
+      "network"
+    ]
+  },
+  {
+    "term": "NSG",
+    "aliases": [
+      "Network Security Group"
+    ],
+    "category": "it",
+    "short": "Azureのネットワーク通信ルール。",
+    "long": "サブネットやNICに対して、許可・拒否する通信のルールを設定するセキュリティ機能。",
+    "tags": [
+      "azure",
+      "network",
+      "security"
+    ]
+  },
+  {
+    "term": "CORS",
+    "aliases": [
+      "Cross-Origin Resource Sharing"
+    ],
+    "category": "it",
+    "short": "別オリジンへのブラウザ通信許可設定。",
+    "long": "フロントエンドが別ドメインのAPIを呼ぶとき、サーバ側が許可する必要があるブラウザのセキュリティ仕組み。",
+    "tags": [
+      "frontend",
+      "security"
+    ]
+  },
+  {
+    "term": "SPA",
+    "aliases": [
+      "Single Page Application"
+    ],
+    "category": "it",
+    "short": "単一ページで画面を切り替えるWebアプリ。",
+    "long": "ブラウザ上でJavaScriptが画面遷移や状態管理を行い、必要なデータだけAPIから取得するアプリ構成。",
+    "tags": [
+      "frontend"
+    ]
+  },
+  {
+    "term": "SSR",
+    "aliases": [
+      "Server-Side Rendering"
+    ],
+    "category": "it",
+    "short": "サーバ側でHTMLを生成する描画方式。",
+    "long": "初期表示やSEOを改善するため、ブラウザではなくサーバでHTMLを生成して返す方式。",
+    "tags": [
+      "frontend",
+      "web"
+    ]
+  },
+  {
+    "term": "CSR",
+    "aliases": [
+      "Client-Side Rendering"
+    ],
+    "category": "it",
+    "short": "ブラウザ側で画面を生成する描画方式。",
+    "long": "JavaScriptがAPIからデータを取得し、ブラウザ上でHTMLを構築する方式。SPAでよく使われる。",
+    "tags": [
+      "frontend",
+      "web"
+    ]
+  },
+  {
+    "term": "REST",
+    "aliases": [
+      "REST API"
+    ],
+    "category": "it",
+    "short": "HTTPを使った代表的なAPI設計スタイル。",
+    "long": "URLでリソースを表し、GET/POST/PUT/DELETEなどのHTTPメソッドで操作するAPI設計。",
+    "tags": [
+      "api"
+    ]
+  },
+  {
+    "term": "GraphQL",
+    "aliases": [],
+    "category": "it",
+    "short": "必要なデータ構造をクライアントが指定できるAPI方式。",
+    "long": "RESTと異なり、クライアントが欲しいフィールドをクエリで指定し、過不足の少ない取得を狙う。",
+    "tags": [
+      "api"
+    ]
+  },
+  {
+    "term": "gRPC",
+    "aliases": [],
+    "category": "it",
+    "short": "高速なRPC通信フレームワーク。",
+    "long": "Protocol Buffersを使い、サービス間通信を効率よく行うための仕組み。マイクロサービスで使われることが多い。",
+    "tags": [
+      "api",
+      "microservices"
+    ]
+  },
+  {
+    "term": "RPC",
+    "aliases": [
+      "Remote Procedure Call"
+    ],
+    "category": "it",
+    "short": "離れた場所の関数を呼び出すように通信する方式。",
+    "long": "ネットワーク越しの処理を、ローカル関数呼び出しに近い形で扱う通信スタイル。",
+    "tags": [
+      "api"
+    ]
+  },
+  {
+    "term": "Microservices",
+    "aliases": [
+      "マイクロサービス"
+    ],
+    "category": "it",
+    "short": "機能ごとに小さなサービスへ分ける設計。",
+    "long": "大きなアプリを独立デプロイ可能な複数サービスに分割し、開発やスケールを柔軟にするアーキテクチャ。",
+    "tags": [
+      "architecture"
+    ]
+  },
+  {
+    "term": "Monolith",
+    "aliases": [
+      "モノリス"
+    ],
+    "category": "it",
+    "short": "機能を一つの大きなアプリとしてまとめた構成。",
+    "long": "単純で管理しやすい一方、規模が大きくなると変更影響やデプロイ単位が重くなりやすい。",
+    "tags": [
+      "architecture"
+    ]
+  },
+  {
+    "term": "Event-Driven Architecture",
+    "aliases": [
+      "EDA",
+      "イベント駆動"
+    ],
+    "category": "it",
+    "short": "イベント発生を起点に処理を進める設計。",
+    "long": "注文作成、ファイルアップロード、メッセージ到着などのイベントを起点に、非同期で処理をつなぐ構成。",
+    "tags": [
+      "architecture"
+    ]
+  },
+  {
+    "term": "Message Queue",
+    "aliases": [
+      "キュー",
+      "Queue"
+    ],
+    "category": "it",
+    "short": "処理待ちメッセージを貯める仕組み。",
+    "long": "送信側と処理側を疎結合にし、負荷平準化やリトライをしやすくするために使う。",
+    "tags": [
+      "architecture",
+      "backend"
+    ]
+  },
+  {
+    "term": "Pub/Sub",
+    "aliases": [
+      "Publish/Subscribe"
+    ],
+    "category": "it",
+    "short": "発行者と購読者を分離するメッセージ配信方式。",
+    "long": "送信者はトピックへイベントを発行し、購読者が必要なイベントを受け取る。非同期連携で使われる。",
+    "tags": [
+      "architecture"
+    ]
+  },
+  {
+    "term": "Database Migration",
+    "aliases": [
+      "DBマイグレーション",
+      "Migration"
+    ],
+    "category": "it",
+    "short": "DB構造を段階的に変更する作業。",
+    "long": "テーブル追加、カラム変更、インデックス作成などをバージョン管理しながら反映する。",
+    "tags": [
+      "database"
+    ]
+  },
+  {
+    "term": "Schema",
+    "aliases": [
+      "スキーマ"
+    ],
+    "category": "it",
+    "short": "データ構造の定義。",
+    "long": "DBテーブル、JSON、APIレスポンスなどで、どんな項目や型を持つかを定めた構造。",
+    "tags": [
+      "database",
+      "api"
+    ]
+  },
+  {
+    "term": "Index",
+    "aliases": [
+      "インデックス"
+    ],
+    "category": "it",
+    "short": "検索や並び替えを速くするDB構造。",
+    "long": "特定カラムへの検索を高速化するための仕組み。ただし書き込みや容量のコストが増える。",
+    "tags": [
+      "database",
+      "performance"
+    ]
+  },
+  {
+    "term": "Transaction",
+    "aliases": [
+      "トランザクション"
+    ],
+    "category": "it",
+    "short": "複数処理をひとまとまりに扱う仕組み。",
+    "long": "途中で失敗したら全体を取り消すなど、DB更新の整合性を守るために使う。",
+    "tags": [
+      "database"
+    ]
+  },
+  {
+    "term": "ACID",
+    "aliases": [],
+    "category": "it",
+    "short": "DBトランザクションの信頼性特性。",
+    "long": "Atomicity, Consistency, Isolation, Durabilityの略。更新処理の整合性と永続性を保証する考え方。",
+    "tags": [
+      "database"
+    ]
+  },
+  {
+    "term": "NoSQL",
+    "aliases": [],
+    "category": "it",
+    "short": "リレーショナルDB以外のデータベース総称。",
+    "long": "ドキュメントDB、キーバリュー、カラム指向、グラフDBなど。柔軟性やスケールを重視する場面で使われる。",
+    "tags": [
+      "database"
+    ]
+  },
+  {
+    "term": "ORM",
+    "aliases": [
+      "Object-Relational Mapping"
+    ],
+    "category": "it",
+    "short": "DBテーブルとオブジェクトを対応づける仕組み。",
+    "long": "SQLを直接書かず、プログラムのオブジェクト操作としてDBを扱いやすくするライブラリや手法。",
+    "tags": [
+      "database",
+      "backend"
+    ]
+  },
+  {
+    "term": "N+1 Problem",
+    "aliases": [
+      "N+1問題"
+    ],
+    "category": "it",
+    "short": "DB問い合わせが大量に増える性能問題。",
+    "long": "一覧取得後に各行ごと追加クエリを投げてしまい、データ件数に比例してクエリ数が増える問題。",
+    "tags": [
+      "database",
+      "performance"
+    ]
+  },
+  {
+    "term": "RAG",
+    "aliases": [
+      "Retrieval-Augmented Generation"
+    ],
+    "category": "it",
+    "short": "検索結果を参照しながらAIが回答する方式。",
+    "long": "社内文書やDBなどから関連情報を検索し、その内容をLLMに渡して回答させることで、根拠性を上げる構成。",
+    "tags": [
+      "ai",
+      "llm"
+    ]
+  },
+  {
+    "term": "LLM",
+    "aliases": [
+      "Large Language Model",
+      "大規模言語モデル"
+    ],
+    "category": "it",
+    "short": "大量のテキストで学習した言語AI。",
+    "long": "文章生成、要約、翻訳、分類、コード生成などを行うAIモデル。GPTやClaudeなどが代表例。",
+    "tags": [
+      "ai"
+    ]
+  },
+  {
+    "term": "Embedding",
+    "aliases": [
+      "埋め込みベクトル",
+      "Vector Embedding"
+    ],
+    "category": "it",
+    "short": "テキストなどを意味を表す数値ベクトルに変換したもの。",
+    "long": "文章同士の意味的な近さを計算するために使う。RAGや類似検索でよく使われる。",
+    "tags": [
+      "ai",
+      "search"
+    ]
+  },
+  {
+    "term": "Vector DB",
+    "aliases": [
+      "Vector Database",
+      "ベクトルDB"
+    ],
+    "category": "it",
+    "short": "ベクトル検索に特化したデータベース。",
+    "long": "Embeddingを保存し、意味的に近い文書や項目を高速に検索するためのDB。",
+    "tags": [
+      "ai",
+      "database"
+    ]
+  },
+  {
+    "term": "Prompt Engineering",
+    "aliases": [
+      "プロンプトエンジニアリング"
+    ],
+    "category": "it",
+    "short": "AIへの指示文を設計する技術。",
+    "long": "LLMから期待する出力を得るために、役割、制約、例、出力形式などを調整する。",
+    "tags": [
+      "ai"
+    ]
+  },
+  {
+    "term": "Hallucination",
+    "aliases": [
+      "ハルシネーション"
+    ],
+    "category": "it",
+    "short": "AIが事実でない内容をもっともらしく出す現象。",
+    "long": "LLMが根拠のない情報や誤った情報を自然な文章で生成してしまう問題。",
+    "tags": [
+      "ai",
+      "risk"
+    ]
+  },
+  {
+    "term": "Context Window",
+    "aliases": [
+      "コンテキストウィンドウ"
+    ],
+    "category": "it",
+    "short": "LLMが一度に扱える入力・出力の範囲。",
+    "long": "モデルが参照できるトークン量の上限。長い会話や文書では、何を入れるかの設計が重要になる。",
+    "tags": [
+      "ai",
+      "llm"
+    ]
+  },
+  {
+    "term": "Token",
+    "aliases": [
+      "トークン"
+    ],
+    "category": "it",
+    "short": "LLMが処理する文字列の単位。",
+    "long": "単語や文字の一部に分割された単位。入力・出力コストやコンテキスト上限の基準になる。",
+    "tags": [
+      "ai",
+      "llm"
+    ]
+  },
+  {
+    "term": "TPM",
+    "aliases": [
+      "Tokens Per Minute"
+    ],
+    "category": "it",
+    "short": "1分あたりに処理できるトークン上限。",
+    "long": "AI APIの利用制限やクォータで使われる指標。入力と出力を含む処理量の上限を表す。",
+    "tags": [
+      "ai",
+      "cloud"
+    ]
+  },
+  {
+    "term": "RPM",
+    "aliases": [
+      "Requests Per Minute"
+    ],
+    "category": "it",
+    "short": "1分あたりに送れるリクエスト数。",
+    "long": "APIのレート制限で使われる指標。大量アクセスや誤用を防ぐために設定される。",
+    "tags": [
+      "api",
+      "cloud"
+    ]
+  },
+  {
+    "term": "Fine-tuning",
+    "aliases": [
+      "ファインチューニング"
+    ],
+    "category": "it",
+    "short": "既存AIモデルを追加データで調整すること。",
+    "long": "特定タスクや文体、分類精度を高めるために、既存モデルへ追加学習を行う手法。",
+    "tags": [
+      "ai"
+    ]
+  },
+  {
+    "term": "Inference",
+    "aliases": [
+      "推論"
+    ],
+    "category": "it",
+    "short": "学習済みモデルを使って結果を出す処理。",
+    "long": "AIモデルへ入力を与え、分類、生成、予測などの出力を得る実行段階。",
+    "tags": [
+      "ai"
+    ]
+  },
+  {
+    "term": "Model Deployment",
+    "aliases": [
+      "モデルデプロイ"
+    ],
+    "category": "it",
+    "short": "AIモデルを使える状態に配置すること。",
+    "long": "クラウドやサーバにモデルを配置し、APIやエンドポイントから推論できるようにする作業。",
+    "tags": [
+      "ai",
+      "cloud"
+    ]
+  },
+  {
+    "term": "Agent",
+    "aliases": [
+      "AI Agent",
+      "エージェント"
+    ],
+    "category": "it",
+    "short": "目的達成のためにAIが手順やツール実行を行う仕組み。",
+    "long": "LLMが状況を判断し、検索、コード実行、API呼び出しなどのツールを使いながらタスクを進める構成。",
+    "tags": [
+      "ai"
+    ]
+  },
+  {
+    "term": "MCP",
+    "aliases": [
+      "Model Context Protocol"
+    ],
+    "category": "it",
+    "short": "AIアプリと外部ツールを接続するためのプロトコル。",
+    "long": "LLMクライアントがファイル、DB、クラウド、GitHubなどの外部機能へ共通形式でアクセスするための仕組み。",
+    "tags": [
+      "ai",
+      "tooling"
+    ]
+  },
+  {
+    "term": "ADR",
+    "aliases": [
+      "Architecture Decision Record"
+    ],
+    "category": "it",
+    "short": "設計判断と理由を記録する文書。",
+    "long": "なぜその設計にしたのかをあとから追えるように、背景、選択肢、決定、結果を短く残す記録。",
+    "tags": [
+      "architecture",
+      "documentation"
+    ]
+  },
+  {
+    "term": "Tech Debt",
+    "aliases": [
+      "Technical Debt",
+      "技術的負債"
+    ],
+    "category": "it",
+    "short": "短期都合で将来の修正コストが増えた状態。",
+    "long": "急ぎの実装、古い設計、未整理コードなどにより、後から変更や保守が重くなる問題。",
+    "tags": [
+      "engineering"
+    ]
+  },
+  {
+    "term": "Refactoring",
+    "aliases": [
+      "リファクタリング"
+    ],
+    "category": "it",
+    "short": "外部仕様を変えずに内部構造を改善すること。",
+    "long": "挙動は保ったまま、読みやすさ、保守性、責務分離、重複排除などを改善する作業。",
+    "tags": [
+      "engineering"
+    ]
+  },
+  {
+    "term": "Regression",
+    "aliases": [
+      "リグレッション",
+      "デグレ"
+    ],
+    "category": "it",
+    "short": "修正で以前動いていた機能が壊れること。",
+    "long": "新しい変更が既存挙動に悪影響を与える問題。テストや契約で防ぐ。",
+    "tags": [
+      "quality"
+    ]
+  },
+  {
+    "term": "Unit Test",
+    "aliases": [
+      "単体テスト"
+    ],
+    "category": "it",
+    "short": "小さな単位の処理を検証するテスト。",
+    "long": "関数やクラスなどを個別に確認し、期待通りの結果になるかを自動検証する。",
+    "tags": [
+      "quality"
+    ]
+  },
+  {
+    "term": "Integration Test",
+    "aliases": [
+      "結合テスト"
+    ],
+    "category": "it",
+    "short": "複数コンポーネントを組み合わせて検証するテスト。",
+    "long": "DB、API、外部サービスなどを含め、部品同士の接続が正しく動くか確認する。",
+    "tags": [
+      "quality"
+    ]
+  },
+  {
+    "term": "E2E Test",
+    "aliases": [
+      "End-to-End Test"
+    ],
+    "category": "it",
+    "short": "ユーザー操作に近い流れ全体を検証するテスト。",
+    "long": "画面操作からAPI、DB更新まで、実際の利用シナリオに沿って一連の動作を確認する。",
+    "tags": [
+      "quality"
+    ]
+  },
+  {
+    "term": "Mock",
+    "aliases": [
+      "モック"
+    ],
+    "category": "it",
+    "short": "本物の代わりに使う疑似オブジェクトや処理。",
+    "long": "外部APIやDBなどをテスト中に置き換え、挙動を制御しやすくするために使う。",
+    "tags": [
+      "quality",
+      "testing"
+    ]
+  },
+  {
+    "term": "Stub",
+    "aliases": [
+      "スタブ"
+    ],
+    "category": "it",
+    "short": "固定応答を返す簡易的な代替実装。",
+    "long": "まだ実装されていない機能や外部依存の代わりに、決まった結果を返す仮実装。",
+    "tags": [
+      "testing"
+    ]
+  },
+  {
+    "term": "Lint",
+    "aliases": [
+      "リンター"
+    ],
+    "category": "it",
+    "short": "コードの形式や問題を静的に検出する仕組み。",
+    "long": "未使用変数、フォーマット違反、危険な書き方などを実行前に検出するツール。",
+    "tags": [
+      "quality",
+      "tooling"
+    ]
+  },
+  {
+    "term": "Static Analysis",
+    "aliases": [
+      "静的解析"
+    ],
+    "category": "it",
+    "short": "コードを実行せずに問題を検出する解析。",
+    "long": "型、依存関係、脆弱性、バグの可能性などをソースコードから検出する手法。",
+    "tags": [
+      "quality",
+      "security"
+    ]
+  },
+  {
+    "term": "Dependency",
+    "aliases": [
+      "依存関係"
+    ],
+    "category": "it",
+    "short": "ソフトウェアが利用する外部ライブラリや部品。",
+    "long": "アプリが動くために必要なパッケージ、ライブラリ、サービスなど。更新や脆弱性管理が重要。",
+    "tags": [
+      "development"
+    ]
+  },
+  {
+    "term": "Semantic Versioning",
+    "aliases": [
+      "SemVer",
+      "セマンティックバージョニング"
+    ],
+    "category": "it",
+    "short": "バージョン番号に意味を持たせるルール。",
+    "long": "MAJOR.MINOR.PATCHの形式で、互換性破壊、機能追加、修正を番号から読み取れるようにする考え方。",
+    "tags": [
+      "release"
+    ]
+  },
+  {
+    "term": "Breaking Change",
+    "aliases": [
+      "破壊的変更"
+    ],
+    "category": "it",
+    "short": "既存利用者の互換性を壊す変更。",
+    "long": "API仕様、データ形式、挙動変更などにより、既存コードや運用がそのままでは動かなくなる変更。",
+    "tags": [
+      "release",
+      "api"
+    ]
+  },
+  {
+    "term": "Git",
+    "aliases": [],
+    "category": "it",
+    "short": "ソースコードの変更履歴を管理するツール。",
+    "long": "ブランチ、コミット、マージなどを使い、複数人・複数変更の履歴を管理するバージョン管理システム。",
+    "tags": [
+      "development"
+    ]
+  },
+  {
+    "term": "Pull Request",
+    "aliases": [
+      "PR",
+      "Merge Request"
+    ],
+    "category": "it",
+    "short": "コード変更をレビュー・統合するための依頼。",
+    "long": "ブランチ上の変更をmainなどへ取り込む前に、差分確認、レビュー、テストを行う仕組み。",
+    "tags": [
+      "development",
+      "git"
+    ]
+  },
+  {
+    "term": "Branch",
+    "aliases": [
+      "ブランチ"
+    ],
+    "category": "it",
+    "short": "Gitで作業を分岐するための線。",
+    "long": "本線を壊さずに機能追加や修正を進め、あとでマージするために使う。",
+    "tags": [
+      "git"
+    ]
+  },
+  {
+    "term": "Merge",
+    "aliases": [
+      "マージ"
+    ],
+    "category": "it",
+    "short": "別ブランチの変更を取り込むこと。",
+    "long": "開発ブランチの変更をmainなどへ統合する操作。競合が起きることもある。",
+    "tags": [
+      "git"
+    ]
+  },
+  {
+    "term": "Rebase",
+    "aliases": [
+      "リベース"
+    ],
+    "category": "it",
+    "short": "ブランチの土台を付け替えるGit操作。",
+    "long": "履歴を整理したり、最新のmainを自分の作業ブランチの前提にし直すために使う。",
+    "tags": [
+      "git"
+    ]
+  },
+  {
+    "term": "Conflict",
+    "aliases": [
+      "コンフリクト",
+      "Merge Conflict"
+    ],
+    "category": "it",
+    "short": "同じ箇所の変更が衝突して自動統合できない状態。",
+    "long": "複数ブランチで同じファイル・行を変更したとき、Gitがどちらを採用すべきか判断できない状態。",
+    "tags": [
+      "git"
+    ]
+  },
+  {
+    "term": "Package Manager",
+    "aliases": [
+      "パッケージマネージャ"
+    ],
+    "category": "it",
+    "short": "ライブラリの取得・更新を管理するツール。",
+    "long": "npm、pip、Gradleなど、依存ライブラリのインストール、更新、バージョン管理を行う。",
+    "tags": [
+      "development"
+    ]
+  },
+  {
+    "term": "Build",
+    "aliases": [
+      "ビルド"
+    ],
+    "category": "it",
+    "short": "ソースコードから実行可能な形を作る処理。",
+    "long": "コンパイル、バンドル、依存解決、最適化などを行い、アプリを実行・配布できる状態にする。",
+    "tags": [
+      "development"
+    ]
+  },
+  {
+    "term": "Artifact",
+    "aliases": [
+      "ビルド成果物"
+    ],
+    "category": "it",
+    "short": "ビルドや生成処理の出力物。",
+    "long": "アプリのバイナリ、zip、コンテナイメージ、静的ファイルなど、デプロイや配布に使う成果物。",
+    "tags": [
+      "release"
+    ]
+  },
+  {
+    "term": "Bundle",
+    "aliases": [
+      "バンドル"
+    ],
+    "category": "it",
+    "short": "複数ファイルをまとめた配布・実行用ファイル群。",
+    "long": "WebフロントエンドではJSやCSSをまとめて最適化する処理や成果物を指すことが多い。",
+    "tags": [
+      "frontend",
+      "build"
+    ]
+  },
+  {
+    "term": "Polyfill",
+    "aliases": [
+      "ポリフィル"
+    ],
+    "category": "it",
+    "short": "古い環境に新しい機能を補うコード。",
+    "long": "ブラウザや実行環境が未対応のAPIを、互換コードで使えるようにする仕組み。",
+    "tags": [
+      "frontend"
+    ]
+  },
+  {
+    "term": "Transpile",
+    "aliases": [
+      "トランスパイル"
+    ],
+    "category": "it",
+    "short": "ある言語や構文を別の同等コードへ変換すること。",
+    "long": "TypeScriptをJavaScriptに変換する、最新JSを古いJSへ変換するなどの処理。",
+    "tags": [
+      "build"
+    ]
+  },
+  {
+    "term": "TypeScript",
+    "aliases": [
+      "TS"
+    ],
+    "category": "it",
+    "short": "JavaScriptに型を加えた言語。",
+    "long": "静的型チェックにより、大規模開発での保守性や補完、バグ検出を改善する。",
+    "tags": [
+      "frontend",
+      "backend"
+    ]
+  },
+  {
+    "term": "Blob",
+    "aliases": [
+      "Blob Storage",
+      "Azure Blob Storage"
+    ],
+    "category": "it",
+    "short": "Azureのオブジェクトストレージを指す文脈用語。",
+    "long": "この会議文脈では主にAzure Blob Storageを指し、ファイルやログ、ドキュメントなどを保存するストレージとして使われる。",
+    "tags": [
+      "azure",
+      "storage"
+    ]
+  },
+  {
+    "term": "Entra",
+    "aliases": [
+      "Microsoft Entra",
+      "Entra ID",
+      "Azure AD"
+    ],
+    "category": "it",
+    "short": "MicrosoftのID・アクセス管理基盤。",
+    "long": "組織ユーザー認証、SSO、グループ管理、条件付きアクセスなどを担うID基盤。会議では権限設計やManaged Identity連携で登場しやすい。",
+    "tags": [
+      "azure",
+      "security",
+      "identity"
+    ]
+  },
+  {
+    "term": "EKS",
+    "aliases": [
+      "Amazon EKS",
+      "Elastic Kubernetes Service"
+    ],
+    "category": "it",
+    "short": "AWS上でKubernetesを運用するマネージドサービス。",
+    "long": "Kubernetesクラスタ運用の管理負荷を軽減するAWSサービス。会議文脈ではAzure Functions移行の比較対象として登場する。",
+    "tags": [
+      "cloud",
+      "kubernetes"
+    ]
+  },
+  {
+    "term": "Azure Functions",
+    "aliases": [
+      "Functions",
+      "Function"
+    ],
+    "category": "it",
+    "short": "Azureのサーバーレス実行基盤。",
+    "long": "イベント駆動でコードを実行するサーバーレス基盤。会議ではKubernetesの代替候補として運用コスト観点で検討されることが多い。",
+    "tags": [
+      "azure",
+      "serverless"
+    ]
+  },
+  {
+    "term": "Container Apps",
+    "aliases": [
+      "Azure Container Apps",
+      "ACA"
+    ],
+    "category": "it",
+    "short": "Azureのマネージドコンテナ実行サービス。",
+    "long": "Kubernetes運用を意識せずコンテナアプリを実行できるAzureサービス。FunctionsとAKSの中間的な選択肢として語られる。",
+    "tags": [
+      "azure",
+      "container"
+    ]
+  },
+  {
+    "term": "Event Grid",
+    "aliases": [
+      "Azure Event Grid"
+    ],
+    "category": "it",
+    "short": "Azureのイベント配信サービス。",
+    "long": "イベント発生をトリガーに複数サービスへ通知できる基盤。非同期処理や疎結合な連携設計で利用される。",
+    "tags": [
+      "azure",
+      "event"
+    ]
+  },
+  {
+    "term": "SAP",
+    "aliases": [
+      "SAP ERP"
+    ],
+    "category": "it",
+    "short": "基幹業務で使われるERP製品群。",
+    "long": "在庫、販売、購買、会計などの基幹業務データを扱うエンタープライズシステム。会議文脈では連携制限やレート制限が論点になりやすい。",
+    "tags": [
+      "enterprise",
+      "erp"
+    ]
+  },
+  {
+    "term": "Teams",
+    "aliases": [
+      "Microsoft Teams"
+    ],
+    "category": "it",
+    "short": "Microsoftのコラボレーション基盤。",
+    "long": "チャット、会議、タブアプリ、Bot連携などを提供する業務コラボレーション製品。",
+    "tags": [
+      "microsoft",
+      "collaboration"
+    ]
+  },
+  {
+    "term": "Speech",
+    "aliases": [
+      "Speech to Text",
+      "音声認識"
+    ],
+    "category": "it",
+    "short": "音声をテキスト化する処理。",
+    "long": "会議音声を文字起こしして下流処理へ渡す機能。MVPでは対象外だが将来拡張で検討される。",
+    "tags": [
+      "ai",
+      "speech"
+    ]
+  },
+  {
+    "term": "MVP",
+    "aliases": [
+      "Minimum Viable Product"
+    ],
+    "category": "it",
+    "short": "最小実用製品。",
+    "long": "価値検証に必要な最小機能だけを備えた初期版。ハッカソンでは実装範囲を絞る基準として使われる。",
+    "tags": [
+      "product",
+      "planning"
+    ]
+  }
+]

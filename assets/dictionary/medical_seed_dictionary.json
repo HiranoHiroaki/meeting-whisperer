@@ -1,0 +1,234 @@
+[
+  {
+    "term": "HbA1c",
+    "aliases": [
+      "ヘモグロビンA1c"
+    ],
+    "category": "medical",
+    "short": "過去1〜2か月の平均血糖状態を示す指標。",
+    "long": "糖尿病管理で使われる代表的な検査値。",
+    "tags": [
+      "diabetes"
+    ]
+  },
+  {
+    "term": "CRP",
+    "aliases": [
+      "C-reactive protein"
+    ],
+    "category": "medical",
+    "short": "炎症反応を示す血液検査値。",
+    "long": "感染症や炎症状態の評価で使われる。",
+    "tags": [
+      "inflammation"
+    ]
+  },
+  {
+    "term": "SpO2",
+    "aliases": [
+      "酸素飽和度"
+    ],
+    "category": "medical",
+    "short": "血液中の酸素状態を示す値。",
+    "long": "呼吸状態の把握に使われる。",
+    "tags": [
+      "respiratory"
+    ]
+  },
+  {
+    "term": "BMI",
+    "aliases": [],
+    "category": "medical",
+    "short": "体格指数。",
+    "long": "身長と体重から肥満度を示す指標。",
+    "tags": [
+      "obesity"
+    ]
+  },
+  {
+    "term": "CT",
+    "aliases": [
+      "Computed Tomography"
+    ],
+    "category": "medical",
+    "short": "断層画像を撮影する検査。",
+    "long": "X線を利用して体内断面を可視化する。",
+    "tags": [
+      "imaging"
+    ]
+  },
+  {
+    "term": "MRI",
+    "aliases": [
+      "Magnetic Resonance Imaging"
+    ],
+    "category": "medical",
+    "short": "磁気を利用した画像検査。",
+    "long": "脳や神経など軟部組織の描写に強い。",
+    "tags": [
+      "imaging"
+    ]
+  },
+  {
+    "term": "ECG",
+    "aliases": [
+      "心電図"
+    ],
+    "category": "medical",
+    "short": "心臓の電気活動を測定する検査。",
+    "long": "不整脈や虚血評価で使われる。",
+    "tags": [
+      "cardiology"
+    ]
+  },
+  {
+    "term": "NNT",
+    "aliases": [
+      "Number Needed to Treat"
+    ],
+    "category": "medical",
+    "short": "1人改善させるために必要な治療人数。",
+    "long": "治療効果評価で使われる統計指標。",
+    "tags": [
+      "statistics"
+    ]
+  },
+  {
+    "term": "ICU",
+    "aliases": [
+      "集中治療室"
+    ],
+    "category": "medical",
+    "short": "重症患者を管理する病棟。",
+    "long": "集中モニタリングと高度治療を行う。",
+    "tags": [
+      "hospital"
+    ]
+  },
+  {
+    "term": "QOL",
+    "aliases": [
+      "Quality of Life"
+    ],
+    "category": "medical",
+    "short": "生活の質。",
+    "long": "患者の日常生活満足度や快適性を示す概念。",
+    "tags": [
+      "care"
+    ]
+  },
+  {
+    "term": "Sepsis",
+    "aliases": [
+      "敗血症"
+    ],
+    "category": "medical",
+    "short": "感染による全身性重症反応。",
+    "long": "重症化すると多臓器不全につながる。",
+    "tags": [
+      "infection"
+    ]
+  },
+  {
+    "term": "COPD",
+    "aliases": [],
+    "category": "medical",
+    "short": "慢性閉塞性肺疾患。",
+    "long": "喫煙などで肺機能が低下する病気。",
+    "tags": [
+      "respiratory"
+    ]
+  },
+  {
+    "term": "DVT",
+    "aliases": [
+      "Deep Vein Thrombosis"
+    ],
+    "category": "medical",
+    "short": "深部静脈血栓症。",
+    "long": "脚などの静脈に血栓ができる状態。",
+    "tags": [
+      "vascular"
+    ]
+  },
+  {
+    "term": "PE",
+    "aliases": [
+      "Pulmonary Embolism"
+    ],
+    "category": "medical",
+    "short": "肺塞栓症。",
+    "long": "血栓が肺動脈に詰まる病態。",
+    "tags": [
+      "vascular"
+    ]
+  },
+  {
+    "term": "eGFR",
+    "aliases": [],
+    "category": "medical",
+    "short": "腎機能推定値。",
+    "long": "腎臓のろ過能力を示す指標。",
+    "tags": [
+      "renal"
+    ]
+  },
+  {
+    "term": "ARDS",
+    "aliases": [],
+    "category": "medical",
+    "short": "急性呼吸窮迫症候群。",
+    "long": "重度の肺障害による呼吸不全。",
+    "tags": [
+      "respiratory"
+    ]
+  },
+  {
+    "term": "Triage",
+    "aliases": [
+      "トリアージ"
+    ],
+    "category": "medical",
+    "short": "重症度による患者優先分類。",
+    "long": "災害医療などで優先順位を決める。",
+    "tags": [
+      "emergency"
+    ]
+  },
+  {
+    "term": "Palliative Care",
+    "aliases": [
+      "緩和ケア"
+    ],
+    "category": "medical",
+    "short": "苦痛軽減を目的としたケア。",
+    "long": "終末期だけでなく治療初期から行われる。",
+    "tags": [
+      "care"
+    ]
+  },
+  {
+    "term": "Anaphylaxis",
+    "aliases": [
+      "アナフィラキシー"
+    ],
+    "category": "medical",
+    "short": "重度アレルギー反応。",
+    "long": "急激な血圧低下や呼吸障害を伴う。",
+    "tags": [
+      "allergy"
+    ]
+  },
+  {
+    "term": "Telemetry",
+    "aliases": [
+      "テレメトリー"
+    ],
+    "category": "medical",
+    "short": "遠隔モニタリング。",
+    "long": "心電図などを継続監視する仕組み。",
+    "tags": [
+      "monitoring"
+    ]
+  }
+]

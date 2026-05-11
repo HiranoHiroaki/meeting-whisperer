@@ -1,14 +1,102 @@
-import { HttpResponseInit } from "@azure/functions";
+import { HttpRequest, HttpResponseInit } from "@azure/functions";
 
-export function json(status: number, body: unknown): HttpResponseInit {
+const DEFAULT_ALLOWED_ORIGINS = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "http://127.0.0.1:3000",
+  "http://127.0.0.1:5173"
+];
+
+function resolveAllowedOrigins(): string[] {
+  const raw = (process.env.CORS_ALLOWED_ORIGINS ?? "").trim();
+  return raw
+    ? raw.split(",").map((x) => x.trim()).filter(Boolean)
+    : DEFAULT_ALLOWED_ORIGINS;
+}
+
+function resolveCorsOriginFromRequest(request?: HttpRequest): string {
+  const allowed = resolveAllowedOrigins();
+  const reqOrigin = String(request?.headers.get("origin") ?? "").trim();
+  if (reqOrigin && allowed.includes(reqOrigin)) {
+    return reqOrigin;
+  }
+  return allowed[0] ?? "http://localhost:5173";
+}
+
+export function json(status: number, body: unknown, request?: HttpRequest): HttpResponseInit {
   return {
     status,
     jsonBody: body,
     headers: {
       "content-type": "application/json; charset=utf-8",
-      "access-control-allow-origin": "*"
+      "access-control-allow-origin": resolveCorsOriginFromRequest(request),
+      "access-control-allow-methods": "GET,POST,OPTIONS",
+      "access-control-allow-headers": "content-type,x-functions-key"
     }
   };
+}
+
+type RateWindow = { startMs: number; count: number };
+const RATE_BUCKET = new Map<string, RateWindow>();
+const RATE_WINDOW_MS = Number(process.env.MW_RATE_WINDOW_MS ?? 60_000);
+const RATE_LIMIT = Number(process.env.MW_RATE_LIMIT_PER_WINDOW ?? 120);
+
+export function consumeRateLimit(request: HttpRequest, scope: string): { allowed: boolean; retryAfterSec: number } {
+  const enabled = process.env.MW_ENABLE_RATE_LIMIT === "1";
+  if (!enabled) return { allowed: true, retryAfterSec: 0 };
+  const xfwd = request.headers.get("x-forwarded-for") ?? "";
+  const client = xfwd.split(",")[0]?.trim() || request.headers.get("x-client-ip") || "unknown";
+  const key = `${scope}:${client}`;
+  const now = Date.now();
+  const current = RATE_BUCKET.get(key);
+  if (!current || now - current.startMs > RATE_WINDOW_MS) {
+    RATE_BUCKET.set(key, { startMs: now, count: 1 });
+    return { allowed: true, retryAfterSec: 0 };
+  }
+  current.count += 1;
+  if (current.count <= RATE_LIMIT) {
+    return { allowed: true, retryAfterSec: 0 };
+  }
+  const retryAfterSec = Math.max(1, Math.ceil((RATE_WINDOW_MS - (now - current.startMs)) / 1000));
+  return { allowed: false, retryAfterSec };
+}
+
+export function readStringField(
+  payload: Record<string, unknown>,
+  field: string,
+  opts?: { required?: boolean; maxChars?: number }
+): { ok: true; value: string } | { ok: false; code: string; message: string } {
+  const required = opts?.required ?? false;
+  const maxChars = opts?.maxChars ?? 20000;
+  const raw = payload[field];
+
+  if (raw == null) {
+    if (required) {
+      return { ok: false, code: "INVALID_INPUT", message: `${field} is required` };
+    }
+    return { ok: true, value: "" };
+  }
+  if (typeof raw !== "string") {
+    return { ok: false, code: "INVALID_INPUT", message: `${field} must be string` };
+  }
+  const value = raw.trim();
+  if (required && !value) {
+    return { ok: false, code: "INVALID_INPUT", message: `${field} is required` };
+  }
+  if (value.length > maxChars) {
+    return { ok: false, code: "PAYLOAD_TOO_LARGE", message: `${field} exceeds ${maxChars} chars` };
+  }
+  return { ok: true, value };
+}
+
+export function toPromptBlock(label: string, userText: string, maxChars = 20000): string {
+  const clipped = userText.slice(0, maxChars);
+  const escaped = clipped.replace(/<\/?system>/gi, "").replace(/<\/?assistant>/gi, "");
+  return `<${label}>\n${escaped}\n</${label}>`;
+}
+
+export function resolveAuthLevel(): "anonymous" | "function" {
+  return process.env.MW_AUTH_LEVEL === "function" ? "function" : "anonymous";
 }
 
 export function normalizeTerm(term: string): string {

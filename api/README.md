@@ -10,6 +10,33 @@
 - `explainTerm`: `{ source, detail, style, caution }`
 - `generateNotes`: `{ source, notes, stats }`
 
+## Dictionary Dispatcher (New)
+`extractTerms` now uses deterministic dispatcher before LLM:
+
+- all dictionaries are scanned
+- per-line max 3 candidates
+- same category max 2 within a line
+- score threshold: 80+
+- top results returned first (source=`dictionary_dispatcher`)
+
+LLM/heuristic are fallback when dictionary hit is empty.
+
+## Dictionary-First Explain
+`explainTerm` checks local dictionaries before LLM:
+
+1. exact match
+2. alias match
+3. acronym-like match
+4. AI fallback
+
+Dictionary files:
+- `assets/dictionary/*_seed_dictionary.json`
+- `api/dict/core-business.json`
+- `api/dict/core-it.json`
+- `api/dict/core-ai.json`
+- `api/dict/cloud-azure.json`
+- `api/dict/project-local.json`
+
 ## Azure OpenAI Configuration
 Copy `local.settings.example.json` to `local.settings.json` and fill:
 

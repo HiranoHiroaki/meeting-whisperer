@@ -1,0 +1,90 @@
+[
+  {
+    "term": "BOM",
+    "aliases": [
+      "Bill of Materials"
+    ],
+    "category": "manufacturing",
+    "short": "部品表。",
+    "long": "製品を構成する部品や材料一覧。",
+    "tags": [
+      "production"
+    ]
+  },
+  {
+    "term": "QC",
+    "aliases": [
+      "Quality Control"
+    ],
+    "category": "manufacturing",
+    "short": "品質管理。",
+    "long": "製品品質を維持するための管理活動。",
+    "tags": [
+      "quality"
+    ]
+  },
+  {
+    "term": "OEE",
+    "aliases": [],
+    "category": "manufacturing",
+    "short": "設備総合効率。",
+    "long": "設備稼働効率を示す指標。",
+    "tags": [
+      "factory"
+    ]
+  },
+  {
+    "term": "JIT",
+    "aliases": [
+      "Just In Time"
+    ],
+    "category": "manufacturing",
+    "short": "必要な物を必要な時に供給する方式。",
+    "long": "在庫削減を目的とした生産方式。",
+    "tags": [
+      "lean"
+    ]
+  },
+  {
+    "term": "PLC",
+    "aliases": [],
+    "category": "manufacturing",
+    "short": "産業用制御装置。",
+    "long": "工場設備制御で使われるコントローラ。",
+    "tags": [
+      "automation"
+    ]
+  },
+  {
+    "term": "歩留まり",
+    "aliases": [],
+    "category": "manufacturing",
+    "short": "良品率。",
+    "long": "投入量に対して正常製品が得られる割合。",
+    "tags": [
+      "quality"
+    ]
+  },
+  {
+    "term": "カイゼン",
+    "aliases": [
+      "改善"
+    ],
+    "category": "manufacturing",
+    "short": "継続的改善活動。",
+    "long": "現場単位で小さな改善を積み重ねる考え方。",
+    "tags": [
+      "lean"
+    ]
+  },
+  {
+    "term": "ライン停止",
+    "aliases": [],
+    "category": "manufacturing",
+    "short": "生産ラインが止まること。",
+    "long": "設備故障や不具合で製造が停止した状態。",
+    "tags": [
+      "factory"
+    ]
+  }
+]

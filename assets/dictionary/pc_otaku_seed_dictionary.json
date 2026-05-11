@@ -1,0 +1,74 @@
+[
+  {
+    "term": "NAS",
+    "aliases": [
+      "Network Attached Storage"
+    ],
+    "category": "pc_otaku",
+    "short": "ネットワーク接続型ストレージ。",
+    "long": "家庭やオフィスで共有保存に使われる。",
+    "tags": [
+      "storage"
+    ]
+  },
+  {
+    "term": "Homelab",
+    "aliases": [],
+    "category": "pc_otaku",
+    "short": "個人検証用サーバ環境。",
+    "long": "自宅で構築する実験的IT環境。",
+    "tags": [
+      "infra"
+    ]
+  },
+  {
+    "term": "Pi-hole",
+    "aliases": [],
+    "category": "pc_otaku",
+    "short": "広告ブロックDNS。",
+    "long": "家庭内DNS広告除去システム。",
+    "tags": [
+      "network"
+    ]
+  },
+  {
+    "term": "Self-hosted",
+    "aliases": [],
+    "category": "pc_otaku",
+    "short": "自前運用。",
+    "long": "クラウドではなく自分でサーバ管理すること。",
+    "tags": [
+      "infra"
+    ]
+  },
+  {
+    "term": "GPU沼",
+    "aliases": [],
+    "category": "pc_otaku",
+    "short": "GPUに過剰投資する状態。",
+    "long": "高性能GPUを次々買い替える文化。",
+    "tags": [
+      "culture"
+    ]
+  },
+  {
+    "term": "メカニカルキーボード",
+    "aliases": [],
+    "category": "pc_otaku",
+    "short": "機械式キーボード。",
+    "long": "打鍵感やカスタム性を重視したキーボード。",
+    "tags": [
+      "device"
+    ]
+  },
+  {
+    "term": "ROM焼き",
+    "aliases": [],
+    "category": "pc_otaku",
+    "short": "端末ファームを書き換える行為。",
+    "long": "Android改造文化でよく使われる表現。",
+    "tags": [
+      "android"
+    ]
+  }
+]

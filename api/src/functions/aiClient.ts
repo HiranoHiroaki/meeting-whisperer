@@ -197,7 +197,7 @@ async function callAzureOpenAi(
   const requestBody: Record<string, unknown> = {
     messages,
     temperature: options?.temperature ?? 0.2,
-    max_tokens: options?.maxTokens ?? 700
+    max_completion_tokens: options?.maxTokens ?? 700
   };
   if (options?.responseFormatJsonObject) {
     requestBody.response_format = { type: "json_object" };
@@ -238,7 +238,7 @@ async function callOpenAiCompat(
     model: cfg.model,
     messages,
     temperature: options?.temperature ?? 0.2,
-    max_tokens: options?.maxTokens ?? 700
+    max_completion_tokens: options?.maxTokens ?? 700
   };
   if (options?.responseFormatJsonObject) {
     requestBody.response_format = { type: "json_object" };

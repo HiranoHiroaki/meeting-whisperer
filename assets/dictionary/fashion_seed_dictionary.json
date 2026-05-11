@@ -1,0 +1,72 @@
+[
+  {
+    "term": "ドロップショルダー",
+    "aliases": [],
+    "category": "fashion",
+    "short": "肩線を落としたシルエット。",
+    "long": "肩幅を広めに見せるリラックス系デザイン。",
+    "tags": [
+      "silhouette"
+    ]
+  },
+  {
+    "term": "セットアップ",
+    "aliases": [],
+    "category": "fashion",
+    "short": "上下揃いの服。",
+    "long": "同素材・同色で統一されたコーディネート。",
+    "tags": [
+      "style"
+    ]
+  },
+  {
+    "term": "アースカラー",
+    "aliases": [],
+    "category": "fashion",
+    "short": "自然系の落ち着いた色。",
+    "long": "ベージュやカーキなど自然物を連想させる色。",
+    "tags": [
+      "color"
+    ]
+  },
+  {
+    "term": "ワイドパンツ",
+    "aliases": [],
+    "category": "fashion",
+    "short": "幅広シルエットのパンツ。",
+    "long": "ゆったりしたシルエットが特徴。",
+    "tags": [
+      "silhouette"
+    ]
+  },
+  {
+    "term": "オーバーサイズ",
+    "aliases": [],
+    "category": "fashion",
+    "short": "大きめサイズ感。",
+    "long": "意図的にゆるく着るスタイル。",
+    "tags": [
+      "style"
+    ]
+  },
+  {
+    "term": "モード系",
+    "aliases": [],
+    "category": "fashion",
+    "short": "前衛的で都会的なファッション。",
+    "long": "黒系や直線的デザインが多い。",
+    "tags": [
+      "genre"
+    ]
+  },
+  {
+    "term": "古着",
+    "aliases": [],
+    "category": "fashion",
+    "short": "中古衣料。",
+    "long": "ヴィンテージやリユース服を指す。",
+    "tags": [
+      "culture"
+    ]
+  }
+]

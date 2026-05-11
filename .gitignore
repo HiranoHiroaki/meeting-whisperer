@@ -12,3 +12,10 @@ coverage/
 .env.*
 api/local.settings.json
 api/func-*.log
+
+# Local tool/workspace artifacts
+.claude/
+*.tmp
+*.bak
+Thumbs.db
+.DS_Store

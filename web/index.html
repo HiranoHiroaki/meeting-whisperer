@@ -3,105 +3,253 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Meeting Whisperer | Scripted Demo</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https:; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' http://localhost:7071 https:; font-src 'self' data:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
+    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/favicon.png" />
+    <title>知ったかくん | デモコンソール</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <header class="app-header">
-      <div>
-        <p class="eyebrow">Meeting Whisperer</p>
-        <h1>Scripted Demo Console</h1>
-      </div>
-      <div class="header-controls">
-        <label>
-          Mode
-          <select id="modeSelect">
-            <option value="scripted" selected>Scripted Demo</option>
-            <option value="live">Live API (WIP)</option>
-          </select>
-        </label>
-      </div>
-    </header>
+    <main class="app-main">
+      <section class="layout-horizontal">
+        <section class="panel flow-card card-1a">
+          <div class="card-1-logo-zone">
+            <img class="title-logo" src="../assets/images/title_logo.png" alt="知ったかくん" />
+          </div>
 
-    <section class="toolbar">
-      <label>
-        Sample
-        <select id="sampleSelect"></select>
-      </label>
-      <label>
-        Speed
-        <select id="speedSelect">
-          <option value="0.8">0.8x</option>
-          <option value="1" selected>1.0x</option>
-          <option value="1.25">1.25x</option>
-          <option value="1.5">1.5x</option>
-        </select>
-      </label>
-      <label class="api-base-wrap">
-        API Base
-        <input id="apiBaseInput" type="text" placeholder="http://localhost:7071/api" />
-      </label>
-      <button id="saveApiBtn" class="ghost">Save API</button>
-      <button id="pingApiBtn" class="ghost">Ping API</button>
-      <button id="startBtn">Start</button>
-      <button id="pauseBtn" class="ghost" disabled>Pause</button>
-      <button id="resetBtn" class="ghost">Reset</button>
-    </section>
+            <div class="ingest-tabs">
+              <button id="sampleTabBtn" class="ghost tiny active" type="button">会議サンプル</button>
+              <button id="graphTabBtn" class="ghost tiny" type="button">Graph取込(Mock)</button>
+              <button id="voiceTabBtn" class="ghost tiny" type="button">音声入力(Beta)</button>
+            </div>
+            <div class="header-controls">
+              <section id="sampleIngestPane" class="ingest-pane">
+              <label>
+                会議サンプル
+                <select id="sampleSelect"></select>
+              </label>
+              </section>
+              <section id="graphIngestPane" class="ingest-pane hidden">
+                <label>
+                  会議URL or meetingId
+                  <input id="meetingInput" type="text" placeholder="https://teams.microsoft.com/... or meetingId" />
+                </label>
+                <button id="graphResolveBtn" class="ghost tiny" type="button">Graph導線を実行(Mock)</button>
+                <div id="graphRouteStatus" class="mini-meta">未実行</div>
+              </section>
+              <section id="voiceIngestPane" class="ingest-pane hidden">
+                <label>
+                  文字起こしエンジン
+                  <select id="voiceProviderSelect">
+                    <option value="webspeech" selected>Web Speech API</option>
+                    <option value="azure">Azure AI Speech</option>
+                  </select>
+                </label>
+                <label>
+                  文字起こし入力元
+                  <select id="voiceSourceSelect">
+                    <option value="mic" selected>マイク</option>
+                    <option value="tab">ブラウザタブ音声(対応環境)</option>
+                  </select>
+                </label>
+                <div class="voice-actions">
+                  <button id="voiceStartBtn" class="ghost tiny" type="button">音声入力開始</button>
+                  <button id="voiceStopBtn" class="ghost tiny" type="button" disabled>停止</button>
+                </div>
+              </section>
+              <div id="playbackControls">
+                <label>
+                  再生速度
+                  <select id="speedSelect">
+                    <option value="0.8">0.8x</option>
+                    <option value="1" selected>1.0x</option>
+                    <option value="1.25">1.25x</option>
+                    <option value="1.5">1.5x</option>
+                  </select>
+                </label>
+                <div class="menu-actions">
+                <button id="startBtn" type="button">開始</button>
+                <button id="pauseBtn" class="ghost" type="button" disabled>一時停止</button>
+                <button id="resetBtn" class="ghost" type="button">リセット</button>
+                </div>
+              </div>
+            </div>
+          </div>
 
-    <p id="modeNotice" class="notice hidden"></p>
-    <p id="runStatus" class="status-line">Ready.</p>
+        </section>
 
-    <main class="layout">
-      <section class="panel stream-panel">
-        <h2>Meeting Stream</h2>
-        <div class="stream-meta">
-          <p id="streamMeta">0 / 0 lines</p>
-          <progress id="streamProgress" value="0" max="100"></progress>
-        </div>
-        <div id="streamList" class="stream-list"></div>
-      </section>
 
-      <section class="panel side-panel">
-        <div class="panel-head">
-          <h2>Detected Terms</h2>
-          <span id="extractSource" class="source-badge">source: -</span>
-        </div>
-        <div id="termChips" class="term-chips"></div>
 
-        <div class="term-detail">
-          <h3 id="termTitle">No term selected</h3>
-          <p id="termDetail">Run demo and click a term chip.</p>
-          <p class="mini-meta">Explain Source: <span id="explainSource">-</span></p>
+        <section class="panel flow-card card-1c">
+          <footer class="app-footer">
+            <p>この画面は演出デモ再生とLive API実行を一本化した審査向けモードです。</p>
+            <p id="modeNotice" class="notice debug-only">演出デモ再生と同時に、抽出・説明・補足・まとめはすべてLive APIで実行します。</p>
+            <p id="runStatus" class="status-line debug-only">準備完了。</p>
+          </footer>
+          <section class="card-1-metrics">
+            <h3>現在選択中の辞書 / 辞書選定状況</h3>
+            <p id="dictionaryProfileInfo" class="mini-meta">辞書: -</p>
+            <p id="dispatcherRateInfo" class="mini-meta">辞書選定率: -</p>
+          </section>
+        </section>
+
+        <section class="panel flow-card card-1d">
+          
+        </section>
+
+        <section class="panel flow-card card-2 stream-panel">
+          <div class="stream-head">
+            <div class="section-title">
+              <img class="section-title-icon" src="../assets/images/kaigi_title.svg" alt="会議ログ" />
+              <h2 class="accent-title">会議ログ</h2>
+            </div>
+            <div id="voiceStatus" class="voice-status-box">待機中</div>
+          </div>
+          <div class="stream-meta">
+            <p id="streamMeta">0 / 0 行</p>
+            <progress id="streamProgress" value="0" max="100"></progress>
+          </div>
+          <div id="streamList" class="stream-list"></div>
+        </section>
+
+        <section class="panel flow-card card-3a">
+          <img class="card-character card-character-word-hakase" src="../assets/images/word_hakase.png" alt="抽出用語博士キャラクター" />
+          <div class="panel-head">
+            <div class="section-title">
+              <img class="section-title-icon" src="../assets/images/word_title.svg" alt="抽出された用語" />
+              <h2 class="accent-title">抽出用語</h2>
+            </div>
+            <span id="extractSource" class="source-badge">source: -</span>
+          </div>
+          <div id="termChips" class="term-chips"></div>
+        </section>
+
+        <section class="panel flow-card card-3b">
+          <div class="profile-box learning-box">
+            <div class="panel-head">
+              <div class="section-title">
+                <img class="section-title-icon" src="../assets/images/check_title.svg" alt="学習ワード" />
+                <h2 class="accent-title">学習ワード</h2>
+              </div>
+              <button id="clearProfileBtn" class="ghost tiny" type="button">クリア</button>
+            </div>
+            <p id="profileSummary">クリック履歴はまだありません。</p>
+            <div id="clickList" class="click-list"></div>
+          </div>
+        </section>
+
+        <section class="panel flow-card card-4">
+          <div class="term-detail">
+            <h3 id="termTitle">用語未選択</h3>
+            <p class="term-section-title">かんたんな説明</p>
+            <p id="termDetail">用語チップを押すと説明を表示します。</p>
+            <p id="termContextHint" class="term-context-hint"></p>
+            <p class="mini-meta">説明ソース: <span id="explainSource">-</span></p>
+          </div>
           <div class="actions">
-            <button id="unknownBtn" disabled>Unknown</button>
-            <button id="interestBtn" disabled>Interest</button>
+            <button id="unknownBtn" type="button" disabled>知らない</button>
+            <button id="interestBtn" type="button" disabled>気になる</button>
           </div>
-        </div>
+        </section>
 
-        <div class="profile-box">
-          <div class="sub-head">
-            <h3>Local Learning Signal</h3>
-            <button id="clearProfileBtn" class="ghost tiny">Clear</button>
-          </div>
-          <p id="profileSummary">No clicks yet.</p>
-          <div id="clickList" class="click-list"></div>
-        </div>
+        <section class="panel flow-card card-5">
+          <section id="unknownExplainCard" class="unknown-explain">
+            <h4>AIの説明要約</h4>
+            <p id="unknownAiSummaryText">知らないボタンを押下するとAIが要約した説明が表示されます。</p>
+            <h4>文脈からの補足説明</h4>
+            <p id="unknownExplainText">知らないボタンを押下するとAIが要約した説明が表示されます。</p>
+          </section>
+        </section>
 
-        <div class="notes-box">
-          <div class="notes-head">
-            <h3>Today's Catch-up Notes</h3>
-            <button id="notesBtn" class="ghost">Generate</button>
-          </div>
-          <p id="notesOutput">No notes generated yet.</p>
-          <p class="mini-meta">Notes Source: <span id="notesSource">-</span></p>
-        </div>
+        <section class="panel flow-card card-5-5">
+          <img class="card-character card-character-sittaka" src="../assets/images/sittaka.png" alt="知ったかくんキャラクター" />
+          <section class="term-detail">
+            <div class="shittaka-midashi-wrap">
+              <div class="shittaka-midashi-bg" aria-hidden="true"></div>
+              <img class="shittaka-midashi" src="../assets/images/shittaka_midashi.png" alt="知ったか発言例" />
+            </div>
+            <ul id="smallTalkList" class="small-talk-list"></ul>
+          </section>
+        </section>
+
+        <section class="panel flow-card card-6 end-card">
+          <button id="minutesBtn" class="end-meeting-btn" type="button">会議終了 / 議事録作成</button>
+        </section>
+
+        <section id="minutesZone" class="panel flow-card card-7 hidden">
+          <section id="minutesCard" class="generated-card hidden">
+            <div class="notes-head">
+              <h3>会議議事録まとめ</h3>
+              <button id="saveMinutesBtn" class="ghost tiny" type="button">保存</button>
+            </div>
+            <p id="minutesLoading" class="mini-meta hidden">生成中です。AI応答を待っています...</p>
+            <pre id="minutesOutput">議事録はまだ作成されていません。</pre>
+          </section>
+        </section>
+
+        <section id="notesCard" class="panel flow-card card-8a hidden">
+          <section class="generated-card">
+            <div class="notes-head">
+              <h3>学習ワードの会議文脈付きまとめ</h3>
+              <button id="saveNotesBtn" class="ghost tiny" type="button">保存</button>
+            </div>
+            <p id="notesLoading" class="mini-meta hidden">生成中です。AI応答を待っています...</p>
+            <pre id="notesOutput">まだ生成していません。</pre>
+            <p class="mini-meta">まとめソース: <span id="notesSource">-</span></p>
+          </section>
+        </section>
+        <section class="panel flow-card card-8b hidden">
+          <section class="generated-card">
+            <p id="hakaseComment" class="hakase-comment">ほっほ、会議のふりかえりじゃ。</p>
+            <img class="card-character card-character-hakase" src="../assets/images/hakase.png" alt="博士キャラクター" />
+          </section>
+        </section>
       </section>
+
     </main>
 
-    <footer class="app-footer">
-      <p>Tip: Start with Scripted Demo mode for stable judging demos.</p>
-    </footer>
+    <button id="debugToggleBtn" class="debug-toggle hidden" type="button">デバッグ表示</button>
+    <div id="debugBackdrop" class="debug-backdrop hidden"></div>
+    <aside id="debugCard" class="panel debug-card-fixed hidden">
+      <div class="panel-head">
+        <h2>デバッグ</h2>
+        <span id="debugStateBadge" class="source-badge">debug: off</span>
+      </div>
+      <section class="debug-api-wrap">
+        <div class="debug-api-row">
+          <label class="api-base-wrap">
+            API接続先
+            <input id="apiBaseInput" type="text" placeholder="http://localhost:7071/api" />
+          </label>
+          <label>
+            Function Key
+            <input id="functionKeyInput" type="password" placeholder="(任意) x-functions-key" />
+          </label>
+        </div>
+        <div class="debug-api-row">
+          <button id="saveApiBtn" class="ghost" type="button">API保存</button>
+          <button id="pingApiBtn" class="ghost" type="button">API疎通確認</button>
+        </div>
+        <div class="debug-api-row">
+          <label>
+            Azure Speech Key
+            <input id="speechKeyInput" type="password" placeholder="Speech resource key" />
+          </label>
+          <label>
+            Azure Speech Region
+            <input id="speechRegionInput" type="text" placeholder="japaneast" />
+          </label>
+        </div>
+      </section>
+      <div class="debug-actions">
+        <button id="debugProbeBtn" class="ghost tiny" type="button">ディスパッチャ検証</button>
+      </div>
+      <p id="debugDictionaryInfo" class="mini-meta">Dictionary: -</p>
+      <p id="debugPolicyInfo" class="mini-meta">Policy: -</p>
+      <div id="debugRouteList" class="debug-route-list"></div>
+    </aside>
 
+    <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
     <script type="module" src="./main.js"></script>
   </body>
 </html>

@@ -1,0 +1,202 @@
+[
+  {
+    "term": "KPI",
+    "aliases": [],
+    "category": "business",
+    "short": "重要業績評価指標",
+    "long": "事業目標の達成度を測る指標。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "OKR",
+    "aliases": [],
+    "category": "business",
+    "short": "目標と主要成果",
+    "long": "目標と成果指標をセットで管理する手法。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "ROI",
+    "aliases": [],
+    "category": "business",
+    "short": "投資利益率",
+    "long": "投資に対してどれだけ利益が出たかを示す指標。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "EBITDA",
+    "aliases": [],
+    "category": "business",
+    "short": "利払い・税・償却前利益",
+    "long": "企業の本業収益力を見るための利益指標。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "ARR",
+    "aliases": [],
+    "category": "business",
+    "short": "年間経常収益",
+    "long": "SaaSなどで使われる年間ベースの定期収益。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "MRR",
+    "aliases": [],
+    "category": "business",
+    "short": "月次経常収益",
+    "long": "毎月継続的に発生する収益。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "LTV",
+    "aliases": [],
+    "category": "business",
+    "short": "顧客生涯価値",
+    "long": "顧客が生涯で生み出す利益。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "CAC",
+    "aliases": [],
+    "category": "business",
+    "short": "顧客獲得コスト",
+    "long": "顧客1人を獲得するためのコスト。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "Churn",
+    "aliases": [],
+    "category": "business",
+    "short": "解約率",
+    "long": "サービス利用停止割合。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "Burn Rate",
+    "aliases": [],
+    "category": "business",
+    "short": "資金消費速度",
+    "long": "スタートアップが資金を消費するペース。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "Runway",
+    "aliases": [],
+    "category": "business",
+    "short": "残存運転資金期間",
+    "long": "今の資金で何ヶ月持つか。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "PMF",
+    "aliases": [],
+    "category": "business",
+    "short": "プロダクトマーケットフィット",
+    "long": "市場ニーズと製品が合致した状態。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "NPS",
+    "aliases": [],
+    "category": "business",
+    "short": "顧客推奨度",
+    "long": "顧客満足度の代表指標。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "SaaS",
+    "aliases": [],
+    "category": "business",
+    "short": "サービス型ソフトウェア",
+    "long": "クラウド経由で提供されるソフトウェア。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "B2B",
+    "aliases": [],
+    "category": "business",
+    "short": "企業間取引",
+    "long": "企業同士のビジネス。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "B2C",
+    "aliases": [],
+    "category": "business",
+    "short": "一般消費者向け取引",
+    "long": "個人向けビジネス。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "DX",
+    "aliases": [],
+    "category": "business",
+    "short": "デジタルトランスフォーメーション",
+    "long": "デジタル技術による業務変革。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "PoC",
+    "aliases": [],
+    "category": "business",
+    "short": "概念実証",
+    "long": "実現可能性を試す小規模検証。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "North Star Metric",
+    "aliases": [],
+    "category": "business",
+    "short": "最重要指標",
+    "long": "サービス成長を代表する指標。",
+    "tags": [
+      "business"
+    ]
+  },
+  {
+    "term": "Pivot",
+    "aliases": [],
+    "category": "business",
+    "short": "事業転換",
+    "long": "戦略や方向性を大きく変更すること。",
+    "tags": [
+      "business"
+    ]
+  }
+]
