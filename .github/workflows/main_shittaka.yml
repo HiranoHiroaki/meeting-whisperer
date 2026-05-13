@@ -52,7 +52,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          RG="$(az functionapp show --name 'Shittaka' --query resourceGroup -o tsv)"
+          RG="$(az functionapp list --query "[?name=='Shittaka'].resourceGroup | [0]" -o tsv)"
+          if [ -z "${RG:-}" ] || [ "$RG" = "null" ]; then
+            echo "Failed to resolve resource group for Function App 'Shittaka'."
+            exit 1
+          fi
           echo "resource_group=$RG" >> "$GITHUB_OUTPUT"
           echo "Resolved resource group: $RG"
 
