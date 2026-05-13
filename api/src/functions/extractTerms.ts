@@ -16,6 +16,7 @@ type ExtractRequest = {
   meetingDomain?: string;
   includeDebug?: boolean;
   skipAi?: boolean;
+  personalTerms?: Array<{ term?: string; summary?: string; memo?: string }>;
 };
 
 type ExtractedTerm = {
@@ -23,7 +24,7 @@ type ExtractedTerm = {
   summary?: string;
   score?: number;
   reasons?: string[];
-  origin?: "fixed_dictionary" | "dictionary_dispatcher" | "ai" | "heuristic_context";
+  origin?: "fixed_dictionary" | "dictionary_dispatcher" | "ai" | "heuristic_context" | "personal_dictionary";
   source?: string;
   profile?: string;
   confidence?: number;
@@ -38,6 +39,48 @@ type ExtractedTerm = {
     layer: string;
   };
 };
+
+function fromPersonalDictionary(items: ExtractRequest["personalTerms"]): ExtractedTerm[] {
+  if (!Array.isArray(items)) return [];
+  const out: ExtractedTerm[] = [];
+  const seen = new Set<string>();
+  for (const row of items) {
+    const term = typeof row?.term === "string" ? row.term.trim() : "";
+    if (!term) continue;
+    if (!isValidTermCandidate(term)) continue;
+    const key = term.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const summary =
+      typeof row?.summary === "string" && row.summary.trim()
+        ? row.summary.trim()
+        : `${term} はユーザーの個人辞書に登録されています。`;
+    const memo = typeof row?.memo === "string" && row.memo.trim() ? row.memo.trim() : "";
+    out.push({
+      term,
+      summary,
+      score: 0.99,
+      confidence: 0.99,
+      origin: "personal_dictionary",
+      source: "personal_dictionary",
+      reasons: memo ? ["personal_dictionary", `memo:${memo.slice(0, 40)}`] : ["personal_dictionary"],
+    });
+    if (out.length >= MAX_TERM_CHIPS) break;
+  }
+  return out;
+}
+
+function containsTermInMeetingText(text: string, term: string): boolean {
+  if (!text || !term) return false;
+
+  if (/^[A-Za-z0-9/+._#-]+$/.test(term)) {
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const pattern = new RegExp(`(^|[^A-Za-z0-9])${escaped}([^A-Za-z0-9]|$)`, "i");
+    return pattern.test(text);
+  }
+
+  return text.includes(term);
+}
 
 const FIXED_PROFILE_SYSTEM_DEVELOPMENT = "system_development";
 const MAX_TERM_CHIPS = 15;
@@ -54,6 +97,11 @@ const CONVERSATIONAL_ENDINGS = [
   "ない",
   "なくて",
 ];
+const TERM_STOPWORDS = new Set(["tab_audio", "mic", "speaker", "unknown_speaker"]);
+
+function isHeuristicFallbackEnabled(): boolean {
+  return process.env.MW_ENABLE_HEURISTIC_FALLBACK === "1";
+}
 
 function isDispatcherEnabled(request: ExtractRequest): boolean {
   if (typeof request.useDispatcher === "boolean") {
@@ -199,7 +247,12 @@ function sanitizeExtractedTerms(items: unknown): ExtractedTerm[] {
 }
 
 function normalizeTermLabel(raw: string): string {
-  let term = raw.trim();
+  let term = raw
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&lt;[^&]*&gt;/g, " ")
+    .replace(/[<>"'`]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
   for (const suffix of JP_TERM_SUFFIXES) {
     if (term.length > suffix.length + 2 && term.endsWith(suffix)) {
       term = term.slice(0, term.length - suffix.length).trim();
@@ -218,8 +271,10 @@ function isLikelyConversationPhrase(term: string): boolean {
 function isValidTermCandidate(term: string): boolean {
   const t = term.trim();
   if (!t) return false;
+  if (TERM_STOPWORDS.has(t.toLowerCase())) return false;
   if (t.length < 2 || t.length > 40) return false;
   if (/\s/.test(t)) return false;
+  if (/[<>"'`]/.test(t)) return false;
   if (isLikelyConversationPhrase(t)) return false;
 
   const hasAsciiAcronym = /[A-Z]{2,}/.test(t);
@@ -310,14 +365,23 @@ export async function extractTerms(request: HttpRequest, context: InvocationCont
   const profile = normalizeProfile(payload.dictionaryProfile);
   const useDispatcher = isDispatcherEnabled(payload);
   const skipAi = payload.skipAi === true;
+  const personalTerms = fromPersonalDictionary(payload.personalTerms).filter((row) =>
+    containsTermInMeetingText(text, row.term)
+  );
 
   const fixedProfileTerms = fromFixedProfileDictionary(text, profile);
   const topFixed = fixedProfileTerms[0] ?? null;
   const narrowedCategory =
     topFixed && (topFixed.score ?? 0) >= 90 ? topFixed.dispatcher?.category ?? null : null;
   const termMap = new Map<string, ExtractedTerm>();
-  for (const row of fixedProfileTerms) {
+  for (const row of personalTerms) {
     termMap.set(row.term.toLowerCase(), row);
+  }
+  for (const row of fixedProfileTerms) {
+    const k = row.term.toLowerCase();
+    if (!termMap.has(k)) {
+      termMap.set(k, row);
+    }
   }
 
   if (useDispatcher && termMap.size < MAX_TERM_CHIPS) {
@@ -388,7 +452,7 @@ export async function extractTerms(request: HttpRequest, context: InvocationCont
     }
   }
 
-  if (termMap.size < MAX_TERM_CHIPS) {
+  if (isHeuristicFallbackEnabled() && termMap.size < MAX_TERM_CHIPS) {
     const ranked = rankTerms(text).slice(0, MAX_TERM_CHIPS);
     for (const t of ranked) {
       const k = t.term.toLowerCase();
@@ -414,13 +478,18 @@ export async function extractTerms(request: HttpRequest, context: InvocationCont
   const hasAi = mergedTerms.some((x) => x.origin === "ai");
   const hasDispatcher = mergedTerms.some((x) => x.origin === "dictionary_dispatcher");
   const hasFixed = mergedTerms.some((x) => x.origin === "fixed_dictionary");
+  const hasPersonal = mergedTerms.some((x) => x.origin === "personal_dictionary");
   const responseSource = hasAi
     ? (getConfiguredAiSource() ?? "ai")
+    : hasPersonal
+      ? "personal_dictionary"
     : hasDispatcher
       ? "dictionary_dispatcher"
       : hasFixed
         ? "fixed_dictionary"
-        : "heuristic";
+        : isHeuristicFallbackEnabled()
+          ? "heuristic"
+          : "none";
 
   const body: Record<string, unknown> = {
     source: responseSource,

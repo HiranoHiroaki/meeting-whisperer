@@ -65,7 +65,8 @@ const RATE_WINDOW_MS = Number(process.env.MW_RATE_WINDOW_MS ?? 60_000);
 const RATE_LIMIT = Number(process.env.MW_RATE_LIMIT_PER_WINDOW ?? 120);
 
 export function consumeRateLimit(request: HttpRequest, scope: string): { allowed: boolean; retryAfterSec: number } {
-  const enabled = process.env.MW_ENABLE_RATE_LIMIT === "1";
+  // Secure-by-default: rate limiting is enabled unless explicitly turned off.
+  const enabled = process.env.MW_ENABLE_RATE_LIMIT !== "0";
   if (!enabled) return { allowed: true, retryAfterSec: 0 };
   const xfwd = request.headers.get("x-forwarded-for") ?? "";
   const client = xfwd.split(",")[0]?.trim() || request.headers.get("x-client-ip") || "unknown";
@@ -119,7 +120,8 @@ export function toPromptBlock(label: string, userText: string, maxChars = 20000)
 }
 
 export function resolveAuthLevel(): "anonymous" | "function" {
-  return process.env.MW_AUTH_LEVEL === "function" ? "function" : "anonymous";
+  // Secure-by-default: require function key unless explicitly set to anonymous.
+  return process.env.MW_AUTH_LEVEL === "anonymous" ? "anonymous" : "function";
 }
 
 export function normalizeTerm(term: string): string {

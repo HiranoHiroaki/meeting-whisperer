@@ -15,6 +15,8 @@ Open: `http://localhost:8080/web/`
 - Live API mode calls `http://localhost:7071/api` by default.
 - Start Azure Functions locally first, then switch Mode to `Live API`.
 - `API Base` can be changed and saved from UI.
+- API 側が `MW_AUTH_LEVEL=function` の場合は `x-functions-key` の入力が必要です。
+- API 側のレート制限は既定でONです（`MW_ENABLE_RATE_LIMIT=0` でのみ無効化）。
 - `Ping API` checks `extractTerms` connectivity quickly.
 - 上部コントロールは左ハンバーガーメニューに格納されます。
 - 会議ログ下部に `会議終了 / 議事録作成` ボタンがあります（Markdown保存可能）。

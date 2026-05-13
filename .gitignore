@@ -12,6 +12,7 @@ coverage/
 .env.*
 api/local.settings.json
 api/func-*.log
+assets/images/
 
 # Local tool/workspace artifacts
 .claude/

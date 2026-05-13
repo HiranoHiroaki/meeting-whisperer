@@ -24,13 +24,48 @@ export function resolveMeetingDomain(selectedSample) {
   return "業務";
 }
 
-export function buildExtractRequestPayload(text, { selectedSample, includeDebug }) {
+function containsTermInMeetingText(text, term) {
+  const body = String(text ?? "");
+  const t = String(term ?? "").trim();
+  if (!body || !t) return false;
+
+  if (/^[A-Za-z0-9/+._#-]+$/.test(t)) {
+    const escaped = t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const pattern = new RegExp(`(^|[^A-Za-z0-9])${escaped}([^A-Za-z0-9]|$)`, "i");
+    return pattern.test(body);
+  }
+
+  return body.includes(t);
+}
+
+function toPersonalTerms(personalDictionary, meetingText) {
+  if (!personalDictionary || typeof personalDictionary !== "object") return [];
+  const rows = Object.values(personalDictionary)
+    .filter((x) => x && typeof x === "object")
+    .map((row) => {
+      const term = typeof row.term === "string" ? row.term.trim() : "";
+      if (!term) return null;
+      const summary =
+        typeof row.summary === "string" && row.summary.trim()
+          ? row.summary.trim()
+          : `${term} はユーザーの個人辞書に登録されています。`;
+      const memo = typeof row.memo === "string" ? row.memo.trim() : "";
+      return { term, summary, memo };
+    })
+    .filter(Boolean)
+    .filter((row) => containsTermInMeetingText(meetingText, row.term))
+    .slice(0, 200);
+  return rows;
+}
+
+export function buildExtractRequestPayload(text, { selectedSample, includeDebug, personalDictionary }) {
   return {
     text,
     dictionaryProfile: resolveDictionaryProfile(selectedSample),
     meetingDomain: resolveMeetingDomain(selectedSample),
     useDispatcher: true,
     includeDebug: Boolean(includeDebug),
+    personalTerms: toPersonalTerms(personalDictionary, text),
   };
 }
 

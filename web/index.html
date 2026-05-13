@@ -3,10 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https:; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' http://localhost:7071 https:; font-src 'self' data:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://aka.ms; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' http://localhost:7071 https:; font-src 'self' data:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
     <link rel="icon" type="image/png" href="./assets/images/favicon.png" />
     <link rel="apple-touch-icon" href="./assets/images/favicon.png" />
     <title>知ったかくん | デモコンソール</title>
+    <link rel="preload" as="image" href="./assets/images/shiranai_button_0.png" />
+    <link rel="preload" as="image" href="./assets/images/shiranai_button_1.png" />
+    <link rel="preload" as="image" href="./assets/images/shiranai_button_2.png" />
+    <link rel="preload" as="image" href="./assets/images/kininaru_button_0.png" />
+    <link rel="preload" as="image" href="./assets/images/kininaru_button_1.png" />
+    <link rel="preload" as="image" href="./assets/images/kininaru_button_2.png" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -16,23 +22,28 @@
           <div class="card-1-logo-zone">
             <img class="title-logo" src="./assets/images/title_logo.png" alt="知ったかくん" />
           </div>
+          <section class="user-box">
+            <p class="user-box-label">ログインユーザー</p>
+            <p id="viewerName" class="user-box-name">知ったかゲストさん</p>
+            <button id="editPersonalDictBtn" class="ghost tiny" type="button"><span class="btn-border-label">自分辞書編集</span></button>
+          </section>
 
             <div class="ingest-tabs">
-              <button id="sampleTabBtn" class="ghost tiny active" type="button">会議サンプル</button>
-              <button id="graphTabBtn" class="ghost tiny" type="button">Graph取込(Mock)</button>
-              <button id="voiceTabBtn" class="ghost tiny" type="button">音声入力(Beta)</button>
+              <button id="sampleTabBtn" class="ghost tiny active" type="button">サンプル</button>
+              <button id="graphTabBtn" class="ghost tiny" type="button">Graph取込</button>
+              <button id="voiceTabBtn" class="ghost tiny" type="button">音声入力</button>
             </div>
             <div class="header-controls">
               <section id="sampleIngestPane" class="ingest-pane">
               <label>
                 会議サンプル
-                <select id="sampleSelect"></select>
+                <select id="sampleSelect" name="sample_select"></select>
               </label>
               </section>
               <section id="graphIngestPane" class="ingest-pane hidden">
                 <label>
                   会議URL or meetingId
-                  <input id="meetingInput" type="text" placeholder="https://teams.microsoft.com/... or meetingId" />
+                  <input id="meetingInput" name="meeting_input" type="text" placeholder="https://teams.microsoft.com/... or meetingId" />
                 </label>
                 <button id="graphResolveBtn" class="ghost tiny" type="button">Graph導線を実行(Mock)</button>
                 <div id="graphRouteStatus" class="mini-meta">未実行</div>
@@ -40,27 +51,27 @@
               <section id="voiceIngestPane" class="ingest-pane hidden">
                 <label>
                   文字起こしエンジン
-                  <select id="voiceProviderSelect">
+                  <select id="voiceProviderSelect" name="voice_provider_select">
                     <option value="webspeech" selected>Web Speech API</option>
                     <option value="azure">Azure AI Speech</option>
                   </select>
                 </label>
                 <label>
                   文字起こし入力元
-                  <select id="voiceSourceSelect">
+                  <select id="voiceSourceSelect" name="voice_source_select">
                     <option value="mic" selected>マイク</option>
                     <option value="tab">ブラウザタブ音声(対応環境)</option>
                   </select>
                 </label>
                 <div class="voice-actions">
-                  <button id="voiceStartBtn" class="ghost tiny" type="button">音声入力開始</button>
-                  <button id="voiceStopBtn" class="ghost tiny" type="button" disabled>停止</button>
+                  <button id="voiceStartBtn" class="ghost tiny" type="button"><span class="btn-border-label">音声入力開始</span></button>
+                  <button id="voiceStopBtn" class="ghost tiny" type="button" disabled><span class="btn-border-label">停止</span></button>
                 </div>
               </section>
               <div id="playbackControls">
                 <label>
                   再生速度
-                  <select id="speedSelect">
+                  <select id="speedSelect" name="speed_select">
                     <option value="0.8">0.8x</option>
                     <option value="1" selected>1.0x</option>
                     <option value="1.25">1.25x</option>
@@ -68,9 +79,9 @@
                   </select>
                 </label>
                 <div class="menu-actions">
-                <button id="startBtn" type="button">開始</button>
-                <button id="pauseBtn" class="ghost" type="button" disabled>一時停止</button>
-                <button id="resetBtn" class="ghost" type="button">リセット</button>
+                <button id="startBtn" type="button"><span class="btn-border-label">開始</span></button>
+                <button id="pauseBtn" class="ghost" type="button" disabled><span class="btn-border-label">一時停止</span></button>
+                <button id="resetBtn" class="ghost" type="button"><span class="btn-border-label">リセット</span></button>
                 </div>
               </div>
             </div>
@@ -81,23 +92,17 @@
 
 
         <section class="panel flow-card card-1c">
+        </section>
+
+        <section class="panel flow-card card-1d">
           <footer class="app-footer">
             <p>この画面は演出デモ再生とLive API実行を一本化した審査向けモードです。</p>
             <p id="modeNotice" class="notice debug-only">演出デモ再生と同時に、抽出・説明・補足・まとめはすべてLive APIで実行します。</p>
             <p id="runStatus" class="status-line debug-only">準備完了。</p>
           </footer>
-          <section class="card-1-metrics">
-            <h3>現在選択中の辞書 / 辞書選定状況</h3>
-            <p id="dictionaryProfileInfo" class="mini-meta">辞書: -</p>
-            <p id="dispatcherRateInfo" class="mini-meta">辞書選定率: -</p>
-          </section>
         </section>
 
-        <section class="panel flow-card card-1d">
-          
-        </section>
-
-        <section class="panel flow-card card-2 stream-panel">
+        <section class="panel flow-card card-2a stream-panel">
           <div class="stream-head">
             <div class="section-title">
               <img class="section-title-icon" src="./assets/images/kaigi_title.svg" alt="会議ログ" />
@@ -112,26 +117,35 @@
           <div id="streamList" class="stream-list"></div>
         </section>
 
+        <section class="panel flow-card card-2b stream-panel">
+          <div class="section-title dict-status-title">
+            <img class="section-title-icon" src="./assets/images/dictionary_title.svg" alt="辞書選定状況" />
+            <h3>現在選択中の辞書 / 辞書選定状況</h3>
+          </div>
+          <p id="dictionaryProfileInfo" class="mini-meta">会話の流れで自動的に優先する辞書を選びます。</p>
+          <p id="dispatcherRateInfo" class="mini-meta"></p>
+        </section>
+
         <section class="panel flow-card card-3a">
-          <img class="card-character card-character-word-hakase" src="./assets/images/word_hakase.png" alt="抽出用語博士キャラクター" />
           <div class="panel-head">
             <div class="section-title">
               <img class="section-title-icon" src="./assets/images/word_title.svg" alt="抽出された用語" />
               <h2 class="accent-title">抽出用語</h2>
             </div>
-            <span id="extractSource" class="source-badge">source: -</span>
+            <button id="clearTermsBtn" class="btn btn-border" type="button"><span>クリア</span></button>
           </div>
           <div id="termChips" class="term-chips"></div>
         </section>
 
         <section class="panel flow-card card-3b">
+          <img class="card-character card-character-word-hakase" src="./assets/images/word_hakase.png" alt="抽出用語博士キャラクター" />
           <div class="profile-box learning-box">
             <div class="panel-head">
               <div class="section-title">
                 <img class="section-title-icon" src="./assets/images/check_title.svg" alt="学習ワード" />
                 <h2 class="accent-title">学習ワード</h2>
               </div>
-              <button id="clearProfileBtn" class="ghost tiny" type="button">クリア</button>
+              <button id="clearProfileBtn" class="btn btn-border" type="button"><span>クリア</span></button>
             </div>
             <p id="profileSummary">クリック履歴はまだありません。</p>
             <div id="clickList" class="click-list"></div>
@@ -139,17 +153,31 @@
         </section>
 
         <section class="panel flow-card card-4">
-          <div class="term-detail">
+          <div class="term-card-head">
             <h3 id="termTitle">用語未選択</h3>
+            <p class="mini-meta explain-source-line"><span id="explainSource">-</span></p>
+          </div>
+
+          <section class="term-detail term-box term-box-1">
             <p class="term-section-title">かんたんな説明</p>
             <p id="termDetail">用語チップを押すと説明を表示します。</p>
             <p id="termContextHint" class="term-context-hint"></p>
-            <p class="mini-meta">説明ソース: <span id="explainSource">-</span></p>
-          </div>
-          <div class="actions">
+          </section>
+
+          <section class="term-detail term-box term-box-2">
+            <p class="term-section-title">なんとなく発言例</p>
+            <p id="termBox2Text">用語を選択すると、会議文脈の説明を表示します。</p>
+          </section>
+
+          <section class="term-detail term-box term-box-3">
+            <p id="personalMemoTitle" class="term-section-title">自分メモ</p>
+            <p id="personalMemoText">自分辞書のメモがあればここに表示されます。</p>
+          </section>
+
+          <section class="term-box term-box-footer actions">
             <button id="unknownBtn" type="button" disabled>知らない</button>
             <button id="interestBtn" type="button" disabled>気になる</button>
-          </div>
+          </section>
         </section>
 
         <section class="panel flow-card card-5">
@@ -173,14 +201,14 @@
         </section>
 
         <section class="panel flow-card card-6 end-card">
-          <button id="minutesBtn" class="end-meeting-btn" type="button">会議終了 / 議事録作成</button>
+          <button id="minutesBtn" class="end-meeting-btn" type="button"><span class="btn-border-label">会議終了 / 議事録作成</span></button>
         </section>
 
         <section id="minutesZone" class="panel flow-card card-7 hidden">
           <section id="minutesCard" class="generated-card hidden">
             <div class="notes-head">
               <h3>会議議事録まとめ</h3>
-              <button id="saveMinutesBtn" class="ghost tiny" type="button">保存</button>
+              <button id="saveMinutesBtn" class="ghost tiny" type="button"><span class="btn-border-label">保存</span></button>
             </div>
             <p id="minutesLoading" class="mini-meta hidden">生成中です。AI応答を待っています...</p>
             <pre id="minutesOutput">議事録はまだ作成されていません。</pre>
@@ -191,7 +219,7 @@
           <section class="generated-card">
             <div class="notes-head">
               <h3>学習ワードの会議文脈付きまとめ</h3>
-              <button id="saveNotesBtn" class="ghost tiny" type="button">保存</button>
+              <button id="saveNotesBtn" class="ghost tiny" type="button"><span class="btn-border-label">保存</span></button>
             </div>
             <p id="notesLoading" class="mini-meta hidden">生成中です。AI応答を待っています...</p>
             <pre id="notesOutput">まだ生成していません。</pre>
@@ -204,11 +232,48 @@
             <img class="card-character card-character-hakase" src="./assets/images/hakase.png" alt="博士キャラクター" />
           </section>
         </section>
+        <section id="personalDictLane" class="panel flow-card card-9 end-card hidden">
+          <button id="registerPersonalDictBtn" class="end-meeting-btn secondary" type="button"><span class="btn-border-label">自分辞書に登録</span></button>
+        </section>
+        <section id="personalDictCard" class="panel flow-card card-10 hidden">
+          <section class="generated-card">
+            <div class="notes-head">
+              <h3 id="personalDictModalTitle">自分辞書に登録</h3>
+            </div>
+            <p class="mini-meta">今回の学習ワードを登録します。チェック済みの用語が保存されます。</p>
+            <div id="personalDictList" class="personal-dict-list"></div>
+            <div class="card-footer-actions">
+              <button id="personalDictCancelBtn" class="ghost" type="button"><span class="btn-border-label">キャンセル</span></button>
+              <button id="personalDictSaveBtn" type="button"><span class="btn-border-label">保存する</span></button>
+            </div>
+          </section>
+        </section>
       </section>
 
     </main>
+    <div id="menuBackdrop" class="menu-backdrop"></div>
+    <aside id="leftMenu" class="left-menu" aria-hidden="true">
+      <div class="menu-head">
+        <h2>自分辞書編集</h2>
+        <p class="mini-meta">メモ欄のみ編集できます。保存でローカル辞書へ反映されます。</p>
+      </div>
+      <section class="personal-dict-editor">
+        <div class="personal-dict-editor-head">
+          <span>削除</span>
+          <span>ワード</span>
+          <span>説明</span>
+          <span>メモ欄</span>
+        </div>
+        <div id="personalDictEditorBody" class="personal-dict-editor-body"></div>
+      </section>
+      <div class="card-footer-actions drawer-footer-actions">
+        <button id="personalDictDrawerCancelBtn" class="ghost" type="button"><span class="btn-border-label">キャンセル</span></button>
+        <button id="personalDictDrawerSaveBtn" type="button"><span class="btn-border-label">保存</span></button>
+      </div>
+    </aside>
 
     <button id="debugToggleBtn" class="debug-toggle hidden" type="button">デバッグ表示</button>
+    <button id="toTopBtn" class="to-top-btn hidden" type="button" aria-label="トップへ戻る"></button>
     <div id="debugBackdrop" class="debug-backdrop hidden"></div>
     <aside id="debugCard" class="panel debug-card-fixed hidden">
       <div class="panel-head">
@@ -219,30 +284,30 @@
         <div class="debug-api-row">
           <label class="api-base-wrap">
             API接続先
-            <input id="apiBaseInput" type="text" placeholder="http://localhost:7071/api" />
+            <input id="apiBaseInput" name="api_base_input" type="text" placeholder="http://localhost:7071/api" />
           </label>
           <label>
             Function Key
-            <input id="functionKeyInput" type="password" placeholder="(任意) x-functions-key" />
+            <input id="functionKeyInput" name="function_key_input" type="password" placeholder="(任意) x-functions-key" />
           </label>
         </div>
         <div class="debug-api-row">
-          <button id="saveApiBtn" class="ghost" type="button">API保存</button>
-          <button id="pingApiBtn" class="ghost" type="button">API疎通確認</button>
+          <button id="saveApiBtn" class="ghost" type="button"><span class="btn-border-label">API保存</span></button>
+          <button id="pingApiBtn" class="ghost" type="button"><span class="btn-border-label">API疎通確認</span></button>
         </div>
         <div class="debug-api-row">
           <label>
             Azure Speech Key
-            <input id="speechKeyInput" type="password" placeholder="Speech resource key" />
+            <input id="speechKeyInput" name="speech_key_input" type="password" placeholder="Speech resource key" />
           </label>
           <label>
             Azure Speech Region
-            <input id="speechRegionInput" type="text" placeholder="japaneast" />
+            <input id="speechRegionInput" name="speech_region_input" type="text" placeholder="japaneast" />
           </label>
         </div>
       </section>
       <div class="debug-actions">
-        <button id="debugProbeBtn" class="ghost tiny" type="button">ディスパッチャ検証</button>
+        <button id="debugProbeBtn" class="ghost tiny" type="button"><span class="btn-border-label">ディスパッチャ検証</span></button>
       </div>
       <p id="debugDictionaryInfo" class="mini-meta">Dictionary: -</p>
       <p id="debugPolicyInfo" class="mini-meta">Policy: -</p>

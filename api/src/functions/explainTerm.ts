@@ -23,6 +23,9 @@ type StructuredExplain = {
 };
 
 type AiStructured = {
+  hoverTip?: string;
+  explain140?: string;
+  context180?: string;
   brief: string;
   contextHint: string;
   unknownDetail: string;
@@ -255,6 +258,9 @@ function looksLikeJsonPayload(text: string): boolean {
   if (!t) return false;
   return (
     (t.startsWith("{") && t.endsWith("}")) ||
+    t.includes('"hoverTip"') ||
+    t.includes('"explain140"') ||
+    t.includes('"context180"') ||
     t.includes('"brief"') ||
     t.includes('"contextHint"') ||
     t.includes('"unknownDetail"')
@@ -286,24 +292,30 @@ function parseAiStructured(raw: string): AiStructured | null {
   for (const target of parseTargets) {
     const parsed = parseJsonFromText<Record<string, unknown>>(target);
     if (!parsed || typeof parsed !== "object") continue;
-    const brief = typeof parsed.brief === "string" ? parsed.brief.trim() : "";
-    const contextHint = typeof parsed.contextHint === "string" ? parsed.contextHint.trim() : "";
-    const unknownDetail = typeof parsed.unknownDetail === "string" ? parsed.unknownDetail.trim() : "";
+    const hoverTip = typeof parsed.hoverTip === "string" ? parsed.hoverTip.trim() : "";
+    const explain140 = typeof parsed.explain140 === "string" ? parsed.explain140.trim() : "";
+    const context180 = typeof parsed.context180 === "string" ? parsed.context180.trim() : "";
+    const brief = typeof parsed.brief === "string" ? parsed.brief.trim() : explain140;
+    const contextHint = typeof parsed.contextHint === "string" ? parsed.contextHint.trim() : context180;
+    const unknownDetail = typeof parsed.unknownDetail === "string" ? parsed.unknownDetail.trim() : context180;
     const smallTalkExamples = Array.isArray(parsed.smallTalkExamples)
       ? parsed.smallTalkExamples.filter((x): x is string => typeof x === "string").map((x) => x.trim()).filter(Boolean).slice(0, 3)
       : [];
-    if (brief || contextHint || unknownDetail || smallTalkExamples.length > 0) {
-      return { brief, contextHint, unknownDetail, smallTalkExamples };
+    if (hoverTip || explain140 || context180 || brief || contextHint || unknownDetail || smallTalkExamples.length > 0) {
+      return { hoverTip, explain140, context180, brief, contextHint, unknownDetail, smallTalkExamples };
     }
   }
 
   // 2) tolerant extraction for malformed JSON-like text
   if (looksLikeJsonPayload(text)) {
-    const brief = extractJsonLikeField(text, "brief");
-    const contextHint = extractJsonLikeField(text, "contextHint");
-    const unknownDetail = extractJsonLikeField(text, "unknownDetail");
-    if (brief || contextHint || unknownDetail) {
-      return { brief, contextHint, unknownDetail, smallTalkExamples: [] };
+    const hoverTip = extractJsonLikeField(text, "hoverTip");
+    const explain140 = extractJsonLikeField(text, "explain140");
+    const context180 = extractJsonLikeField(text, "context180");
+    const brief = extractJsonLikeField(text, "brief") || explain140;
+    const contextHint = extractJsonLikeField(text, "contextHint") || context180;
+    const unknownDetail = extractJsonLikeField(text, "unknownDetail") || context180;
+    if (hoverTip || explain140 || context180 || brief || contextHint || unknownDetail) {
+      return { hoverTip, explain140, context180, brief, contextHint, unknownDetail, smallTalkExamples: [] };
     }
   }
 
@@ -465,7 +477,7 @@ export async function explainTerm(request: HttpRequest, context: InvocationConte
           {
             role: "system",
             content:
-              "会議用語の補助説明を返す。断定を避ける。必ずJSONオブジェクトのみ返し、形式は {\"brief\":\"...\",\"contextHint\":\"...\",\"unknownDetail\":\"...\",\"smallTalkExamples\":[\"...\",\"...\"]}。briefは用語の基本説明、contextHintは会議文脈での意図補足、unknownDetailは2-3文で平易に説明。smallTalkExamplesは知ったか発言例として使える短文を2件返す。"
+              "会議用語の補助説明を返す。必ずJSONオブジェクトのみ返す。形式は {\"hoverTip\":\"...\",\"explain140\":\"...\",\"context180\":\"...\",\"smallTalkExamples\":[\"...\",\"...\"]}。hoverTipは45文字前後、explain140は140文字前後、context180は180文字前後。重要キーワードは <b><u>キーワード</u></b> で装飾する。断定しすぎず、会議を止めない実務文体。"
           },
           {
             role: "user",
@@ -475,6 +487,7 @@ export async function explainTerm(request: HttpRequest, context: InvocationConte
               toPromptBlock("target_term", term, 120),
               toPromptBlock("meeting_context", meetingContext, 20000),
               baseline,
+              "辞書未登録語として、まず意味を短く示し、次に会議文脈での意図を説明してください。",
               "smallTalkExamples は会議文脈に沿った短文を2件。語尾は柔らかく、断定しすぎない。",
             ].join("\n\n")
           }
@@ -484,18 +497,20 @@ export async function explainTerm(request: HttpRequest, context: InvocationConte
       );
 
       const aiStructured = parseAiStructured(detail);
-      const briefRaw = aiStructured?.brief ?? "";
-      const contextHintRaw = aiStructured?.contextHint ?? "";
-      const unknownDetailRaw = aiStructured?.unknownDetail ?? "";
+      const hoverTipRaw = aiStructured?.hoverTip ?? "";
+      const explain140Raw = aiStructured?.explain140 ?? aiStructured?.brief ?? "";
+      const context180Raw = aiStructured?.context180 ?? aiStructured?.contextHint ?? "";
+      const unknownDetailRaw = aiStructured?.unknownDetail ?? context180Raw;
       const cleanedDetail = postProcessExplainFromAi(detail.trim(), term);
       const safeFallbackSeed =
         cleanedDetail && !looksLikeJsonPayload(cleanedDetail)
           ? cleanedDetail
           : estimateTermMeaning(term, meetingContext);
       const fallback = fallbackStructuredExplain(term, meetingContext, safeFallbackSeed);
-      const brief = briefRaw ? normalizeSentence(briefRaw) : dictStructured?.brief ?? fallback.brief;
-      const contextHint = contextHintRaw ? normalizeSentence(contextHintRaw) : dictStructured?.contextHint ?? fallback.contextHint;
+      const brief = explain140Raw ? normalizeSentence(explain140Raw) : dictStructured?.brief ?? fallback.brief;
+      const contextHint = context180Raw ? normalizeSentence(context180Raw) : dictStructured?.contextHint ?? fallback.contextHint;
       const unknownDetail = unknownDetailRaw ? unknownDetailRaw : dictStructured?.unknownDetail ?? fallback.unknownDetail;
+      const hoverTip = hoverTipRaw ? normalizeSentence(hoverTipRaw) : brief;
       const smallTalkExamples = aiStructured?.smallTalkExamples?.length
         ? aiStructured.smallTalkExamples
         : dictStructured?.smallTalkExamples ?? fallback.smallTalkExamples;
@@ -513,6 +528,9 @@ export async function explainTerm(request: HttpRequest, context: InvocationConte
       if (brief) {
         return json(200, {
           detail: `${brief}\n${contextHint}`,
+          hoverTip,
+          explain140: brief,
+          context180: contextHint,
           brief,
           contextHint,
           unknownDetail,

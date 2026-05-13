@@ -43,6 +43,8 @@ export type AiChatOptions = {
   disableThinking?: boolean;
 };
 
+const AI_HTTP_TIMEOUT_MS = Number(process.env.MW_AI_HTTP_TIMEOUT_MS ?? 25000);
+
 function normalizeUrl(url: string): string {
   return url.endsWith("/") ? url.slice(0, -1) : url;
 }
@@ -186,6 +188,22 @@ function buildCompatChatUrl(baseUrl: string): string {
   return `${normalized}/v1/chat/completions`;
 }
 
+async function fetchWithTimeout(url: string, init: RequestInit, timeoutMs = AI_HTTP_TIMEOUT_MS): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort("timeout"), Math.max(1000, timeoutMs));
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } catch (error) {
+    const text = String(error);
+    if (/AbortError|timeout/i.test(text)) {
+      throw new Error(`AI request timeout after ${Math.max(1000, timeoutMs)}ms`);
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function callAzureOpenAi(
   cfg: AzureOpenAiConfig,
   messages: ChatMessage[],
@@ -203,7 +221,7 @@ async function callAzureOpenAi(
     requestBody.response_format = { type: "json_object" };
   }
 
-  const response = await fetch(url, {
+  const response = await fetchWithTimeout(url, {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -253,7 +271,7 @@ async function callOpenAiCompat(
     authorization: `Bearer ${cfg.apiKey}`
   };
 
-  let response = await fetch(url, {
+  let response = await fetchWithTimeout(url, {
     method: "POST",
     headers,
     body: JSON.stringify(requestBody)
@@ -272,7 +290,7 @@ async function callOpenAiCompat(
       context.warn("Provider rejected `thinking` parameter. Retrying without it.");
       const retryBody = { ...requestBody };
       delete (retryBody as Record<string, unknown>).thinking;
-      response = await fetch(url, {
+      response = await fetchWithTimeout(url, {
         method: "POST",
         headers,
         body: JSON.stringify(retryBody)

@@ -1,12 +1,14 @@
 # Security Hardening Checklist
 
 ## 1. Authentication
-- Set `MW_AUTH_LEVEL=function` in Function App settings.
+- Auth default is `function` (secure-by-default).
+- Set `MW_AUTH_LEVEL=anonymous` only for local/dev verification.
 - Use Function key from frontend only in controlled environment.
 - Prefer API Management in front of Functions for production.
 
 ## 2. Rate Limiting
-- Set `MW_ENABLE_RATE_LIMIT=1`.
+- Rate limit is enabled by default.
+- Set `MW_ENABLE_RATE_LIMIT=0` only for controlled local tests.
 - Optional tuning:
   - `MW_RATE_WINDOW_MS` (default: `60000`)
   - `MW_RATE_LIMIT_PER_WINDOW` (default: `120`)
