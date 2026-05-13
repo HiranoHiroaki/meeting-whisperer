@@ -10,7 +10,8 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: './api' # Azure Functions project path
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './api_publish' # prepared deployment package path
+  AZURE_FUNCTIONAPP_SOURCE_PATH: './api'
   NODE_VERSION: '22.x'
 
 jobs:
@@ -34,11 +35,25 @@ jobs:
       - name: 'Resolve Project Dependencies Using Npm'
         shell: bash
         run: |
-          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+          pushd './${{ env.AZURE_FUNCTIONAPP_SOURCE_PATH }}'
           npm ci
           npm run build --if-present
           npm run test --if-present
+          # Keep runtime dependencies only for deploy package.
+          npm prune --omit=dev
           popd
+
+      - name: Prepare deploy package (no remote build required)
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}"
+          mkdir -p "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}"
+          cp "${{ env.AZURE_FUNCTIONAPP_SOURCE_PATH }}/host.json" "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/"
+          cp "${{ env.AZURE_FUNCTIONAPP_SOURCE_PATH }}/package.json" "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/"
+          cp "${{ env.AZURE_FUNCTIONAPP_SOURCE_PATH }}/package-lock.json" "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/"
+          cp -R "${{ env.AZURE_FUNCTIONAPP_SOURCE_PATH }}/dist" "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/dist"
+          cp -R "${{ env.AZURE_FUNCTIONAPP_SOURCE_PATH }}/node_modules" "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/node_modules"
 
       - name: Login to Azure
         uses: azure/login@v3
@@ -138,9 +153,8 @@ jobs:
           app-name: 'Shittaka'
           sku: 'flexconsumption'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          # Flex Consumption requires OneDeploy remote build.
-          remote-build: true
-          respect-funcignore: true
+          remote-build: false
+          respect-funcignore: false
 
       - name: Wait before retry
         if: steps.deploy1.outcome == 'failure'
@@ -165,8 +179,8 @@ jobs:
           app-name: 'Shittaka'
           sku: 'flexconsumption'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          remote-build: true
-          respect-funcignore: true
+          remote-build: false
+          respect-funcignore: false
 
       - name: Show OneDeploy diagnostics on failure
         if: steps.deploy1.outcome == 'failure' && steps.deploy2.outcome == 'failure'
