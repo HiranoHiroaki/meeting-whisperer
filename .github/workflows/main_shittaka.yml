@@ -38,8 +38,6 @@ jobs:
           npm ci
           npm run build --if-present
           npm run test --if-present
-          # Keep deployment package lean and avoid large OneDeploy payloads.
-          npm prune --omit=dev
           popd
 
       - name: Login to Azure
@@ -49,13 +47,89 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: 'Run Azure Functions Action'
+      - name: Resolve Function App resource group
+        id: rg
+        shell: bash
+        run: |
+          set -euo pipefail
+          RG="$(az functionapp show --name 'Shittaka' --query resourceGroup -o tsv)"
+          echo "resource_group=$RG" >> "$GITHUB_OUTPUT"
+          echo "Resolved resource group: $RG"
+
+      - name: Preflight app settings (sanitized)
+        shell: bash
+        run: |
+          set -euo pipefail
+          az functionapp config appsettings list \
+            --resource-group "${{ steps.rg.outputs.resource_group }}" \
+            --name 'Shittaka' \
+            --query "[?name=='AzureWebJobsStorage' || name=='FUNCTIONS_WORKER_RUNTIME' || name=='FUNCTIONS_EXTENSION_VERSION'].{name:name, hasValue:(value!=null && value!='')}" \
+            -o table
+
+      - name: Restart Function App before deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          az functionapp restart \
+            --resource-group "${{ steps.rg.outputs.resource_group }}" \
+            --name 'Shittaka'
+
+      - name: 'Run Azure Functions Action (attempt 1)'
+        id: deploy1
+        continue-on-error: true
         uses: Azure/functions-action@v1
-        id: fa
         with:
           app-name: 'Shittaka'
-          slot-name: 'Production'
           sku: 'flexconsumption'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
           # Flex Consumption requires OneDeploy remote build.
           remote-build: true
+          respect-funcignore: true
+
+      - name: Wait before retry
+        if: steps.deploy1.outcome == 'failure'
+        shell: bash
+        run: sleep 20
+
+      - name: Restart Function App before deploy retry
+        if: steps.deploy1.outcome == 'failure'
+        shell: bash
+        run: |
+          set -euo pipefail
+          az functionapp restart \
+            --resource-group "${{ steps.rg.outputs.resource_group }}" \
+            --name 'Shittaka'
+
+      - name: 'Run Azure Functions Action (attempt 2)'
+        if: steps.deploy1.outcome == 'failure'
+        id: deploy2
+        continue-on-error: true
+        uses: Azure/functions-action@v1
+        with:
+          app-name: 'Shittaka'
+          sku: 'flexconsumption'
+          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          remote-build: true
+          respect-funcignore: true
+
+      - name: Show OneDeploy diagnostics on failure
+        if: steps.deploy1.outcome == 'failure' && steps.deploy2.outcome == 'failure'
+        shell: bash
+        run: |
+          set +e
+          APP_ID="$(az functionapp show --name 'Shittaka' --resource-group "${{ steps.rg.outputs.resource_group }}" --query id -o tsv)"
+          echo "Function App id: $APP_ID"
+          az rest --method get --url "https://management.azure.com${APP_ID}/extensions/onedeploy?api-version=2022-03-01" -o jsonc
+          echo "Listing deployment app settings (sanitized):"
+          az functionapp config appsettings list \
+            --resource-group "${{ steps.rg.outputs.resource_group }}" \
+            --name 'Shittaka' \
+            --query "[?contains(name,'WEBSITE_') || name=='AzureWebJobsStorage' || contains(name,'SCM_') || contains(name,'ENABLE_ORYX')].{name:name, hasValue:(value!=null && value!='')}" \
+            -o table
+
+      - name: Fail job if both deploy attempts failed
+        if: steps.deploy1.outcome == 'failure' && steps.deploy2.outcome == 'failure'
+        shell: bash
+        run: |
+          echo "Deployment failed on both attempts."
+          exit 1

@@ -1,0 +1,11 @@
+# Local-only files
+local.settings.json
+*.log
+
+# Build-time sources (runtime uses dist/)
+src/
+**/*.ts
+tsconfig.json
+
+# Dependencies are restored by remote build
+node_modules/
