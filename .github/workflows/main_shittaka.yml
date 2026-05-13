@@ -67,8 +67,60 @@ jobs:
           az functionapp config appsettings list \
             --resource-group "${{ steps.rg.outputs.resource_group }}" \
             --name 'Shittaka' \
-            --query "[?name=='AzureWebJobsStorage' || name=='FUNCTIONS_WORKER_RUNTIME' || name=='FUNCTIONS_EXTENSION_VERSION'].{name:name, hasValue:(value!=null && value!='')}" \
+            --query "[?name=='AzureWebJobsStorage' || name=='DEPLOYMENT_STORAGE_CONNECTION_STRING' || name=='FUNCTIONS_WORKER_RUNTIME' || name=='FUNCTIONS_EXTENSION_VERSION'].{name:name, hasValue:(value!=null && value!='')}" \
             -o table
+
+      - name: Sync deployment storage connection string and validate storage access
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP_RG="${{ steps.rg.outputs.resource_group }}"
+          APP_NAME='Shittaka'
+
+          AZW="$(az functionapp config appsettings list --resource-group "$APP_RG" --name "$APP_NAME" --query "[?name=='AzureWebJobsStorage'].value | [0]" -o tsv)"
+          if [ -z "${AZW:-}" ] || [ "$AZW" = "null" ]; then
+            echo "AzureWebJobsStorage is missing on Function App."
+            exit 1
+          fi
+
+          DEPLOY_CONN="$(az functionapp config appsettings list --resource-group "$APP_RG" --name "$APP_NAME" --query "[?name=='DEPLOYMENT_STORAGE_CONNECTION_STRING'].value | [0]" -o tsv)"
+          if [ "$DEPLOY_CONN" != "$AZW" ]; then
+            echo "DEPLOYMENT_STORAGE_CONNECTION_STRING is missing or out-of-sync. Updating from AzureWebJobsStorage."
+            az functionapp config appsettings set \
+              --resource-group "$APP_RG" \
+              --name "$APP_NAME" \
+              --settings "DEPLOYMENT_STORAGE_CONNECTION_STRING=$AZW" \
+              --output none
+          else
+            echo "DEPLOYMENT_STORAGE_CONNECTION_STRING already in sync."
+          fi
+
+          STORAGE_ACCOUNT="$(echo "$AZW" | sed -n 's/.*AccountName=\([^;]*\).*/\1/p')"
+          if [ -z "${STORAGE_ACCOUNT:-}" ]; then
+            echo "Could not parse AccountName from AzureWebJobsStorage."
+            exit 1
+          fi
+
+          STORAGE_RG="$(az storage account list --query "[?name=='$STORAGE_ACCOUNT'].resourceGroup | [0]" -o tsv)"
+          if [ -z "${STORAGE_RG:-}" ] || [ "$STORAGE_RG" = "null" ]; then
+            echo "Could not resolve resource group for storage account: $STORAGE_ACCOUNT"
+            exit 1
+          fi
+
+          SHARED_KEY_ALLOWED="$(az storage account show --name "$STORAGE_ACCOUNT" --resource-group "$STORAGE_RG" --query "allowSharedKeyAccess" -o tsv)"
+          echo "Deployment storage account: $STORAGE_ACCOUNT (allowSharedKeyAccess=$SHARED_KEY_ALLOWED)"
+          if [ "$SHARED_KEY_ALLOWED" = "false" ]; then
+            echo "allowSharedKeyAccess=false on deployment storage account. OneDeploy with connection string auth will fail."
+            exit 1
+          fi
+
+          # Fail fast if connection string itself is invalid/stale.
+          az storage container list \
+            --connection-string "$AZW" \
+            --num-results 1 \
+            --only-show-errors \
+            --output none
+          echo "Storage access check passed."
 
       - name: Restart Function App before deploy
         shell: bash
