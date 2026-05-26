@@ -98,6 +98,23 @@ const CONVERSATIONAL_ENDINGS = [
   "なくて",
 ];
 const TERM_STOPWORDS = new Set(["tab_audio", "mic", "speaker", "unknown_speaker"]);
+const MAX_TERM_WORDS = 4;
+const NON_TERM_EXACT_STOPWORDS = new Set(
+  [
+    "置いていかれる",
+    "逃がせる",
+    "あとで読む",
+    "別functionに切る",
+    "全文投げずに",
+    "削れる",
+    "結構",
+    "先にやれば",
+    "未知語抽出",
+    "要約",
+    "爆発しそう",
+    "長時間定例"
+  ].map((x) => x.toLowerCase())
+);
 
 function isHeuristicFallbackEnabled(): boolean {
   return process.env.MW_ENABLE_HEURISTIC_FALLBACK === "1";
@@ -210,7 +227,7 @@ function sanitizeExtractedTerms(items: unknown): ExtractedTerm[] {
     if (!term) {
       continue;
     }
-    if (!isValidTermCandidate(term)) {
+    if (!isValidAiTermCandidate(term)) {
       continue;
     }
 
@@ -268,12 +285,34 @@ function isLikelyConversationPhrase(term: string): boolean {
   return CONVERSATIONAL_ENDINGS.some((s) => t.endsWith(s));
 }
 
-function isValidTermCandidate(term: string): boolean {
+function isLikelyNonTermFragment(term: string): boolean {
   const t = term.trim();
+  if (!t) return false;
+  const lower = t.toLowerCase();
+
+  if (NON_TERM_EXACT_STOPWORDS.has(lower)) return true;
+  if (/^[ぁ-んー]+$/.test(t)) return true;
+  if (/^(?:あとで|先に|いったん|とりあえず)/.test(t)) return true;
+  if (/(?:れる|られる|せる|しそう|する|した|して|たい|ない|ます|でした|ですか)$/.test(t)) return true;
+
+  return false;
+}
+
+function isValidTermCandidate(term: string): boolean {
+  const t = term.replace(/\s+/g, " ").trim();
   if (!t) return false;
   if (TERM_STOPWORDS.has(t.toLowerCase())) return false;
   if (t.length < 2 || t.length > 40) return false;
-  if (/\s/.test(t)) return false;
+
+  const wordCount = t.split(" ").filter(Boolean).length;
+  if (wordCount > MAX_TERM_WORDS) return false;
+
+  // 複合語は許可するが、記号だけの連結は除外する。
+  if (wordCount > 1) {
+    const hasWordLikeToken = /[A-Za-z0-9一-龯ぁ-んァ-ヶー]/.test(t);
+    if (!hasWordLikeToken) return false;
+  }
+
   if (/[<>"'`]/.test(t)) return false;
   if (isLikelyConversationPhrase(t)) return false;
 
@@ -284,6 +323,12 @@ function isValidTermCandidate(term: string): boolean {
 
   // 用語としての最低条件: 英大文字略語 or 漢字/カタカナ or 技術記号混在
   return hasAsciiAcronym || hasKanji || hasKatakana || hasCommonTechMark;
+}
+
+function isValidAiTermCandidate(term: string): boolean {
+  if (!isValidTermCandidate(term)) return false;
+  if (isLikelyNonTermFragment(term)) return false;
+  return true;
 }
 
 function canonicalizeToFixedTerm(term: string, fixedTerms: ExtractedTerm[]): string {
@@ -318,7 +363,7 @@ function parseTermsFromReasoningText(text: string): ExtractedTerm[] {
     const term = m[1].trim();
     const desc = m[2].trim();
     if (!term || !desc) continue;
-    if (!isValidTermCandidate(term)) continue;
+    if (!isValidAiTermCandidate(term)) continue;
 
     out.push({
       term,
@@ -374,9 +419,6 @@ export async function extractTerms(request: HttpRequest, context: InvocationCont
   const narrowedCategory =
     topFixed && (topFixed.score ?? 0) >= 90 ? topFixed.dispatcher?.category ?? null : null;
   const termMap = new Map<string, ExtractedTerm>();
-  for (const row of personalTerms) {
-    termMap.set(row.term.toLowerCase(), row);
-  }
   for (const row of fixedProfileTerms) {
     const k = row.term.toLowerCase();
     if (!termMap.has(k)) {
@@ -398,6 +440,15 @@ export async function extractTerms(request: HttpRequest, context: InvocationCont
     }
   }
 
+  // Personal dictionary must not override fixed/dispatcher terms with the same key.
+  for (const row of personalTerms) {
+    const k = row.term.toLowerCase();
+    if (!termMap.has(k)) {
+      termMap.set(k, row);
+    }
+    if (termMap.size >= MAX_TERM_CHIPS) break;
+  }
+
   if (!skipAi && hasAzureOpenAiConfig()) {
     try {
       const domain = meetingDomainField.value || "業務";
@@ -406,7 +457,7 @@ export async function extractTerms(request: HttpRequest, context: InvocationCont
           {
             role: "system",
             content:
-              "あなたは会議中の理解補助AIです。未知語候補を最大5件抽出してください。断定を避け、summaryは120文字程度で簡潔にし、会議を止めない表現にしてください。必ずJSONオブジェクトのみ返し、形式は {\"terms\":[{\"term\":\"...\",\"summary\":\"...\",\"score\":0.0,\"reasons\":[\"...\"]}]} とすること。"
+              "あなたは会議中の理解補助AIです。未知語候補を最大5件抽出してください。抽出対象は専門語・業界固有語・略語・固有名詞に限定してください。一般的な動詞/形容詞/会話断片（例: 置いていかれる、逃がせる、あとで読む、要約）は抽出しないでください。断定を避け、summaryは120文字程度で簡潔にし、会議を止めない表現にしてください。必ずJSONオブジェクトのみ返し、形式は {\"terms\":[{\"term\":\"...\",\"summary\":\"...\",\"score\":0.0,\"reasons\":[\"...\"]}]} とすること。"
           },
           {
             role: "user",
@@ -430,7 +481,7 @@ export async function extractTerms(request: HttpRequest, context: InvocationCont
       if (aiTerms.length > 0 && termMap.size < MAX_TERM_CHIPS) {
         for (const row of aiTerms) {
           const canonicalTerm = canonicalizeToFixedTerm(row.term, fixedProfileTerms);
-          if (!canonicalTerm || !isValidTermCandidate(canonicalTerm)) continue;
+          if (!canonicalTerm || !isValidAiTermCandidate(canonicalTerm)) continue;
           const k = canonicalTerm.toLowerCase();
           if (!termMap.has(k)) {
             termMap.set(k, {

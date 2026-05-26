@@ -1,4 +1,5 @@
 import { InvocationContext } from "@azure/functions";
+import { hasAnyEnv, isPlaceholderValue, readEnv, requireEnv } from "./env.js";
 
 export type ChatMessage = {
   role: "system" | "user" | "assistant";
@@ -45,6 +46,16 @@ export type AiChatOptions = {
 
 const AI_HTTP_TIMEOUT_MS = Number(process.env.MW_AI_HTTP_TIMEOUT_MS ?? 25000);
 
+const AZURE_CORE_ENV = ["AZURE_OPENAI_ENDPOINT", "AZURE_OPENAI_API_KEY", "AZURE_OPENAI_DEPLOYMENT"] as const;
+const COMPAT_CORE_ENV = [
+  "OPENAI_COMPAT_BASE_URL",
+  "OPENAI_COMPAT_API_KEY",
+  "OPENAI_COMPAT_MODEL",
+  "KIMI_BASE_URL",
+  "KIMI_API_KEY",
+  "KIMI_MODEL"
+] as const;
+
 function normalizeUrl(url: string): string {
   return url.endsWith("/") ? url.slice(0, -1) : url;
 }
@@ -54,15 +65,29 @@ function isOpenAiV1Endpoint(url: string): boolean {
   return normalized.endsWith("/openai/v1");
 }
 
-function getAzureConfig(): AzureOpenAiConfig | null {
-  const endpoint = process.env.AZURE_OPENAI_ENDPOINT?.trim();
-  const apiKey = process.env.AZURE_OPENAI_API_KEY?.trim();
-  const deployment = process.env.AZURE_OPENAI_DEPLOYMENT?.trim();
-  const apiVersion = process.env.AZURE_OPENAI_API_VERSION?.trim() || "2024-10-21";
+function resolveCompatEnv(primary: string, alias: string): string {
+  if (readEnv(primary)) {
+    return requireEnv(primary);
+  }
+  if (readEnv(alias)) {
+    return requireEnv(alias);
+  }
+  throw new Error(`Missing required environment variable: ${primary} (or ${alias})`);
+}
 
-  if (!endpoint || !apiKey || !deployment) {
+function getAzureConfig(): AzureOpenAiConfig | null {
+  if (!hasAnyEnv([...AZURE_CORE_ENV, "AZURE_OPENAI_API_VERSION"])) {
     return null;
   }
+
+  const endpoint = requireEnv("AZURE_OPENAI_ENDPOINT");
+  const apiKey = requireEnv("AZURE_OPENAI_API_KEY");
+  const deployment = requireEnv("AZURE_OPENAI_DEPLOYMENT");
+  const apiVersionRaw = readEnv("AZURE_OPENAI_API_VERSION");
+  if (apiVersionRaw && isPlaceholderValue(apiVersionRaw)) {
+    throw new Error("Environment variable AZURE_OPENAI_API_VERSION is placeholder text.");
+  }
+  const apiVersion = apiVersionRaw || "2024-10-21";
 
   if (isOpenAiV1Endpoint(endpoint)) {
     return null;
@@ -78,11 +103,10 @@ function getAzureConfig(): AzureOpenAiConfig | null {
 }
 
 function getCompatConfig(): OpenAiCompatConfig | null {
-  const baseUrl = (process.env.OPENAI_COMPAT_BASE_URL ?? process.env.KIMI_BASE_URL ?? "").trim();
-  const apiKey = (process.env.OPENAI_COMPAT_API_KEY ?? process.env.KIMI_API_KEY ?? "").trim();
-  const model = (process.env.OPENAI_COMPAT_MODEL ?? process.env.KIMI_MODEL ?? "").trim();
-
-  if (baseUrl && apiKey && model) {
+  if (hasAnyEnv([...COMPAT_CORE_ENV])) {
+    const baseUrl = resolveCompatEnv("OPENAI_COMPAT_BASE_URL", "KIMI_BASE_URL");
+    const apiKey = resolveCompatEnv("OPENAI_COMPAT_API_KEY", "KIMI_API_KEY");
+    const model = resolveCompatEnv("OPENAI_COMPAT_MODEL", "KIMI_MODEL");
     return {
       provider: "openai_compat",
       baseUrl,
@@ -92,10 +116,11 @@ function getCompatConfig(): OpenAiCompatConfig | null {
   }
 
   // Azure Foundry v1 style endpoint can also be called as OpenAI-compatible API.
-  const azureEndpoint = process.env.AZURE_OPENAI_ENDPOINT?.trim();
-  const azureApiKey = process.env.AZURE_OPENAI_API_KEY?.trim();
-  const azureDeployment = process.env.AZURE_OPENAI_DEPLOYMENT?.trim();
-  if (azureEndpoint && azureApiKey && azureDeployment && isOpenAiV1Endpoint(azureEndpoint)) {
+  const azureEndpointRaw = readEnv("AZURE_OPENAI_ENDPOINT");
+  if (azureEndpointRaw && isOpenAiV1Endpoint(azureEndpointRaw)) {
+    const azureEndpoint = requireEnv("AZURE_OPENAI_ENDPOINT");
+    const azureApiKey = requireEnv("AZURE_OPENAI_API_KEY");
+    const azureDeployment = requireEnv("AZURE_OPENAI_DEPLOYMENT");
     return {
       provider: "openai_compat",
       baseUrl: azureEndpoint,

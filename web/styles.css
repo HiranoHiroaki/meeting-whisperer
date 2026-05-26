@@ -215,6 +215,7 @@ h1 {
   border: 1px solid #d9dfeb;
   background: url(./assets/images/bakuhatsu249.png);
   background-repeat: no-repeat;
+  background-size: 100% 105%;
 }
 
 .card-6 {grid-column: 6; grid-row: 1 / span 4; }

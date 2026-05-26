@@ -26,6 +26,12 @@ func start
 ```
 2. In web UI, switch `Mode` to `Live API`.
 
+## Environment Settings Policy
+- Local run: use `E:\Document\meeting-whisperer\api\local.settings.json` (`Values`) so Azure Functions loads them into `process.env`.
+- Azure run: use Function App Settings with the same key names (also surfaced to `process.env`).
+- `local.settings.json` must stay untracked (`.gitignore`).
+- If any API key / connection string / function key is leaked, regenerate it in Azure Portal and replace both Azure App Settings and local `Values`.
+
 ## Provider Smoke Tests (Python)
 ```powershell
 cd E:\Document\meeting-whisperer

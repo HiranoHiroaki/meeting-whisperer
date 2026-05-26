@@ -87,11 +87,11 @@ const state = {
   apiBase: loadApiBase(),
   functionKey: loadFunctionKey(),
   contextId: 0,
-  lastExtractAtMs: 0,
-  lastAiExtractAtMs: 0,
-  extractInFlight: false,
-  extractDebounceTimer: null,
-  lastExtractTextLength: 0,
+  extractMissQueue: [],
+  extractMissInFlight: false,
+  extractBatchBuffer: "",
+  extractBatchInFlight: false,
+  extractBatchTimer: null,
   processedLines: 0,
   totalLines: 0,
   playback: {
@@ -777,10 +777,14 @@ function bootstrapVoiceSession() {
   renderDictionaryDispatcherSummary();
   state.playback.running = true;
   state.playback.paused = false;
-  state.lastExtractAtMs = 0;
-  state.lastAiExtractAtMs = 0;
-  state.extractInFlight = false;
-  state.lastExtractTextLength = 0;
+  state.extractMissQueue = [];
+  state.extractMissInFlight = false;
+  state.extractBatchBuffer = "";
+  state.extractBatchInFlight = false;
+  if (state.extractBatchTimer) {
+    clearTimeout(state.extractBatchTimer);
+    state.extractBatchTimer = null;
+  }
   state.processedLines = 0;
   state.totalLines = 0;
   updateStreamMeta(0, 0);
@@ -791,6 +795,10 @@ function stopVoiceInput(statusText = "停止しました。") {
   const hadVoiceSession = Boolean(transcriptAdapter.isRunning() || state.voice.stream || state.voice.running);
   state.voice.running = false;
   transcriptAdapter.stop();
+  if (state.extractBatchTimer) {
+    clearTimeout(state.extractBatchTimer);
+    state.extractBatchTimer = null;
+  }
   if (state.voice.stream) {
     for (const track of state.voice.stream.getTracks()) track.stop();
     state.voice.stream = null;
@@ -817,88 +825,128 @@ function appendLiveTranscriptLine(text) {
   });
 }
 
-// AI enrichment at most every 12 seconds; dictionary-only on every other call.
-const AI_EXTRACT_MIN_INTERVAL_MS = 12000;
-const EXTRACT_MIN_INTERVAL_MS = 900;
-const EXTRACT_DEBOUNCE_MS = 350;
+// Route A: dictionary-first miss recovery. Route B: every 2s diff batch.
+const EXTRACT_DIFF_BATCH_MS = 2000;
+const EXTRACT_MIN_CHUNK_CHARS = 2;
 
-async function runExtractTermsForCurrentMeeting(contextId) {
-  if (!state.liveMeetingText) {
-    return;
+function isExtractSessionActive(contextId) {
+  return Boolean(state.playback.running && contextId === state.contextId && contextId > 0);
+}
+
+function applyExtractResponse(parsed, sourceTag) {
+  if (!parsed) return;
+  const terms = Array.isArray(parsed.terms) ? parsed.terms : [];
+  if (terms.length > 0) {
+    mergeExtractedTerms(terms);
+    renderTermChips();
   }
-  if (contextId !== state.contextId) {
-    return;
-  }
-  if (state.extractInFlight) {
-    return;
-  }
+  state.liveDebug.dictionary = parsed.dictionary;
+  state.liveDebug.dispatcherPolicy = parsed.dispatcherPolicy;
+  state.liveDebug.extractSource = parsed.source;
+  state.liveDebug.dictionaryMode = parsed.dictionaryMode;
+  state.liveDebug.dictionaryProfile = parsed.dictionaryProfile;
+  state.liveDebug.dispatcherBypassed = parsed.dispatcherBypassed;
+  const nextRoutes = buildRoutesFromExtract(terms, parsed.source);
+  state.liveDebug.routes = { ...state.liveDebug.routes, ...nextRoutes };
+  renderDebugCard();
+  renderDictionaryDispatcherSummary();
+  debugLog("api", `${sourceTag} response`, {
+    source: parsed.source,
+    termCount: terms.length,
+  });
+}
+
+function scheduleBatchDiffExtract(contextId) {
+  if (!isExtractSessionActive(contextId)) return;
+  if (state.extractBatchTimer) return;
+
+  state.extractBatchTimer = setTimeout(() => {
+    state.extractBatchTimer = null;
+    void runBatchDiffExtract(contextId);
+  }, EXTRACT_DIFF_BATCH_MS);
+}
+
+function enqueueExtractForLine(cleanText) {
+  const chunk = String(cleanText || "").trim();
+  if (!chunk || chunk.length < EXTRACT_MIN_CHUNK_CHARS) return;
+
+  const contextId = state.contextId;
+  if (!isExtractSessionActive(contextId)) return;
+
+  // Route A: run dictionary-first then AI only when dictionary misses.
+  state.extractMissQueue.push(chunk);
+  void drainMissQueue(contextId);
+
+  // Route B: independent 2s batch over transcript diffs.
+  state.extractBatchBuffer = state.extractBatchBuffer
+    ? `${state.extractBatchBuffer}\n${chunk}`
+    : chunk;
+  scheduleBatchDiffExtract(contextId);
+}
+
+async function drainMissQueue(contextId) {
+  if (!isExtractSessionActive(contextId)) return;
+  if (state.extractMissInFlight) return;
+  const chunk = String(state.extractMissQueue.shift() || "").trim();
+  if (!chunk) return;
 
   try {
-    state.extractInFlight = true;
-    state.lastExtractAtMs = Date.now();
-    state.lastExtractTextLength = state.liveMeetingText.length;
-
-    // Phase 1 – dictionary-only (fast). Shows chips without waiting for AI.
-    const fastPayload = { ...buildExtractRequestPayload(state.liveMeetingText), skipAi: true };
+    state.extractMissInFlight = true;
+    const fastPayload = { ...buildExtractRequestPayload(chunk), skipAi: true };
     const fastResponse = await postJson(`${state.apiBase}/extractTerms`, fastPayload);
-    if (contextId !== state.contextId) {
-      debugLog("api", "extractTerms fast ignored stale context", { contextId, current: state.contextId });
-      return;
-    }
+    if (!isExtractSessionActive(contextId)) return;
     const fastParsed = parseExtractPayload(fastResponse);
+    applyExtractResponse(fastParsed, "extractTerms miss-route dictionary");
+
     if (fastParsed.terms.length > 0) {
-      mergeExtractedTerms(fastParsed.terms);
-      renderTermChips();
-      debugLog("api", "extractTerms fast response", { termCount: fastParsed.terms.length });
-    }
-
-    // Phase 2 – full AI extract (rate-limited). Enriches with AI-detected unknown terms.
-    const timeSinceAiMs = Date.now() - state.lastAiExtractAtMs;
-    if (timeSinceAiMs < AI_EXTRACT_MIN_INTERVAL_MS) {
-      if (fastParsed.terms.length === 0) {
-        setRunStatus("抽出完了: 用語検出なし");
-      } else {
-        setRunStatus(`辞書抽出成功: ${fastParsed.terms.length}件`);
-      }
       return;
     }
 
-    const fullResponse = await postJson(`${state.apiBase}/extractTerms`, buildExtractRequestPayload(state.liveMeetingText));
-    if (contextId !== state.contextId) {
-      debugLog("api", "extractTerms full ignored stale context", { contextId, current: state.contextId });
-      return;
-    }
-    const parsed = parseExtractPayload(fullResponse);
-    const terms = parsed.terms.map((x) => x.term);
-    mergeExtractedTerms(parsed.terms);
-    state.liveDebug.dictionary = parsed.dictionary;
-    state.liveDebug.dispatcherPolicy = parsed.dispatcherPolicy;
-    state.liveDebug.extractSource = parsed.source;
-    state.liveDebug.dictionaryMode = parsed.dictionaryMode;
-    state.liveDebug.dictionaryProfile = parsed.dictionaryProfile;
-    state.liveDebug.dispatcherBypassed = parsed.dispatcherBypassed;
-    state.liveDebug.routes = buildRoutesFromExtract(parsed.terms, parsed.source);
-    state.lastAiExtractAtMs = Date.now();
-    renderDebugCard();
-    renderDictionaryDispatcherSummary();
-
-    debugLog("api", "extractTerms full response", {
-      source: fullResponse?.source ?? "-",
-      termCount: terms.length,
-    });
-
-    if (terms.length === 0) {
-      setRunStatus("抽出完了: 用語検出なし");
-      return;
-    }
-
-    renderTermChips();
-    setRunStatus("抽出成功。");
+    const fullResponse = await postJson(`${state.apiBase}/extractTerms`, buildExtractRequestPayload(chunk));
+    if (!isExtractSessionActive(contextId)) return;
+    const fullParsed = parseExtractPayload(fullResponse);
+    applyExtractResponse(fullParsed, "extractTerms miss-route ai");
   } catch (error) {
-    debugError("api", "extractTerms failed", { error: String(error) });
-    setRunStatus(`抽出失敗: ${String(error)}`);
+    debugError("api", "extractTerms miss-route failed", { error: String(error) });
   } finally {
-    state.extractInFlight = false;
+    state.extractMissInFlight = false;
+    if (state.extractMissQueue.length > 0 && isExtractSessionActive(contextId)) {
+      void drainMissQueue(contextId);
+    }
+  }
+}
+
+async function runBatchDiffExtract(contextId) {
+  if (!isExtractSessionActive(contextId)) return;
+  if (state.extractBatchInFlight) {
+    scheduleBatchDiffExtract(contextId);
+    return;
+  }
+
+  const chunk = String(state.extractBatchBuffer || "").trim();
+  if (!chunk) return;
+  state.extractBatchBuffer = "";
+
+  try {
+    state.extractBatchInFlight = true;
+    const response = await postJson(`${state.apiBase}/extractTerms`, buildExtractRequestPayload(chunk));
+    if (!isExtractSessionActive(contextId)) return;
+    const parsed = parseExtractPayload(response);
+    applyExtractResponse(parsed, "extractTerms 2s-diff-route");
+    if (parsed.terms.length > 0) {
+      setRunStatus(`抽出更新: ${parsed.terms.length}件`);
+    }
+  } catch (error) {
+    // Re-queue chunk on transient failure.
+    state.extractBatchBuffer = state.extractBatchBuffer
+      ? `${chunk}\n${state.extractBatchBuffer}`
+      : chunk;
+    debugError("api", "extractTerms 2s-diff-route failed", { error: String(error) });
+  } finally {
+    state.extractBatchInFlight = false;
+    if (state.extractBatchBuffer.trim() && isExtractSessionActive(contextId)) {
+      scheduleBatchDiffExtract(contextId);
+    }
   }
 }
 
@@ -1076,7 +1124,7 @@ function appendLine(event) {
   updateStreamMeta(state.processedLines, state.totalLines || state.processedLines);
   upsertSynchronousTermsFromLine(event);
   refreshStreamHighlights();
-  scheduleExtractRefresh("line_appended");
+  enqueueExtractForLine(cleanText);
 }
 
 function refreshStreamHighlights() {
@@ -1131,39 +1179,6 @@ function upsertSynchronousTermsFromLine(event) {
   renderTermChips();
 }
 
-function scheduleExtractRefresh(reason = "unspecified") {
-  if (!state.playback.running) return;
-  if (!state.liveMeetingText) return;
-  if (state.contextId <= 0) return;
-
-  if (state.extractDebounceTimer) {
-    clearTimeout(state.extractDebounceTimer);
-    state.extractDebounceTimer = null;
-  }
-
-  const now = Date.now();
-  const wait = Math.max(EXTRACT_DEBOUNCE_MS, EXTRACT_MIN_INTERVAL_MS - (now - state.lastExtractAtMs));
-  const contextId = state.contextId;
-
-  state.extractDebounceTimer = setTimeout(() => {
-    state.extractDebounceTimer = null;
-    if (contextId !== state.contextId) return;
-    if (!state.playback.running) return;
-    if (!state.liveMeetingText) return;
-    const nextLen = state.liveMeetingText.length;
-    const delta = nextLen - state.lastExtractTextLength;
-    if (delta <= 0) return;
-    if (delta < 12 && state.processedLines > 0) return;
-    debugLog("api", "scheduleExtractRefresh firing", {
-      reason,
-      textLength: nextLen,
-      deltaChars: delta,
-      processedLines: state.processedLines
-    });
-    void runExtractTermsForCurrentMeeting(contextId);
-  }, wait);
-}
-
 function upsertTermChip(term) {
   const existing = state.terms.includes(term);
   if (!existing) {
@@ -1213,9 +1228,8 @@ function renderTermChips() {
   for (const term of state.terms) {
     const chip = document.createElement("button");
     const meta = state.termMeta?.[term] || {};
-    const source = String(meta.source || meta.origin || "");
     const isLoading = Boolean(state.explainPrefetchInFlight?.[term]);
-    const isPersonal = source === "personal_dictionary";
+    const isPersonal = Boolean(findPersonalDictionaryEntry(term));
     chip.className = `term-chip${state.activeTerm === term ? " active" : ""}${isLoading ? " loading" : ""}${isPersonal ? " personal" : ""}`;
     chip.textContent = term;
     chip.title = getTermHelpMessage(term);
@@ -1856,6 +1870,16 @@ function findPersonalDictionaryEntry(term) {
   return null;
 }
 
+function isPersonalDominantForTerm(term) {
+  const key = String(term || "").trim();
+  if (!key) return false;
+  const meta = state.termMeta?.[key] || {};
+  const source = String(meta.source || "").toLowerCase();
+  const origin = String(meta.origin || "").toLowerCase();
+  const routeSource = String(state.liveDebug?.routes?.[key]?.extract?.source || "").toLowerCase();
+  return source === "personal_dictionary" || origin === "personal_dictionary" || routeSource === "personal_dictionary";
+}
+
 function renderPersonalMemo(term) {
   if (!personalMemoText) return false;
   if (personalMemoTitle) personalMemoTitle.classList.remove("hidden");
@@ -1872,7 +1896,7 @@ function renderPersonalMemo(term) {
 
 function scheduleUnknownExplainPrefetch(term, row) {
   if (!term || !row) return;
-  if (findPersonalDictionaryEntry(term)) return;
+  if (isPersonalDominantForTerm(term) && findPersonalDictionaryEntry(term)) return;
   const source = String(row.source || "").toLowerCase();
   const origin = String(row.origin || "").toLowerCase();
   const isDictionaryBacked =
@@ -1933,7 +1957,7 @@ async function renderTermDetail() {
   const hasPersonalMemo = renderPersonalMemo(state.activeTerm);
 
   const personalEntry = findPersonalDictionaryEntry(state.activeTerm);
-  if (personalEntry && hasPersonalMemo) {
+  if (personalEntry && hasPersonalMemo && isPersonalDominantForTerm(state.activeTerm)) {
     const ownSummary = String(personalEntry.summary || "").trim();
     if (ownSummary) {
       termDetail.innerHTML = sanitizeExplainHtml(ownSummary);
@@ -2157,7 +2181,7 @@ function openPersonalDictDrawer() {
 function renderPersonalDictDrawer() {
   if (!personalDictEditorBody) return;
   const source =
-    personalDictDraft && Object.keys(personalDictDraft).length > 0
+    personalDictDraft && typeof personalDictDraft === "object"
       ? personalDictDraft
       : (state.personalDictionary || {});
   const rows = Object.values(source)
@@ -2187,7 +2211,11 @@ function renderPersonalDictDrawer() {
 
 function savePersonalDictDraft() {
   if (!personalDictEditorBody) return;
-  const next = clonePersonalDictionary(state.personalDictionary || {});
+  const base =
+    personalDictDraft && typeof personalDictDraft === "object"
+      ? personalDictDraft
+      : (state.personalDictionary || {});
+  const next = clonePersonalDictionary(base);
   const memos = personalDictEditorBody.querySelectorAll("textarea.personal-dict-memo[data-term]");
   for (const node of memos) {
     if (!(node instanceof HTMLTextAreaElement)) continue;
@@ -2195,6 +2223,11 @@ function savePersonalDictDraft() {
     if (!term || !next[term]) continue;
     next[term].memo = String(node.value || "").trim();
     next[term].updatedAt = new Date().toISOString();
+  }
+  for (const key of Object.keys(next)) {
+    if (next[key] && typeof next[key] === "object") {
+      delete next[key]._deleteConfirm;
+    }
   }
   state.personalDictionary = next;
   safeStorageSet(PERSONAL_DICT_STORAGE_KEY, JSON.stringify(next));
@@ -2523,9 +2556,9 @@ function generateSupplementDocument() {
 function resetPlayback() {
   stopVoiceInput("待機中");
   stopPlaybackEngine();
-  if (state.extractDebounceTimer) {
-    clearTimeout(state.extractDebounceTimer);
-    state.extractDebounceTimer = null;
+  if (state.extractBatchTimer) {
+    clearTimeout(state.extractBatchTimer);
+    state.extractBatchTimer = null;
   }
   state.contextId += 1;
   state.terms = [];
@@ -2536,10 +2569,10 @@ function resetPlayback() {
   state.liveMeetingText = "";
   state.liveDetails = {};
   state.termSeenSeq = 0;
-  state.lastExtractAtMs = 0;
-  state.lastAiExtractAtMs = 0;
-  state.extractInFlight = false;
-  state.lastExtractTextLength = 0;
+  state.extractMissQueue = [];
+  state.extractMissInFlight = false;
+  state.extractBatchBuffer = "";
+  state.extractBatchInFlight = false;
   state.liveDebug = {
     dictionary: null,
     dispatcherPolicy: null,

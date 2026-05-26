@@ -45,10 +45,14 @@ Copy `local.settings.example.json` to `local.settings.json` and fill:
 - `AZURE_OPENAI_DEPLOYMENT`
 - `AZURE_OPENAI_API_VERSION` (default `2024-10-21`)
 
+Environment source rules:
+- Local development: set values in `local.settings.json` under `Values` (loaded into `process.env` by Functions Core Tools).
+- Azure production: set the same keys in Function App Settings (also exposed as `process.env` at runtime).
+
 Security notes:
-- `local.settings.json` is local-only. Do not paste production keys into shared screenshots/logs.
-- Prefer rotating API keys periodically and use least-privilege keys where possible.
-- `AzureWebJobsStorage` and `AZURE_OPENAI_API_KEY` should be treated as secrets.
+- `local.settings.json` is local-only and gitignored. Never commit keys, connection strings, or function keys.
+- If a key leaks, regenerate/rotate it in Azure Portal first, then replace the corresponding Function App Setting and local `Values`.
+- `AzureWebJobsStorage` and `AZURE_OPENAI_API_KEY` are secrets and must not appear in code, docs, or examples as real values.
 
 ## OpenAI-Compatible Configuration (Kimi etc.)
 If Azure OpenAI is unavailable, set:
