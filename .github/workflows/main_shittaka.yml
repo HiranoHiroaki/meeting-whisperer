@@ -54,37 +54,84 @@ jobs:
           cp -R "${{ env.AZURE_FUNCTIONAPP_SOURCE_PATH }}/dist" "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/dist"
           cp -R "${{ env.AZURE_FUNCTIONAPP_SOURCE_PATH }}/node_modules" "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/node_modules"
 
-      - name: 'Run Azure Functions Action (attempt 1)'
-        id: deploy1
-        continue-on-error: true
-        uses: Azure/functions-action@v1
-        with:
-          app-name: 'Shittaka'
-          sku: 'flexconsumption'
-          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          remote-build: false
-          respect-funcignore: false
-
-      - name: Wait before retry
-        if: steps.deploy1.outcome == 'failure'
-        shell: bash
-        run: sleep 20
-
-      - name: 'Run Azure Functions Action (attempt 2)'
-        if: steps.deploy1.outcome == 'failure'
-        id: deploy2
-        continue-on-error: true
-        uses: Azure/functions-action@v1
-        with:
-          app-name: 'Shittaka'
-          sku: 'flexconsumption'
-          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          remote-build: false
-          respect-funcignore: false
-
-      - name: Fail job if both deploy attempts failed
-        if: steps.deploy1.outcome == 'failure' && steps.deploy2.outcome == 'failure'
+      - name: Create deployment zip
         shell: bash
         run: |
-          echo "Deployment failed on both attempts."
-          exit 1
+          set -euo pipefail
+          rm -f functionapp.zip
+          (cd "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}" && zip -r ../functionapp.zip .)
+          ls -lh functionapp.zip
+
+      - name: Deploy via Kudu ZipDeploy (retry x2)
+        shell: bash
+        env:
+          AZURE_FUNCTIONAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+        run: |
+          set -euo pipefail
+          if [ -z "${AZURE_FUNCTIONAPP_PUBLISH_PROFILE:-}" ]; then
+            echo "Missing secret: AZURE_FUNCTIONAPP_PUBLISH_PROFILE"
+            exit 1
+          fi
+
+          python - <<'PY'
+          import base64
+          import os
+          import sys
+          import time
+          import urllib.request
+          from xml.etree import ElementTree as ET
+
+          profile = os.environ.get("AZURE_FUNCTIONAPP_PUBLISH_PROFILE", "").strip()
+          root = ET.fromstring(profile)
+          target = None
+          for p in root.findall(".//publishProfile"):
+              method = (p.attrib.get("publishMethod") or "").lower()
+              url = p.attrib.get("publishUrl") or ""
+              if "zipdeploy" in method or ".scm." in url:
+                  target = p
+                  break
+          if target is None:
+              target = root.find(".//publishProfile")
+          if target is None:
+              print("No publishProfile entry found")
+              sys.exit(1)
+
+          user = target.attrib.get("userName", "")
+          pwd = target.attrib.get("userPWD", "")
+          publish_url = target.attrib.get("publishUrl", "")
+          if not user or not pwd or not publish_url:
+              print("Publish profile is missing userName/userPWD/publishUrl")
+              sys.exit(1)
+
+          host = publish_url.split(":")[0]
+          if ".scm." not in host:
+              if ".azurewebsites." in host:
+                  host = host.replace(".azurewebsites.", ".scm.azurewebsites.")
+              else:
+                  host = host + ".scm.azurewebsites.net"
+
+          endpoint = f"https://{host}/api/zipdeploy"
+          with open("functionapp.zip", "rb") as f:
+              body = f.read()
+          token = base64.b64encode(f"{user}:{pwd}".encode()).decode()
+          headers = {
+              "Authorization": f"Basic {token}",
+              "Content-Type": "application/zip",
+          }
+
+          last_err = None
+          for i in range(1, 3):
+              print(f"ZipDeploy attempt {i} -> {endpoint}")
+              req = urllib.request.Request(endpoint, data=body, headers=headers, method="POST")
+              try:
+                  with urllib.request.urlopen(req, timeout=300) as resp:
+                      print(f"Deploy accepted. status={resp.status}")
+                      sys.exit(0)
+              except Exception as e:
+                  last_err = e
+                  print(f"Attempt {i} failed: {e}")
+                  if i < 2:
+                      time.sleep(20)
+          print(f"Deployment failed after retries: {last_err}")
+          sys.exit(1)
+          PY
