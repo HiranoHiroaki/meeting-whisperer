@@ -18,6 +18,7 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     permissions:
+      id-token: write
       contents: read
 
     steps:
@@ -54,84 +55,151 @@ jobs:
           cp -R "${{ env.AZURE_FUNCTIONAPP_SOURCE_PATH }}/dist" "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/dist"
           cp -R "${{ env.AZURE_FUNCTIONAPP_SOURCE_PATH }}/node_modules" "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/node_modules"
 
-      - name: Create deployment zip
-        shell: bash
-        run: |
-          set -euo pipefail
-          rm -f functionapp.zip
-          (cd "${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}" && zip -r ../functionapp.zip .)
-          ls -lh functionapp.zip
+      - name: Login to Azure
+        uses: azure/login@v3
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Deploy via Kudu ZipDeploy (retry x2)
+      - name: Resolve Function App resource group
+        id: rg
         shell: bash
-        env:
-          AZURE_FUNCTIONAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
         run: |
           set -euo pipefail
-          if [ -z "${AZURE_FUNCTIONAPP_PUBLISH_PROFILE:-}" ]; then
-            echo "Missing secret: AZURE_FUNCTIONAPP_PUBLISH_PROFILE"
+          RG="$(az functionapp list --query "[?name=='Shittaka'].resourceGroup | [0]" -o tsv)"
+          if [ -z "${RG:-}" ] || [ "$RG" = "null" ]; then
+            echo "Failed to resolve resource group for Function App 'Shittaka'."
+            exit 1
+          fi
+          echo "resource_group=$RG" >> "$GITHUB_OUTPUT"
+          echo "Resolved resource group: $RG"
+
+      - name: Preflight app settings (sanitized)
+        shell: bash
+        run: |
+          set -euo pipefail
+          az functionapp config appsettings list \
+            --resource-group "${{ steps.rg.outputs.resource_group }}" \
+            --name 'Shittaka' \
+            --query "[?name=='AzureWebJobsStorage' || name=='DEPLOYMENT_STORAGE_CONNECTION_STRING' || name=='FUNCTIONS_WORKER_RUNTIME' || name=='FUNCTIONS_EXTENSION_VERSION'].{name:name, hasValue:(value!=null && value!='')}" \
+            -o table
+
+      - name: Sync deployment storage connection string and validate storage access
+        shell: bash
+        run: |
+          set -euo pipefail
+          APP_RG="${{ steps.rg.outputs.resource_group }}"
+          APP_NAME='Shittaka'
+
+          AZW="$(az functionapp config appsettings list --resource-group "$APP_RG" --name "$APP_NAME" --query "[?name=='AzureWebJobsStorage'].value | [0]" -o tsv)"
+          if [ -z "${AZW:-}" ] || [ "$AZW" = "null" ]; then
+            echo "AzureWebJobsStorage is missing on Function App."
             exit 1
           fi
 
-          python - <<'PY'
-          import base64
-          import os
-          import sys
-          import time
-          import urllib.request
-          from xml.etree import ElementTree as ET
+          DEPLOY_CONN="$(az functionapp config appsettings list --resource-group "$APP_RG" --name "$APP_NAME" --query "[?name=='DEPLOYMENT_STORAGE_CONNECTION_STRING'].value | [0]" -o tsv)"
+          if [ "$DEPLOY_CONN" != "$AZW" ]; then
+            echo "DEPLOYMENT_STORAGE_CONNECTION_STRING is missing or out-of-sync. Updating from AzureWebJobsStorage."
+            az functionapp config appsettings set \
+              --resource-group "$APP_RG" \
+              --name "$APP_NAME" \
+              --settings "DEPLOYMENT_STORAGE_CONNECTION_STRING=$AZW" \
+              --output none
+          else
+            echo "DEPLOYMENT_STORAGE_CONNECTION_STRING already in sync."
+          fi
 
-          profile = os.environ.get("AZURE_FUNCTIONAPP_PUBLISH_PROFILE", "").strip()
-          root = ET.fromstring(profile)
-          target = None
-          for p in root.findall(".//publishProfile"):
-              method = (p.attrib.get("publishMethod") or "").lower()
-              url = p.attrib.get("publishUrl") or ""
-              if "zipdeploy" in method or ".scm." in url:
-                  target = p
-                  break
-          if target is None:
-              target = root.find(".//publishProfile")
-          if target is None:
-              print("No publishProfile entry found")
-              sys.exit(1)
+          STORAGE_ACCOUNT="$(echo "$AZW" | sed -n 's/.*AccountName=\([^;]*\).*/\1/p')"
+          if [ -z "${STORAGE_ACCOUNT:-}" ]; then
+            echo "Could not parse AccountName from AzureWebJobsStorage."
+            exit 1
+          fi
 
-          user = target.attrib.get("userName", "")
-          pwd = target.attrib.get("userPWD", "")
-          publish_url = target.attrib.get("publishUrl", "")
-          if not user or not pwd or not publish_url:
-              print("Publish profile is missing userName/userPWD/publishUrl")
-              sys.exit(1)
+          STORAGE_RG="$(az storage account list --query "[?name=='$STORAGE_ACCOUNT'].resourceGroup | [0]" -o tsv)"
+          if [ -z "${STORAGE_RG:-}" ] || [ "$STORAGE_RG" = "null" ]; then
+            echo "Could not resolve resource group for storage account: $STORAGE_ACCOUNT"
+            exit 1
+          fi
 
-          host = publish_url.split(":")[0]
-          if ".scm." not in host:
-              if ".azurewebsites." in host:
-                  host = host.replace(".azurewebsites.", ".scm.azurewebsites.")
-              else:
-                  host = host + ".scm.azurewebsites.net"
+          SHARED_KEY_ALLOWED="$(az storage account show --name "$STORAGE_ACCOUNT" --resource-group "$STORAGE_RG" --query "allowSharedKeyAccess" -o tsv)"
+          echo "Deployment storage account: $STORAGE_ACCOUNT (allowSharedKeyAccess=$SHARED_KEY_ALLOWED)"
+          if [ "$SHARED_KEY_ALLOWED" = "false" ]; then
+            echo "allowSharedKeyAccess=false on deployment storage account. OneDeploy with connection string auth will fail."
+            exit 1
+          fi
 
-          endpoint = f"https://{host}/api/zipdeploy"
-          with open("functionapp.zip", "rb") as f:
-              body = f.read()
-          token = base64.b64encode(f"{user}:{pwd}".encode()).decode()
-          headers = {
-              "Authorization": f"Basic {token}",
-              "Content-Type": "application/zip",
-          }
+          # Fail fast if connection string itself is invalid/stale.
+          az storage container list \
+            --connection-string "$AZW" \
+            --num-results 1 \
+            --only-show-errors \
+            --output none
+          echo "Storage access check passed."
 
-          last_err = None
-          for i in range(1, 3):
-              print(f"ZipDeploy attempt {i} -> {endpoint}")
-              req = urllib.request.Request(endpoint, data=body, headers=headers, method="POST")
-              try:
-                  with urllib.request.urlopen(req, timeout=300) as resp:
-                      print(f"Deploy accepted. status={resp.status}")
-                      sys.exit(0)
-              except Exception as e:
-                  last_err = e
-                  print(f"Attempt {i} failed: {e}")
-                  if i < 2:
-                      time.sleep(20)
-          print(f"Deployment failed after retries: {last_err}")
-          sys.exit(1)
-          PY
+      - name: Restart Function App before deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          az functionapp restart \
+            --resource-group "${{ steps.rg.outputs.resource_group }}" \
+            --name 'Shittaka'
+
+      - name: 'Run Azure Functions Action (attempt 1)'
+        id: deploy1
+        continue-on-error: true
+        uses: Azure/functions-action@v1
+        with:
+          app-name: 'Shittaka'
+          sku: 'flexconsumption'
+          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          remote-build: false
+          respect-funcignore: false
+
+      - name: Wait before retry
+        if: steps.deploy1.outcome == 'failure'
+        shell: bash
+        run: sleep 20
+
+      - name: Restart Function App before deploy retry
+        if: steps.deploy1.outcome == 'failure'
+        shell: bash
+        run: |
+          set -euo pipefail
+          az functionapp restart \
+            --resource-group "${{ steps.rg.outputs.resource_group }}" \
+            --name 'Shittaka'
+
+      - name: 'Run Azure Functions Action (attempt 2)'
+        if: steps.deploy1.outcome == 'failure'
+        id: deploy2
+        continue-on-error: true
+        uses: Azure/functions-action@v1
+        with:
+          app-name: 'Shittaka'
+          sku: 'flexconsumption'
+          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+          remote-build: false
+          respect-funcignore: false
+
+      - name: Show OneDeploy diagnostics on failure
+        if: steps.deploy1.outcome == 'failure' && steps.deploy2.outcome == 'failure'
+        shell: bash
+        run: |
+          set +e
+          APP_ID="$(az functionapp show --name 'Shittaka' --resource-group "${{ steps.rg.outputs.resource_group }}" --query id -o tsv)"
+          echo "Function App id: $APP_ID"
+          az rest --method get --url "https://management.azure.com${APP_ID}/extensions/onedeploy?api-version=2022-03-01" -o jsonc
+          echo "Listing deployment app settings (sanitized):"
+          az functionapp config appsettings list \
+            --resource-group "${{ steps.rg.outputs.resource_group }}" \
+            --name 'Shittaka' \
+            --query "[?contains(name,'WEBSITE_') || name=='AzureWebJobsStorage' || contains(name,'SCM_') || contains(name,'ENABLE_ORYX')].{name:name, hasValue:(value!=null && value!='')}" \
+            -o table
+
+      - name: Fail job if both deploy attempts failed
+        if: steps.deploy1.outcome == 'failure' && steps.deploy2.outcome == 'failure'
+        shell: bash
+        run: |
+          echo "Deployment failed on both attempts."
+          exit 1
