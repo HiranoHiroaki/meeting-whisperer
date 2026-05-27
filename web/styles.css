@@ -18,6 +18,7 @@
   --btn-font: 0.9rem;
   --btn-shadow: 0 6px 16px rgba(14, 116, 144, 0.2);
   --menu-width: min(690px, 96vw);
+  --layout-scale: 1;
 }
 
 * {
@@ -97,6 +98,15 @@ h1 {
   min-height: 0;
   grid-auto-columns: max-content;
   grid-auto-rows: minmax(0, 1fr);
+  transform-origin: top left;
+  zoom: var(--layout-scale);
+}
+
+@supports not (zoom: 1) {
+  .layout-horizontal {
+    transform: scale(var(--layout-scale));
+    width: calc(100% / var(--layout-scale));
+  }
 }
 
 .panel {
@@ -404,6 +414,7 @@ button:active:not(:disabled) {
 #personalDictDrawerCancelBtn,
 #voiceStartBtn,
 #voiceStopBtn,
+#voiceResetBtn,
 #saveApiBtn,
 #pingApiBtn,
 #debugProbeBtn {
@@ -436,6 +447,7 @@ button:active:not(:disabled) {
 #personalDictDrawerCancelBtn::before,
 #voiceStartBtn::before,
 #voiceStopBtn::before,
+#voiceResetBtn::before,
 #saveApiBtn::before,
 #pingApiBtn::before,
 #debugProbeBtn::before {
@@ -486,6 +498,7 @@ button:active:not(:disabled) {
 #personalDictDrawerCancelBtn:hover:not(:disabled),
 #voiceStartBtn:hover:not(:disabled),
 #voiceStopBtn:hover:not(:disabled),
+#voiceResetBtn:hover:not(:disabled),
 #saveApiBtn:hover:not(:disabled),
 #pingApiBtn:hover:not(:disabled),
 #debugProbeBtn:hover:not(:disabled) {
@@ -506,6 +519,7 @@ button:active:not(:disabled) {
 #personalDictDrawerCancelBtn:hover:not(:disabled)::before,
 #voiceStartBtn:hover:not(:disabled)::before,
 #voiceStopBtn:hover:not(:disabled)::before,
+#voiceResetBtn:hover:not(:disabled)::before,
 #saveApiBtn:hover:not(:disabled)::before,
 #pingApiBtn:hover:not(:disabled)::before,
 #debugProbeBtn:hover:not(:disabled)::before {
@@ -526,6 +540,7 @@ button:active:not(:disabled) {
 #personalDictDrawerCancelBtn:active:not(:disabled),
 #voiceStartBtn:active:not(:disabled),
 #voiceStopBtn:active:not(:disabled),
+#voiceResetBtn:active:not(:disabled),
 #saveApiBtn:active:not(:disabled),
 #pingApiBtn:active:not(:disabled),
 #debugProbeBtn:active:not(:disabled) {
@@ -546,6 +561,7 @@ button:active:not(:disabled) {
 #personalDictDrawerCancelBtn:active:not(:disabled)::before,
 #voiceStartBtn:active:not(:disabled)::before,
 #voiceStopBtn:active:not(:disabled)::before,
+#voiceResetBtn:active:not(:disabled)::before,
 #saveApiBtn:active:not(:disabled)::before,
 #pingApiBtn:active:not(:disabled)::before,
 #debugProbeBtn:active:not(:disabled)::before {
@@ -566,6 +582,7 @@ button:active:not(:disabled) {
 #personalDictDrawerCancelBtn:disabled,
 #voiceStartBtn:disabled,
 #voiceStopBtn:disabled,
+#voiceResetBtn:disabled,
 #saveApiBtn:disabled,
 #pingApiBtn:disabled,
 #debugProbeBtn:disabled {
@@ -586,6 +603,7 @@ button:active:not(:disabled) {
 #personalDictDrawerCancelBtn:disabled,
 #voiceStartBtn:disabled,
 #voiceStopBtn:disabled,
+#voiceResetBtn:disabled,
 #saveApiBtn:disabled,
 #pingApiBtn:disabled,
 #debugProbeBtn:disabled {
@@ -608,6 +626,7 @@ button:active:not(:disabled) {
 #personalDictDrawerCancelBtn:disabled::before,
 #voiceStartBtn:disabled::before,
 #voiceStopBtn:disabled::before,
+#voiceResetBtn:disabled::before,
 #saveApiBtn:disabled::before,
 #pingApiBtn:disabled::before,
 #debugProbeBtn:disabled::before {
@@ -897,12 +916,17 @@ body.debug-enabled .toolbar-top {
 
 .voice-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.4rem;
 }
 
+#voiceResetBtn {
+  grid-column: 1 / -1;
+}
+
 #voiceStartBtn,
-#voiceStopBtn {
+#voiceStopBtn,
+#voiceResetBtn {
   min-height: var(--btn-height);
   font-size: var(--btn-font);
 }
@@ -1246,19 +1270,16 @@ mark.term {
 }
 
 .term-box-1 {
-  min-height: 180px;
   max-height: 180px;
   overflow: auto;
 }
 
 .term-box-2 {
-  min-height: 160px;
   max-height: 160px;
   overflow: auto;
 }
 
 .term-box-3 {
-  min-height: 110px;
   max-height: 110px;
   overflow: auto;
 }
@@ -1887,31 +1908,3 @@ button.btn-border:hover::before {
   width:42px;
 }
 
-@media (max-width: 960px) {
-  .debug-api-row {
-    grid-template-columns: 1fr;
-  }
-
-  .layout-horizontal {
-    align-items: flex-start;
-    height: auto;
-  }
-
-  .stream-list {
-    max-height: 42vh;
-  }
-
-  .menu-actions {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .debug-card-fixed {
-    width: calc(100vw - 1rem);
-    right: 0.5rem;
-    top: 3.4rem;
-  }
-
-  .end-meeting-btn {
-    min-height: 60vh;
-  }
-}

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://aka.ms; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' http://localhost:7071 https:; font-src 'self' data:; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://aka.ms https://csspeechstorage.blob.core.windows.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' http://localhost:7071 https:; font-src 'self' data:; base-uri 'self'; form-action 'self';" />
     <link rel="icon" type="image/png" href="./assets/images/favicon.png" />
     <link rel="apple-touch-icon" href="./assets/images/favicon.png" />
     <title>知ったかくん | デモコンソール</title>
@@ -66,6 +66,7 @@
                 <div class="voice-actions">
                   <button id="voiceStartBtn" class="ghost tiny" type="button"><span class="btn-border-label">音声入力開始</span></button>
                   <button id="voiceStopBtn" class="ghost tiny" type="button" disabled><span class="btn-border-label">停止</span></button>
+                  <button id="voiceResetBtn" class="ghost tiny" type="button"><span class="btn-border-label">リセット</span></button>
                 </div>
               </section>
               <div id="playbackControls">

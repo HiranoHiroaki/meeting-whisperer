@@ -135,6 +135,7 @@ const voiceProviderSelect = document.querySelector("#voiceProviderSelect");
 const voiceSourceSelect = document.querySelector("#voiceSourceSelect");
 const voiceStartBtn = document.querySelector("#voiceStartBtn");
 const voiceStopBtn = document.querySelector("#voiceStopBtn");
+const voiceResetBtn = document.querySelector("#voiceResetBtn");
 const voiceStatus = document.querySelector("#voiceStatus");
 const playbackControls = document.querySelector("#playbackControls");
 const speedSelect = document.querySelector("#speedSelect");
@@ -345,6 +346,10 @@ function init() {
   });
   voiceStopBtn?.addEventListener("click", () => {
     stopVoiceInput("停止しました。");
+  });
+  voiceResetBtn?.addEventListener("click", () => {
+    resetPlayback();
+    setRunStatus("音声入力セッションをリセットしました。");
   });
   voiceSourceSelect?.addEventListener("change", () => {
     state.voice.source = String(voiceSourceSelect.value || "mic");
@@ -2593,6 +2598,7 @@ function resetPlayback() {
   notesSource.textContent = "-";
 
   renderTermDetail();
+  renderProfileSummary();
   renderClickList();
   notesOutput.textContent = "まだ生成していません。";
   state.generatedNotes = "";
