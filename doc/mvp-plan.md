@@ -15,13 +15,16 @@
 - 抽出結果を先出しし、詳細は遅延生成
 
 ## Out of Scope (Hackathon MVP)
-- リアルタイム音声認識
+- 本番品質のリアルタイム音声認識基盤（高精度チューニング / 常時安定運用）
 - Teamsリアルタイム会議連携
 - Teams SDK / Bot
 - WebSocket中心のリアルタイム基盤
 - 複雑な認可・権限管理
 - AKS / Kubernetes
 - 過剰なマルチエージェント化
+
+注記:
+- 音声入力機能（Web Speech API / Azure AI Speech）はBetaとして実装済み。
 
 ## Success Criteria
 - 3分以内にデモ可能
