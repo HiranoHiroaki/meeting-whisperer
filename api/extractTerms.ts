@@ -1,13 +1,13 @@
-import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
-import { chatWithAzureOpenAi, getConfiguredAiSource, hasAzureOpenAiConfig, parseJsonFromText } from "./aiClient.js";
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+import { chatWithAzureOpenAi, getConfiguredAiSource, hasAzureOpenAiConfig, parseJsonFromText } from "./_lib/aiClient";
 import {
   dispatchDictionaryTerms,
   type FixedDictionaryProfile,
   getDictionaryStats,
   getDispatcherPolicy,
   matchFixedDictionaryTerms
-} from "./dictionary.js";
-import { consumeRateLimit, corsPreflight, json, rankTerms, readStringField, resolveAuthLevel, toPromptBlock } from "./shared.js";
+} from "./_lib/dictionary";
+import { consumeRateLimit, handlePreflight, sendJson, rankTerms, readStringField, toPromptBlock } from "./_lib/shared";
 
 type ExtractRequest = {
   text?: string;
@@ -159,7 +159,7 @@ function fromDictionaryDispatcher(text: string): ExtractedTerm[] {
     summary: hit.entry.short,
     score: Number(hit.score.toFixed(2)),
     confidence: Number(Math.max(0, Math.min(1, hit.score / 100)).toFixed(2)),
-    origin: "dictionary_dispatcher",
+    origin: "dictionary_dispatcher" as const,
     source: "dictionary_dispatcher",
     reasons: [...hit.reasons, `category:${hit.entry.category ?? "general"}`, `matched:${hit.matchedText}`],
     dispatcher: {
@@ -185,7 +185,7 @@ function fromFixedProfileDictionary(text: string, profile: FixedDictionaryProfil
     summary: hit.entry.short,
     score: Number(hit.score.toFixed(2)),
     confidence: Number(Math.max(0, Math.min(1, hit.entry.confidence ?? 0.9)).toFixed(2)),
-    origin: "fixed_dictionary",
+    origin: "fixed_dictionary" as const,
     source: "fixed_dictionary",
     profile,
     reasons: [...hit.reasons, `profile:${profile}`, `matched:${hit.matchedText}`],
@@ -307,7 +307,6 @@ function isValidTermCandidate(term: string): boolean {
   const wordCount = t.split(" ").filter(Boolean).length;
   if (wordCount > MAX_TERM_WORDS) return false;
 
-  // 複合語は許可するが、記号だけの連結は除外する。
   if (wordCount > 1) {
     const hasWordLikeToken = /[A-Za-z0-9一-龯ぁ-んァ-ヶー]/.test(t);
     if (!hasWordLikeToken) return false;
@@ -321,7 +320,6 @@ function isValidTermCandidate(term: string): boolean {
   const hasKatakana = /[ァ-ヶー]/.test(t);
   const hasCommonTechMark = /[A-Za-z0-9/+._#-]/.test(t);
 
-  // 用語としての最低条件: 英大文字略語 or 漢字/カタカナ or 技術記号混在
   return hasAsciiAcronym || hasKanji || hasKatakana || hasCommonTechMark;
 }
 
@@ -383,28 +381,30 @@ function parseTermsFromReasoningText(text: string): ExtractedTerm[] {
   return [...uniq.values()].slice(0, MAX_TERM_CHIPS);
 }
 
-export async function extractTerms(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
-  context.log("extractTerms called");
-  const preflight = corsPreflight(request);
-  if (preflight) return preflight;
-  const limit = consumeRateLimit(request, "extractTerms");
+export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
+  console.log("extractTerms called");
+  if (handlePreflight(req, res)) return;
+  const limit = consumeRateLimit(req, "extractTerms");
   if (!limit.allowed) {
-    return json(429, { error: { code: "RATE_LIMIT", message: "Too many requests" }, retryAfterSec: limit.retryAfterSec }, request);
+    sendJson(res, req, 429, { error: { code: "RATE_LIMIT", message: "Too many requests" }, retryAfterSec: limit.retryAfterSec });
+    return;
   }
 
   let payload: ExtractRequest;
   try {
-    payload = (await request.json()) as ExtractRequest;
+    payload = (req.body ?? {}) as ExtractRequest;
+    if (typeof payload !== "object" || payload === null) throw new Error("not object");
   } catch {
-    return json(400, { error: { code: "INVALID_JSON", message: "Invalid JSON payload" } }, request);
+    sendJson(res, req, 400, { error: { code: "INVALID_JSON", message: "Invalid JSON payload" } });
+    return;
   }
 
   const payloadObj = (payload ?? {}) as Record<string, unknown>;
   const textField = readStringField(payloadObj, "text", { required: true, maxChars: 20000 });
-  if (!textField.ok) return json(400, { error: { code: textField.code, message: textField.message } }, request);
+  if (!textField.ok) { sendJson(res, req, 400, { error: { code: textField.code, message: textField.message } }); return; }
   const text = textField.value;
   const meetingDomainField = readStringField(payloadObj, "meetingDomain", { required: false, maxChars: 80 });
-  if (!meetingDomainField.ok) return json(400, { error: { code: meetingDomainField.code, message: meetingDomainField.message } }, request);
+  if (!meetingDomainField.ok) { sendJson(res, req, 400, { error: { code: meetingDomainField.code, message: meetingDomainField.message } }); return; }
   const includeDebug = payloadObj.includeDebug === true;
 
   const profile = normalizeProfile(payload.dictionaryProfile);
@@ -440,7 +440,6 @@ export async function extractTerms(request: HttpRequest, context: InvocationCont
     }
   }
 
-  // Personal dictionary must not override fixed/dispatcher terms with the same key.
   for (const row of personalTerms) {
     const k = row.term.toLowerCase();
     if (!termMap.has(k)) {
@@ -469,7 +468,7 @@ export async function extractTerms(request: HttpRequest, context: InvocationCont
             ].join("\n\n")
           }
         ],
-        context,
+        console,
         { temperature: 0.1, maxTokens: 600, responseFormatJsonObject: true, disableThinking: true }
       );
 
@@ -496,10 +495,10 @@ export async function extractTerms(request: HttpRequest, context: InvocationCont
         }
       }
       if (aiTerms.length === 0) {
-        context.warn("extractTerms ai parse yielded 0 items.");
+        console.warn("extractTerms ai parse yielded 0 items.");
       }
     } catch (error) {
-      context.warn(`extractTerms fallback: ${String(error)}`);
+      console.warn(`extractTerms fallback: ${String(error)}`);
     }
   }
 
@@ -553,12 +552,5 @@ export async function extractTerms(request: HttpRequest, context: InvocationCont
     body.dictionary = getDictionaryStats();
     body.dispatcherPolicy = getDispatcherPolicy();
   }
-  return json(200, body, request);
+  sendJson(res, req, 200, body);
 }
-
-app.http("extractTerms", {
-  methods: ["POST", "OPTIONS"],
-  authLevel: resolveAuthLevel(),
-  route: "extractTerms",
-  handler: extractTerms
-});

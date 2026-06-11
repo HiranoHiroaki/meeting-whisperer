@@ -31,9 +31,7 @@ export function requireEnv(name: string): string {
     throw new Error(`Missing required environment variable: ${name}`);
   }
   if (isPlaceholderValue(value)) {
-    throw new Error(
-      `Environment variable ${name} is placeholder text. Set a real value in local.settings.json (Values) or Function App Settings.`
-    );
+    throw new Error(`Environment variable ${name} is placeholder text. Set a real value in Vercel project settings.`);
   }
   return value;
 }

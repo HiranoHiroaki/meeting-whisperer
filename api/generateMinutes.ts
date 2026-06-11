@@ -1,6 +1,6 @@
-import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
-import { chatWithAzureOpenAi, getConfiguredAiSource, hasAzureOpenAiConfig } from "./aiClient.js";
-import { consumeRateLimit, corsPreflight, json, readStringField, resolveAuthLevel, toPromptBlock } from "./shared.js";
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+import { chatWithAzureOpenAi, getConfiguredAiSource, hasAzureOpenAiConfig } from "./_lib/aiClient";
+import { consumeRateLimit, handlePreflight, readStringField, sendJson, toPromptBlock } from "./_lib/shared";
 
 type MinutesRequest = {
   meetingText?: string;
@@ -32,26 +32,28 @@ const SYSTEM_PROMPT = `あなたは会議ログから実務向け議事録を作
 - 不明は「未確認」または「推測」
 - 途中ログでもその時点の内容だけでまとめる`;
 
-export async function generateMinutes(request: HttpRequest, context: InvocationContext): Promise<HttpResponseInit> {
-  context.log("generateMinutes called");
-  const preflight = corsPreflight(request);
-  if (preflight) return preflight;
+export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
+  console.log("generateMinutes called");
+  if (handlePreflight(req, res)) return;
 
-  const limit = consumeRateLimit(request, "generateMinutes");
+  const limit = consumeRateLimit(req, "generateMinutes");
   if (!limit.allowed) {
-    return json(429, { error: { code: "RATE_LIMIT", message: "Too many requests" }, retryAfterSec: limit.retryAfterSec }, request);
+    sendJson(res, req, 429, { error: { code: "RATE_LIMIT", message: "Too many requests" }, retryAfterSec: limit.retryAfterSec });
+    return;
   }
 
   let payload: MinutesRequest;
   try {
-    payload = (await request.json()) as MinutesRequest;
+    payload = (req.body ?? {}) as MinutesRequest;
+    if (typeof payload !== "object" || payload === null) throw new Error("not object");
   } catch {
-    return json(400, { error: { code: "INVALID_JSON", message: "Invalid JSON payload" } }, request);
+    sendJson(res, req, 400, { error: { code: "INVALID_JSON", message: "Invalid JSON payload" } });
+    return;
   }
 
   const payloadObj = (payload ?? {}) as Record<string, unknown>;
   const meetingField = readStringField(payloadObj, "meetingText", { required: true, maxChars: 20000 });
-  if (!meetingField.ok) return json(400, { error: { code: meetingField.code, message: meetingField.message } }, request);
+  if (!meetingField.ok) { sendJson(res, req, 400, { error: { code: meetingField.code, message: meetingField.message } }); return; }
   const meetingTextRaw = meetingField.value;
   const meetingText = clampMeetingText(meetingTextRaw);
   const pkg = payload?.meetingPackage;
@@ -66,7 +68,8 @@ export async function generateMinutes(request: HttpRequest, context: InvocationC
         .join("\n")
     : "";
   if (!meetingText) {
-    return json(400, { error: { code: "INVALID_INPUT", message: "meetingText is required" } }, request);
+    sendJson(res, req, 400, { error: { code: "INVALID_INPUT", message: "meetingText is required" } });
+    return;
   }
 
   if (hasAzureOpenAiConfig()) {
@@ -82,30 +85,24 @@ export async function generateMinutes(request: HttpRequest, context: InvocationC
             ].join("\n\n")
           },
         ],
-        context,
+        console,
         { temperature: 0.1, maxTokens: 1200, responseFormatJsonObject: false, disableThinking: true }
       );
 
       if (markdown && markdown.trim().length > 0) {
-        return json(200, {
+        sendJson(res, req, 200, {
           minutes: markdown.trim(),
           source: getConfiguredAiSource() ?? "ai",
-        }, request);
+        });
+        return;
       }
     } catch (error) {
-      context.warn(`generateMinutes fallback: ${String(error)}`);
+      console.warn(`generateMinutes fallback: ${String(error)}`);
     }
   }
 
-  return json(200, {
+  sendJson(res, req, 200, {
     minutes: meetingTextRaw,
     source: "context_estimate",
-  }, request);
+  });
 }
-
-app.http("generateMinutes", {
-  methods: ["POST", "OPTIONS"],
-  authLevel: resolveAuthLevel(),
-  route: "generateMinutes",
-  handler: generateMinutes,
-});

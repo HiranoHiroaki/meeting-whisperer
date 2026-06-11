@@ -1,0 +1,8 @@
+{
+  "functions": {
+    "api/*.ts": {
+      "includeFiles": "api/dict/**,assets/dictionary/**",
+      "maxDuration": 30
+    }
+  }
+}
