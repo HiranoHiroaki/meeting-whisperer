@@ -1,8 +1,8 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { chatWithAzureOpenAi, getConfiguredAiSource, hasAzureOpenAiConfig, parseJsonFromText } from "./_lib/aiClient";
-import { type DictionaryEntry, getDictionaryStats, lookupDictionaryTerm } from "./_lib/dictionary";
-import { postProcessExplainFromAi } from "./_lib/postprocessAi";
-import { consumeRateLimit, estimateTermMeaning, handlePreflight, readStringField, sendJson, toPromptBlock } from "./_lib/shared";
+import { chatWithAzureOpenAi, getConfiguredAiSource, hasAzureOpenAiConfig, parseJsonFromText } from "./_lib/aiClient.js";
+import { type DictionaryEntry, getDictionaryStats, lookupDictionaryTerm } from "./_lib/dictionary.js";
+import { postProcessExplainFromAi } from "./_lib/postprocessAi.js";
+import { consumeRateLimit, estimateTermMeaning, handlePreflight, readStringField, sendJson, toPromptBlock } from "./_lib/shared.js";
 
 type ExplainRequest = {
   term?: string;

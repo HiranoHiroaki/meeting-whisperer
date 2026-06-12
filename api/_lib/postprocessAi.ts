@@ -1,4 +1,4 @@
-import { parseJsonFromText } from "./aiClient";
+import { parseJsonFromText } from "./aiClient.js";
 
 const META_PATTERNS = [
   /^ユーザーは/,

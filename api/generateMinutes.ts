@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { chatWithAzureOpenAi, getConfiguredAiSource, hasAzureOpenAiConfig } from "./_lib/aiClient";
-import { consumeRateLimit, handlePreflight, readStringField, sendJson, toPromptBlock } from "./_lib/shared";
+import { chatWithAzureOpenAi, getConfiguredAiSource, hasAzureOpenAiConfig } from "./_lib/aiClient.js";
+import { consumeRateLimit, handlePreflight, readStringField, sendJson, toPromptBlock } from "./_lib/shared.js";
 
 type MinutesRequest = {
   meetingText?: string;

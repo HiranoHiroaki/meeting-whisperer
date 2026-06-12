@@ -1,4 +1,4 @@
-import { hasAnyEnv, isPlaceholderValue, readEnv, requireEnv } from "./env";
+import { hasAnyEnv, isPlaceholderValue, readEnv, requireEnv } from "./env.js";
 
 export type ChatMessage = {
   role: "system" | "user" | "assistant";

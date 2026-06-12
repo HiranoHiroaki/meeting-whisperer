@@ -1,13 +1,13 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { chatWithAzureOpenAi, getConfiguredAiSource, hasAzureOpenAiConfig, parseJsonFromText } from "./_lib/aiClient";
+import { chatWithAzureOpenAi, getConfiguredAiSource, hasAzureOpenAiConfig, parseJsonFromText } from "./_lib/aiClient.js";
 import {
   dispatchDictionaryTerms,
   type FixedDictionaryProfile,
   getDictionaryStats,
   getDispatcherPolicy,
   matchFixedDictionaryTerms
-} from "./_lib/dictionary";
-import { consumeRateLimit, handlePreflight, sendJson, rankTerms, readStringField, toPromptBlock } from "./_lib/shared";
+} from "./_lib/dictionary.js";
+import { consumeRateLimit, handlePreflight, sendJson, rankTerms, readStringField, toPromptBlock } from "./_lib/shared.js";
 
 type ExtractRequest = {
   text?: string;
