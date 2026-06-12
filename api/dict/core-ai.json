@@ -1,2 +1,18 @@
-[]
-
+[
+  {"term":"RAG","aliases":["Retrieval Augmented Generation","検索拡張生成"],"category":"ai","short":"外部情報を検索してからAIに回答させる手法。","long":"LLMが学習していない最新情報や社内文書を都度検索してプロンプトに組み込み、ハルシネーションを抑えつつ正確な回答を生成させる構成。Vector DBやキーワード検索と組み合わせることが多い。","tags":["llm","search","architecture"]},
+  {"term":"Embedding","aliases":["埋め込みベクトル","ベクトル化"],"category":"ai","short":"テキストや画像を数値ベクトルに変換したもの。","long":"意味的な近さを距離として計算できるよう、テキストを高次元の数値列に変換したもの。RAGやセマンティック検索で類似文書を検索するために使う。モデルによってベクトルの次元数や品質が異なる。","tags":["llm","vector","search"]},
+  {"term":"LLM","aliases":["Large Language Model","大規模言語モデル"],"category":"ai","short":"大量のテキストで事前学習した大規模な言語生成モデル。","long":"GPT-4やClaude、Geminiなど数百億パラメータ規模で学習した言語モデル。テキスト生成・要約・翻訳・コード生成など幅広いタスクに使える。推論コストとトークン消費が運用上の主な課題。","tags":["ai","foundation-model"]},
+  {"term":"Azure OpenAI","aliases":["Azure OpenAI Service","AOAI"],"category":"ai","short":"MicrosoftがAzure上で提供するOpenAIのAPIサービス。","long":"GPT-4やEmbeddingモデルをAzureのセキュリティ・コンプライアンス基盤上で利用できるサービス。エンドポイント・APIキー・デプロイメント名の3点設定が必要で、OpenAI本家とはAPIバージョン管理が異なる。","tags":["azure","ai","llm"]},
+  {"term":"Inference","aliases":["推論","Inference cost","推論コスト"],"category":"ai","short":"学習済みAIモデルに入力を与えて出力を得る処理。","long":"学習(Training)とは異なり、すでに学習済みのモデルを使って実際に予測・生成を行う処理。APIコール単位で課金されるため、トークン数やリクエスト数が運用コストに直結する。","tags":["ai","cost","ops"]},
+  {"term":"Vector DB","aliases":["ベクトルDB","ベクトルデータベース","Vector Database"],"category":"ai","short":"Embeddingベクトルを保存・近傍検索するためのDB。","long":"高次元ベクトルの近傍検索（ANN）に最適化されたデータベース。RAG構成でEmbeddingを格納・検索するために使う。Pinecone、Weaviate、pgvector、Azure AI Searchなどが代表例。","tags":["ai","database","search"]},
+  {"term":"Hallucination","aliases":["ハルシネーション","幻覚"],"category":"ai","short":"AIが事実と異なる内容を自信満々に生成すること。","long":"LLMが学習データにないことを推論で補完し、存在しない情報・誤った引用・架空の数値などを出力する現象。RAGやファクトチェック、temperature制御で軽減する。","tags":["ai","risk","quality"]},
+  {"term":"Fine-tuning","aliases":["ファインチューニング","微調整"],"category":"ai","short":"事前学習済みモデルを特定タスク向けに追加学習すること。","long":"汎用LLMに対して、特定ドメインのデータや指示セットでさらに学習させ、回答スタイルや専門知識を調整する手法。RAGより効果が高い場面もあるが、データ準備とコストが課題。","tags":["ai","training","llm"]},
+  {"term":"Token","aliases":["トークン"],"category":"ai","short":"LLMがテキストを処理する最小単位。","long":"単語や記号をAIモデルが処理しやすい断片に分割したもの。英語で約4文字≒1トークン、日本語は1文字≒1〜2トークンが目安。APIの課金はトークン数ベースなので、プロンプト設計でのトークン節約が重要。","tags":["ai","llm","cost"]},
+  {"term":"Context Window","aliases":["コンテキストウィンドウ","context length"],"category":"ai","short":"LLMが一度に処理できるテキストの最大量。","long":"入力プロンプトと出力を合わせた最大トークン数。GPT-4では128K、Claude 3では200Kなど。RAGで大量のドキュメントを渡す際の制約になりやすく、チャンク戦略が重要になる。","tags":["ai","llm"]},
+  {"term":"Prompt Engineering","aliases":["プロンプトエンジニアリング"],"category":"ai","short":"AIへの指示文を工夫して出力品質を上げる技術。","long":"LLMへの指示（プロンプト）の書き方・構造・例示の与え方を最適化して、望む出力を引き出す技法。Few-shot、Chain-of-Thought、System promptの使い分けが基本。","tags":["ai","llm","development"]},
+  {"term":"Agent","aliases":["AIエージェント","AI Agent"],"category":"ai","short":"ツールを使いながら自律的にタスクを実行するAI。","long":"LLMがWeb検索・コード実行・DB操作などのツールを呼び出しながら、目標達成のために自律的に行動するシステム。複数のAgentが連携するマルチエージェント構成も増えている。","tags":["ai","automation","llm"]},
+  {"term":"MCP","aliases":["Model Context Protocol"],"category":"ai","short":"AIエージェントとツールを接続する標準プロトコル。","long":"Anthropicが策定したAIモデルと外部ツール・データソースを接続するためのオープンプロトコル。MCPサーバを実装することで、任意のツールをAIエージェントから呼び出せるようになる。","tags":["ai","agent","protocol"]},
+  {"term":"TPM","aliases":["Tokens Per Minute"],"category":"ai","short":"1分間に処理できるトークン数の上限。","long":"Azure OpenAIやOpenAI APIのレートリミットの単位。モデルとデプロイメントごとに上限が決まっており、超えると429エラーになる。本番運用ではTPMとRPM（リクエスト/分）の両方を管理する必要がある。","tags":["ai","ops","limit"]},
+  {"term":"Fabric","aliases":["Microsoft Fabric"],"category":"ai","short":"MicrosoftのオールインワンデータとAIのプラットフォーム。","long":"Power BI・Synapse・Data Factory・OneLakeなどを統合したMicrosoftのデータ分析基盤。AIとデータを同一プラットフォームで扱えるのが特徴。SaaS課金モデルで、Azure Data Factoryからの移行も増えている。","tags":["microsoft","data","analytics"]},
+  {"term":"AI Search","aliases":["Azure AI Search","Cognitive Search"],"category":"ai","short":"AzureのフルマネージドRAG向け検索サービス。","long":"キーワード検索・ベクトル検索・ハイブリッド検索に対応したAzureの検索基盤。RAG構成のインデックスとして使われることが多く、Azure OpenAIと組み合わせた構成がMicrosoftの推奨パターン。","tags":["azure","ai","search"]}
+]

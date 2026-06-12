@@ -86,5 +86,114 @@
     "tags": [
       "factory"
     ]
+  },
+  {
+    "term": "MES",
+    "aliases": [
+      "Manufacturing Execution System",
+      "製造実行システム"
+    ],
+    "category": "manufacturing",
+    "short": "工場の製造現場をリアルタイム管理するシステム。",
+    "long": "生産指示から実績収集・品質管理・トレーサビリティまでをリアルタイムで管理するシステム。ERPが計画層、SCADAが制御層とすると、MESはその中間の現場実行層にあたる。"
+  },
+  {
+    "term": "SCADA",
+    "aliases": [
+      "Supervisory Control and Data Acquisition"
+    ],
+    "category": "manufacturing",
+    "short": "工場設備を監視・制御するシステム。",
+    "long": "センサーやPLCからデータを収集し、工場の設備状態を可視化・遠隔操作するシステム。MESと連携してOEEや歩留まりの改善に使う。"
+  },
+  {
+    "term": "IoT Hub",
+    "aliases": [
+      "Azure IoT Hub"
+    ],
+    "category": "manufacturing",
+    "short": "IoTデバイスとクラウドを接続するAzureのハブサービス。",
+    "long": "工場の機械やセンサーなど多数のIoTデバイスからのデータをクラウドへ安全に収集・管理するAzureサービス。Device-to-CloudとCloud-to-Deviceの双方向通信が可能。"
+  },
+  {
+    "term": "アンドン",
+    "aliases": [
+      "Andon",
+      "安灯"
+    ],
+    "category": "manufacturing",
+    "short": "異常を視覚・音で知らせるライン管理の仕組み。",
+    "long": "製造ラインで異常が発生した際に作業者が引っ張るひもやボタンで点灯させる警告ランプ。トヨタ生産方式の代表的な可視化ツール。問題の即時認識と早期対処を促す。"
+  },
+  {
+    "term": "MTBF",
+    "aliases": [
+      "Mean Time Between Failures",
+      "平均故障間隔"
+    ],
+    "category": "manufacturing",
+    "short": "設備が正常稼働する平均時間間隔。",
+    "long": "設備や機械が故障から次の故障まで正常稼働する平均時間。設備の信頼性指標で、MTBFが長いほど安定した稼働ができる。MTTRとセットで設備総合効率（OEE）の計算に使う。"
+  },
+  {
+    "term": "ERP",
+    "aliases": [
+      "Enterprise Resource Planning",
+      "基幹システム"
+    ],
+    "category": "manufacturing",
+    "short": "経営資源（ヒト・モノ・カネ・情報）を統合管理するシステム。",
+    "long": "会計・購買・在庫・製造・販売・人事などの業務を一元管理する基幹業務システム。SAP・Oracle・Microsoft Dynamics等が代表製品。製造業ではMES・SCADAとのデータ連携が課題になることが多い。"
+  },
+  {
+    "term": "ロット",
+    "aliases": [
+      "Lot",
+      "ロット番号",
+      "Lot Number"
+    ],
+    "category": "manufacturing",
+    "short": "同一条件でまとめて製造した製品のグループ。",
+    "long": "同じ材料・製造日・製造条件でまとめて生産した製品群の単位。品質管理やトレーサビリティでロット単位で追跡する。リコール時の影響範囲特定にも使われる。"
+  },
+  {
+    "term": "製番",
+    "aliases": [
+      "製造番号",
+      "製造指示番号"
+    ],
+    "category": "manufacturing",
+    "short": "製造指示ごとに付与される管理番号。",
+    "long": "工場で製造指示を出す際に発行する固有の管理番号。ERPやMESで製造実績・材料消費・品質検査データをこの番号に紐付けて管理する。受注生産では受注番号と連動させることが多い。"
+  },
+  {
+    "term": "品番マスタ",
+    "aliases": [
+      "品番",
+      "部品番号",
+      "Part Number"
+    ],
+    "category": "manufacturing",
+    "short": "製品や部品を識別する管理番号のデータベース。",
+    "long": "製品・部品・資材を一意に識別するコードと属性情報をまとめたマスタデータ。ERPの中心的なマスタであり、BOM・在庫・購買・生産計画の基盤になる。"
+  },
+  {
+    "term": "MTTR",
+    "aliases": [
+      "Mean Time To Repair",
+      "平均修復時間"
+    ],
+    "category": "manufacturing",
+    "short": "故障から復旧までにかかる平均時間。",
+    "long": "設備が故障してから修復・再稼働するまでの平均時間。MTBFと組み合わせて設備可用性（Availability）を算出する。OEEの「可用性」に直接影響する指標。"
+  },
+  {
+    "term": "Power BI",
+    "aliases": [
+      "Microsoft Power BI"
+    ],
+    "category": "manufacturing",
+    "short": "Microsoftのビジネスインテリジェンスツール。",
+    "long": "データを視覚化するMicrosoftのBIツール。製造現場ではMESやERPのデータをPower BIでダッシュボード化し、OEEや歩留まりをリアルタイム監視するケースが増えている。"
   }
 ]

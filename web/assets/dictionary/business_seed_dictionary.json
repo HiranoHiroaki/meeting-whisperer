@@ -198,5 +198,83 @@
     "tags": [
       "business"
     ]
+  },
+  {
+    "term": "NRR",
+    "aliases": [
+      "Net Revenue Retention",
+      "純収益維持率"
+    ],
+    "category": "business",
+    "short": "既存顧客からの収益維持率。100%超が健全。",
+    "long": "既存顧客のアップセル・チャーン・縮小を合算した収益維持率。100%超なら新規獲得なしでも収益成長できる。SaaSの持続可能性を示す最重要指標の一つ。"
+  },
+  {
+    "term": "SMB",
+    "aliases": [
+      "Small and Medium Business",
+      "中小企業"
+    ],
+    "category": "business",
+    "short": "中小規模の企業を指すセグメント区分。",
+    "long": "SaaSや営業でEnterpriseと対比してSMBセグメントと呼ぶ。契約単価は低いがサイクルが短い。プロダクトのターゲット設計に直結する区分。"
+  },
+  {
+    "term": "チャーン率",
+    "aliases": [
+      "Churn Rate",
+      "解約率"
+    ],
+    "category": "business",
+    "short": "一定期間に契約を解約した顧客の割合。",
+    "long": "月次または年次で計算される解約率。MRR単位のRevenue ChurnとCustomer Churnがある。カスタマーサクセスの最重要課題。"
+  },
+  {
+    "term": "GA",
+    "aliases": [
+      "Generally Available",
+      "一般提供"
+    ],
+    "category": "business",
+    "short": "サービスや機能が正式リリースされた状態。",
+    "long": "SLAが保証され本番利用が推奨される状態。クラウドサービスではPreview→GAの段階で本番使用可能になる。"
+  },
+  {
+    "term": "Decision Maker",
+    "aliases": [
+      "意思決定者",
+      "デシジョンメーカー"
+    ],
+    "category": "business",
+    "short": "購買・契約の最終決定権を持つ人物。",
+    "long": "Enterprise営業でChampionは支持者だが決裁権がない。Decision Makerは予算承認・契約締結の権限を持つ経営層や部門長。"
+  },
+  {
+    "term": "Champion",
+    "aliases": [
+      "チャンピオン"
+    ],
+    "category": "business",
+    "short": "社内でプロダクト導入を推進してくれる担当者。",
+    "long": "Enterprise営業でのキーパーソン。決裁権はないが社内推進力があり、Decision Makerへの橋渡し役になる。"
+  },
+  {
+    "term": "Retention",
+    "aliases": [
+      "リテンション",
+      "顧客維持"
+    ],
+    "category": "business",
+    "short": "既存顧客が継続利用する割合。",
+    "long": "解約（チャーン）の反対概念。Retentionが高いほどNRRが改善しARRが安定成長する。"
+  },
+  {
+    "term": "Upsell",
+    "aliases": [
+      "アップセル"
+    ],
+    "category": "business",
+    "short": "既存顧客により上位のプランや追加機能を販売すること。",
+    "long": "新規顧客獲得より低コストで収益を伸ばせる手法。NRRを100%超にするための主要手段。"
   }
 ]

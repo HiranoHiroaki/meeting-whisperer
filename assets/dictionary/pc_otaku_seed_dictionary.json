@@ -70,5 +70,131 @@
     "tags": [
       "android"
     ]
+  },
+  {
+    "term": "ESXi",
+    "aliases": [
+      "VMware ESXi"
+    ],
+    "category": "pc_otaku",
+    "short": "VMwareのベアメタルハイパーバイザー。",
+    "long": "物理サーバーに直接インストールして複数のVMを実行するハイパーバイザー。無償ライセンス終了でProxmoxへの移行が増えている。"
+  },
+  {
+    "term": "Proxmox",
+    "aliases": [
+      "Proxmox VE"
+    ],
+    "category": "pc_otaku",
+    "short": "オープンソースの仮想化管理プラットフォーム。",
+    "long": "Debian LinuxベースのKVM+LXCを統合管理できるオープンソースのハイパーバイザー。ESXiの無償代替として人気が高い。"
+  },
+  {
+    "term": "ZFS",
+    "aliases": [
+      "Zettabyte File System"
+    ],
+    "category": "pc_otaku",
+    "short": "データ整合性とスナップショットに優れたファイルシステム。",
+    "long": "自動修復・スナップショット・RAIDzを持つ高機能FSで、TrueNASやProxmoxと組み合わせて使われる。"
+  },
+  {
+    "term": "TrueNAS",
+    "aliases": [
+      "TrueNAS SCALE",
+      "TrueNAS CORE",
+      "TrueNAS Scale"
+    ],
+    "category": "pc_otaku",
+    "short": "ZFSベースのオープンソースNAS OS。",
+    "long": "ZFSファイルシステムをベースにしたNAS向けOS。SCALE版はLinuxカーネルでKubernetesやDockerアプリも動かせる。ホームラボでの写真・動画管理に人気。"
+  },
+  {
+    "term": "ECC",
+    "aliases": [
+      "ECC RAM",
+      "ECC Memory",
+      "Error Correcting Code",
+      "ECC UDIMM"
+    ],
+    "category": "pc_otaku",
+    "short": "メモリエラーを自動修正できるサーバー向けRAM。",
+    "long": "1ビットのメモリエラーを自動検出・修正できる高信頼RAMモジュール。NASやサーバー用途でZFSのsilent data corruptionを防ぐために推奨される。UDIMMはアンバッファド型ECC。"
+  },
+  {
+    "term": "UPS",
+    "aliases": [
+      "Uninterruptible Power Supply",
+      "無停電電源装置"
+    ],
+    "category": "pc_otaku",
+    "short": "停電時にバッテリーで一定時間電源を供給する装置。",
+    "long": "電源が突然切れてもデータを失わないよう、バッテリーでサーバーやNASに電力を供給し続ける装置。ホームラボではNASのZFSプールの整合性保護のために必須とされる。"
+  },
+  {
+    "term": "HBA",
+    "aliases": [
+      "Host Bus Adapter"
+    ],
+    "category": "pc_otaku",
+    "short": "ストレージをホストに接続するアダプターカード。",
+    "long": "SASやSATAドライブをサーバーのPCIeバスに接続するカード。IT mode（Pass-through）に書き換えてZFSのネイティブHDD管理に使う用途がホームラボで一般的。"
+  },
+  {
+    "term": "iGPU",
+    "aliases": [
+      "Integrated GPU",
+      "内蔵GPU",
+      "統合GPU"
+    ],
+    "category": "pc_otaku",
+    "short": "CPUに内蔵されたグラフィック処理ユニット。",
+    "long": "Intel CoreやAMD Ryzenに内蔵されたGPU。ホームサーバーではTranscoding（動画変換）のHWアクセラレーションに使われる。Intel Arc/QuickSyncやAMD VCEが代表的。"
+  },
+  {
+    "term": "AV1",
+    "aliases": [
+      "AOMedia Video 1"
+    ],
+    "category": "pc_otaku",
+    "short": "高圧縮効率のオープンな動画コーデック。",
+    "long": "AOM（Alliance for Open Media）が策定した次世代動画コーデック。H.264比で約50%のビットレートで同等品質を実現。Jellyfinなどでのトランスコーディングで注目されているが、エンコードの負荷が高い。"
+  },
+  {
+    "term": "Immich",
+    "aliases": [
+      "immich"
+    ],
+    "category": "pc_otaku",
+    "short": "自己ホスト型のGoogle Photos代替アプリ。",
+    "long": "高機能なセルフホスト型フォト管理アプリ。AI顔認識・地図表示・バックアップ自動化をサポートし、NASやProxmoxで動かしてクラウドサービスの代替にする用途が増えている。"
+  },
+  {
+    "term": "2.5GbE",
+    "aliases": [
+      "2.5ギガビットイーサネット",
+      "2.5G Ethernet"
+    ],
+    "category": "pc_otaku",
+    "short": "2.5Gbps対応のイーサネット規格。",
+    "long": "1GbEと10GbEの中間に位置する2.5Gbpsのネットワーク規格。NASとPC間のファイル転送が高速化でき、既存のLANケーブルをそのまま使えることが多い。Realtekチップが安価に普及している。"
+  },
+  {
+    "term": "CCD",
+    "aliases": [
+      "Core Complex Die"
+    ],
+    "category": "pc_otaku",
+    "short": "AMD Ryzenシリーズにおけるコアダイの単位。",
+    "long": "AMD Ryzen（Zen 3以降）のCPUに搭載されるコアと3D V-Cacheを含む演算ダイの単位。7900X3Dは2CCD構成、7800X3Dは1CCD構成。3D V-Cacheの恩恵はシングルCCDの方が効きやすいと言われる。"
+  },
+  {
+    "term": "N100",
+    "aliases": [
+      "Intel N100"
+    ],
+    "category": "pc_otaku",
+    "short": "省電力な小型PC向けIntelのモバイルCPU。",
+    "long": "Intel Alder Lake-N世代の超省電力CPU。ミニPC（N100搭載機）が15〜20W程度の低消費電力でホームサーバーやルーター代わりに人気。Pi-holeやProxmoxを動かすのに十分な性能。"
   }
 ]
