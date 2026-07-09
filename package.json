@@ -2,6 +2,14 @@
   "name": "meeting-whisperer",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
+  "scripts": {
+    "build:server": "tsc -p tsconfig.server.json",
+    "start": "node dist-server/server/index.js"
+  },
+  "dependencies": {
+    "@google/genai": "^1.0.0"
+  },
   "devDependencies": {
     "@types/node": "^20.16.11",
     "@vercel/node": "^3.0.0",

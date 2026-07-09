@@ -1,0 +1,24 @@
+# Explicit upload ignore for `gcloud run deploy --source`.
+# NOTE: do NOT `#!include:.gitignore` here — gcloud's matcher treats
+# `assets/images/` as unanchored and would drop web/assets/images (UI images).
+.gcloudignore
+.git
+.gitignore
+node_modules/
+dist/
+dist-server/
+coverage/
+.env
+.env.*
+api/local.settings.json
+api/func-*.log
+/assets/images/
+doc/mine/
+video-production/
+受け渡し/
+.claude/
+.vercel/
+*.tmp
+*.bak
+Thumbs.db
+.DS_Store

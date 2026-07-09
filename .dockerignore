@@ -1,0 +1,13 @@
+.git
+node_modules
+api/node_modules
+api/dist
+dist-server
+video-production
+doc
+scripts
+assets/images
+.env
+.env.*
+api/local.settings.json
+受け渡し

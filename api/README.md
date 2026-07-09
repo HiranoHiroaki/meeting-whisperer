@@ -66,10 +66,19 @@ Aliases also supported:
 - `KIMI_API_KEY`
 - `KIMI_MODEL`
 
+## Vertex AI Gemini Configuration (current production)
+No API key. Uses ADC (Cloud Run service account, or local gcloud ADC):
+
+- `GOOGLE_GENAI_USE_VERTEXAI=true`
+- `GOOGLE_CLOUD_PROJECT` (e.g. `meeting-whisperer-prod`)
+- `GOOGLE_CLOUD_LOCATION=global` (required for Gemini 2.5 models)
+- `GEMINI_MODEL` (default `gemini-2.5-flash`)
+
 Provider priority:
-1. Azure OpenAI
-2. OpenAI-compatible
-3. Heuristic fallback
+1. Vertex AI Gemini
+2. Azure OpenAI
+3. OpenAI-compatible
+4. Heuristic fallback
 
 Note:
 - If `AZURE_OPENAI_ENDPOINT` is already `.../openai/v1/` (Foundry v1 style), the app automatically treats it as OpenAI-compatible route and uses `AZURE_OPENAI_DEPLOYMENT` as `model`.

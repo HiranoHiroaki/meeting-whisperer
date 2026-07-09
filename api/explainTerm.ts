@@ -422,7 +422,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   const term = termField.value;
   const meetingContext = contextField.value;
   const preferDictionaryOnly = payload.preferDictionaryOnly === true;
-  const forceContextualAi = payload.forceContextualAi === true;
+  // MW_EXPLAIN_AI_FIRST=1: always route through contextual AI even on dictionary
+  // hits (dictionary info becomes the AI baseline; dictionary remains the
+  // fallback if AI fails). Used on Cloud Run so reviewers can see Gemini calls.
+  const aiFirstEnv = (process.env.MW_EXPLAIN_AI_FIRST ?? "").trim() === "1";
+  const forceContextualAi = payload.forceContextualAi === true || (aiFirstEnv && !preferDictionaryOnly);
 
   const dictHit = lookupDictionaryTerm(term);
   const dictStructured = dictHit ? buildDictionaryExplain(term, meetingContext, dictHit.entry) : null;

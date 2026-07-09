@@ -32,7 +32,14 @@ type OpenAiCompatConfig = {
   model: string;
 };
 
-type AiConfig = AzureOpenAiConfig | OpenAiCompatConfig;
+type VertexGeminiConfig = {
+  provider: "vertex_gemini";
+  project: string;
+  location: string;
+  model: string;
+};
+
+type AiConfig = AzureOpenAiConfig | OpenAiCompatConfig | VertexGeminiConfig;
 
 export type AiChatOptions = {
   temperature?: number;
@@ -101,15 +108,25 @@ function getCompatConfig(): OpenAiCompatConfig | null {
   return null;
 }
 
+function getVertexGeminiConfig(): VertexGeminiConfig | null {
+  const useVertex = readEnv("GOOGLE_GENAI_USE_VERTEXAI").toLowerCase();
+  if (useVertex !== "true" && useVertex !== "1") return null;
+  const project = requireEnv("GOOGLE_CLOUD_PROJECT");
+  // Gemini 2.5 models are only served from the global endpoint.
+  const location = readEnv("GOOGLE_CLOUD_LOCATION") || "global";
+  const model = readEnv("GEMINI_MODEL") || "gemini-2.5-flash";
+  return { provider: "vertex_gemini", project, location, model };
+}
+
 function getAiConfig(): AiConfig | null {
-  return getAzureConfig() ?? getCompatConfig();
+  return getVertexGeminiConfig() ?? getAzureConfig() ?? getCompatConfig();
 }
 
 export function hasAzureOpenAiConfig(): boolean {
   return getAiConfig() !== null;
 }
 
-export function getConfiguredAiSource(): "azure_openai" | "openai_compat" | null {
+export function getConfiguredAiSource(): "vertex_gemini" | "azure_openai" | "openai_compat" | null {
   return getAiConfig()?.provider ?? null;
 }
 
@@ -175,6 +192,65 @@ async function fetchWithTimeout(
     throw error;
   } finally {
     clearTimeout(timeout);
+  }
+}
+
+let cachedGenAi: import("@google/genai").GoogleGenAI | null = null;
+
+async function getGenAiClient(cfg: VertexGeminiConfig): Promise<import("@google/genai").GoogleGenAI> {
+  if (cachedGenAi) return cachedGenAi;
+  const { GoogleGenAI } = await import("@google/genai");
+  cachedGenAi = new GoogleGenAI({
+    vertexai: true,
+    project: cfg.project,
+    location: cfg.location,
+    httpOptions: { timeout: Math.max(1000, AI_HTTP_TIMEOUT_MS) }
+  });
+  return cachedGenAi;
+}
+
+async function callVertexGemini(
+  cfg: VertexGeminiConfig,
+  messages: ChatMessage[],
+  context: Logger,
+  options?: AiChatOptions
+): Promise<string> {
+  const ai = await getGenAiClient(cfg);
+
+  const systemInstruction = messages
+    .filter((m) => m.role === "system")
+    .map((m) => m.content)
+    .join("\n\n");
+  const contents = messages
+    .filter((m) => m.role !== "system")
+    .map((m) => ({
+      role: m.role === "assistant" ? ("model" as const) : ("user" as const),
+      parts: [{ text: m.content }]
+    }));
+
+  try {
+    const response = await ai.models.generateContent({
+      model: cfg.model,
+      contents,
+      config: {
+        ...(systemInstruction ? { systemInstruction } : {}),
+        temperature: options?.temperature ?? 0.2,
+        maxOutputTokens: options?.maxTokens ?? 700,
+        ...(options?.responseFormatJsonObject
+          ? { responseMimeType: "application/json" }
+          : {}),
+        // Reasoning eats into maxOutputTokens on 2.5 models; keep answers cheap and fast.
+        ...(options?.disableThinking ?? true
+          ? { thinkingConfig: { thinkingBudget: 0 } }
+          : {})
+      }
+    });
+    const text = response.text?.trim() ?? "";
+    if (!text) context.warn("Vertex Gemini returned empty content.");
+    return text;
+  } catch (error) {
+    context.warn(`Vertex Gemini call failed: ${String(error)}`);
+    throw new Error("Vertex Gemini call failed");
   }
 }
 
@@ -288,9 +364,11 @@ export async function chatWithAzureOpenAi(
   if (!cfg) throw new Error("AI config is missing");
 
   const text =
-    cfg.provider === "azure_openai"
-      ? await callAzureOpenAi(cfg, messages, context, options)
-      : await callOpenAiCompat(cfg, messages, context, options);
+    cfg.provider === "vertex_gemini"
+      ? await callVertexGemini(cfg, messages, context, options)
+      : cfg.provider === "azure_openai"
+        ? await callAzureOpenAi(cfg, messages, context, options)
+        : await callOpenAiCompat(cfg, messages, context, options);
 
   if (!text) throw new Error("AI provider returned empty content");
   return text;

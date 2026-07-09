@@ -24,7 +24,8 @@ function resolveCorsOrigin(reqOrigin: string): string {
     if (
       parsed.protocol === "https:" &&
       (parsed.hostname.endsWith(".vercel.app") ||
-        parsed.hostname.endsWith(".azurestaticapps.net"))
+        parsed.hostname.endsWith(".azurestaticapps.net") ||
+        parsed.hostname.endsWith(".run.app"))
     ) {
       return reqOrigin;
     }

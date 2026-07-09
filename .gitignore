@@ -5,6 +5,7 @@ doc/mine/
 node_modules/
 **/node_modules/
 dist/
+dist-server/
 coverage/
 
 # Local env
@@ -25,3 +26,5 @@ doc/zenn-article-draft.md
 doc/shittakakun-full-spec.md
 scripts/benchmark_extract_terms.ps1
 scripts/benchmark_extract_terms_direct_ai.py
+
+.vercel

@@ -1,4 +1,4 @@
-# Architecture (MVP)
+# Architecture
 
 ## Frontend
 - HTML / CSS / Vanilla JS
@@ -7,16 +7,18 @@
   - 右: 用語カードと説明
 
 ## Backend
-- Azure Functions (TypeScript)
-- HTTP Trigger API
+- Cloud Run (Node.js / TypeScript)
+- `server/index.ts` が静的UI配信と `/api/*` ルーティングを担当
+- API functions: `api/*.ts`（Vercel互換ハンドラ形式）
 
 ## AI
-- Azure OpenAI (or Foundry)
-- 用語抽出 / 説明生成 / まとめ生成
+- Vertex AI 経由の Gemini 2.5 Flash（APIキーレス・ADC認証・`GOOGLE_CLOUD_LOCATION=global`）
+- 用語抽出 / 説明生成 / まとめ生成 / 議事録生成
+- フォールバック: Azure OpenAI / OpenAI互換API / 辞書+ヒューリスティック
 
 ## Storage
 - MVP: localStorage + JSON
-- Future: Cosmos DB / Blob Storage
+- Future: Firestore / Cloud Storage
 
 ## Logical Components
 - Term Extractor
@@ -24,14 +26,16 @@
 - Notes Generator
 - Click History Tracker
 - Knowledge Profile Updater
+- Dictionary Dispatcher（固定辞書8分野 + プロジェクト辞書 + 自分辞書）
 
 ## Data Flow
-1. `extractTerms`: 会議テキスト -> 候補用語配列
+1. `extractTerms`: 会議テキスト -> 候補用語配列（Fast: 辞書 / Full: Gemini）
 2. `explainTerm`: 選択用語 + 会議文脈 -> 詳細説明
 3. `generateNotes`: クリック履歴 + 会議テキスト -> 個人向けまとめ
-4. profile更新: クリック履歴を知識プロファイルに反映
+4. `generateMinutes`: 会議テキスト -> 議事録
+5. profile更新: クリック履歴を知識プロファイルに反映
 
-## Deployment Options
-- Azure Functions (Consumption)
-- Azure App Service (必要時)
-- Container Apps (将来拡張時)
+## Deployment
+- Cloud Run（min-instances=0、静的UI + API 同一コンテナ）
+- Cloud Build（`gcloud run deploy --source` で Dockerfile ビルド）
+- Artifact Registry（ビルドイメージ格納）
