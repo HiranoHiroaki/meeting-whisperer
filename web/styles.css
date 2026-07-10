@@ -1908,3 +1908,49 @@ button.btn-border:hover::before {
   width:42px;
 }
 
+
+.agent-trace-title {
+  margin-top: 0.6rem;
+  font-weight: 600;
+}
+
+.agent-trace-list {
+  font-family: "JetBrains Mono", "Consolas", monospace;
+  font-size: 0.68rem;
+  line-height: 1.5;
+  background: #f8fafc;
+  border: 1px solid #dbe3f0;
+  border-radius: 0.6rem;
+  padding: 0.5rem 0.6rem;
+  max-height: 180px;
+  overflow: auto;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.agent-trace-list:empty::before {
+  content: "セッション開始後、辞書/AIの振り分け判断がここに流れます。";
+  color: var(--muted);
+  font-family: "Noto Sans JP", "Segoe UI", "Yu Gothic UI", sans-serif;
+}
+
+.agent-trace-entry {
+  border-left: 3px solid #7aa7e8;
+  padding-left: 0.5rem;
+}
+
+.agent-trace-entry .agent-trace-head {
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.agent-trace-entry .agent-trace-step {
+  color: #334155;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.agent-trace-entry .agent-trace-step .agent-trace-step-name {
+  color: #0f766e;
+  font-weight: 600;
+}

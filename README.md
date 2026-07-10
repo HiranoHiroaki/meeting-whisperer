@@ -13,6 +13,22 @@
 ## Deployment (Google Cloud)
 Cloud Run 1サービスに静的UIとAPIを同居。AIは Vertex AI 経由の Gemini（APIキーレス、ADC認証）。
 
+### CI/CD (Cloud Build)
+`cloudbuild.yaml` がパイプライン本体。main への push（またはmanual submit）で:
+
+1. コンテナビルド → Artifact Registry
+2. 新リビジョンを `--no-traffic` + `--tag=candidate` でデプロイ（本番トラフィックは動かさない）
+3. candidate URL に対して `scripts/smoke_test.sh` を実行（UI/画像/セキュリティ応答/Vertex Gemini到達/STT中継を検証）
+4. 全チェック合格時のみ本番トラフィックを新リビジョンへ切替
+
+```bash
+# 手動実行（トリガー未接続時）
+gcloud builds submit --config=cloudbuild.yaml --project=<PROJECT_ID> \
+  --substitutions=COMMIT_SHA=$(git rev-parse HEAD)
+```
+
+### 手動デプロイ（従来方式）
+
 ```powershell
 gcloud run deploy meeting-whisperer `
   --source . `

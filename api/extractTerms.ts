@@ -410,6 +410,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   const profile = normalizeProfile(payload.dictionaryProfile);
   const useDispatcher = isDispatcherEnabled(payload);
   const skipAi = payload.skipAi === true;
+
+  // Agent execution trace: records each routing decision so the UI can show
+  // where the dispatcher chose dictionaries over AI (and why).
+  const traceStart = Date.now();
+  const trace: Array<{ step: string; detail: string; ms: number }> = [];
+  const addTrace = (step: string, detail: string) => {
+    trace.push({ step, detail, ms: Date.now() - traceStart });
+  };
+
   const personalTerms = fromPersonalDictionary(payload.personalTerms).filter((row) =>
     containsTermInMeetingText(text, row.term)
   );
@@ -418,6 +427,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   const topFixed = fixedProfileTerms[0] ?? null;
   const narrowedCategory =
     topFixed && (topFixed.score ?? 0) >= 90 ? topFixed.dispatcher?.category ?? null : null;
+  addTrace(
+    "fixed_dictionary",
+    `profile=${profile} ヒット${fixedProfileTerms.length}件` +
+      (narrowedCategory ? ` / 高スコアのためカテゴリを「${narrowedCategory}」に絞り込み` : "")
+  );
   const termMap = new Map<string, ExtractedTerm>();
   for (const row of fixedProfileTerms) {
     const k = row.term.toLowerCase();
@@ -428,6 +442,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
 
   if (useDispatcher && termMap.size < MAX_TERM_CHIPS) {
     const dictionaryTerms = fromDictionaryDispatcher(text);
+    let dispatcherAdded = 0;
     for (const row of dictionaryTerms) {
       if (narrowedCategory && row.dispatcher?.category && row.dispatcher.category !== narrowedCategory) {
         continue;
@@ -435,20 +450,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       const k = row.term.toLowerCase();
       if (!termMap.has(k)) {
         termMap.set(k, { ...row, profile });
+        dispatcherAdded += 1;
       }
       if (termMap.size >= MAX_TERM_CHIPS) break;
     }
+    addTrace("dispatcher", `全辞書スキャン: 候補${dictionaryTerms.length}件 → ${dispatcherAdded}件採用`);
+  } else if (!useDispatcher) {
+    addTrace("dispatcher", "無効化 (bypass)");
   }
 
+  let personalAdded = 0;
   for (const row of personalTerms) {
     const k = row.term.toLowerCase();
     if (!termMap.has(k)) {
       termMap.set(k, row);
+      personalAdded += 1;
     }
     if (termMap.size >= MAX_TERM_CHIPS) break;
   }
+  if (personalTerms.length > 0) {
+    addTrace("personal_dictionary", `自分辞書と一致${personalTerms.length}件 → ${personalAdded}件採用`);
+  }
 
+  if (skipAi) {
+    addTrace("ai_extract", "skipAi=true のためAIを呼ばない (Fast抽出モード)");
+  } else if (!hasAzureOpenAiConfig()) {
+    addTrace("ai_extract", "AI設定なし → 辞書のみで応答");
+  }
   if (!skipAi && hasAzureOpenAiConfig()) {
+    const aiStart = Date.now();
     try {
       const domain = meetingDomainField.value || "業務";
       const aiText = await chatWithAzureOpenAi(
@@ -477,6 +507,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       if (aiTerms.length === 0) {
         aiTerms = parseTermsFromReasoningText(aiText);
       }
+      let aiAdded = 0;
       if (aiTerms.length > 0 && termMap.size < MAX_TERM_CHIPS) {
         for (const row of aiTerms) {
           const canonicalTerm = canonicalizeToFixedTerm(row.term, fixedProfileTerms);
@@ -490,14 +521,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
               source: getConfiguredAiSource() ?? "ai",
               profile
             });
+            aiAdded += 1;
           }
           if (termMap.size >= MAX_TERM_CHIPS) break;
         }
       }
+      addTrace(
+        "ai_extract",
+        `${getConfiguredAiSource() ?? "ai"} 呼び出し ${Date.now() - aiStart}ms → 候補${aiTerms.length}件 / ${aiAdded}件採用`
+      );
       if (aiTerms.length === 0) {
         console.warn("extractTerms ai parse yielded 0 items.");
       }
     } catch (error) {
+      addTrace("ai_extract", `AI失敗 (${Date.now() - aiStart}ms) → 辞書結果のみで継続`);
       console.warn(`extractTerms fallback: ${String(error)}`);
     }
   }
@@ -541,12 +578,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
           ? "heuristic"
           : "none";
 
+  addTrace("decision", `source=${responseSource} / 用語${mergedTerms.length}件を返却`);
+
   const body: Record<string, unknown> = {
     source: responseSource,
     dictionaryMode: useDispatcher ? "fixed_plus_dispatcher_plus_ai" : "fixed_plus_ai",
     dictionaryProfile: profile,
     dispatcherBypassed: !useDispatcher,
-    terms: mergedTerms
+    terms: mergedTerms,
+    trace
   };
   if (includeDebug) {
     body.dictionary = getDictionaryStats();

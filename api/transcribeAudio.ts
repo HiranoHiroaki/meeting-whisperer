@@ -82,6 +82,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       : "ja-JP";
   const mimeType = typeof payload.mimeType === "string" ? payload.mimeType : "audio/webm";
 
+  const sttStart = Date.now();
   try {
     const client = await getAuthClient();
     const quotaProject =
@@ -109,7 +110,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       .join(" ")
       .trim();
 
-    sendJson(res, req, 200, { text, languageCode, source: "google_speech_to_text" });
+    sendJson(res, req, 200, {
+      text,
+      languageCode,
+      source: "google_speech_to_text",
+      trace: [
+        {
+          step: "stt_relay",
+          detail: `Cloud Speech-to-Text 認識 ${Date.now() - sttStart}ms / ${text.length}文字 (ADC・キーレス)`,
+          ms: Date.now() - sttStart
+        }
+      ]
+    });
   } catch (error) {
     const message = String(error);
     console.error(`transcribeAudio failed: ${message}`);

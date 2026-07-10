@@ -428,11 +428,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   const aiFirstEnv = (process.env.MW_EXPLAIN_AI_FIRST ?? "").trim() === "1";
   const forceContextualAi = payload.forceContextualAi === true || (aiFirstEnv && !preferDictionaryOnly);
 
+  // Agent execution trace: mirrors extractTerms so the UI can render the
+  // routing decisions (dictionary vs AI vs fallback) per request.
+  const traceStart = Date.now();
+  const trace: Array<{ step: string; detail: string; ms: number }> = [];
+  const addTrace = (step: string, detail: string) => {
+    trace.push({ step, detail, ms: Date.now() - traceStart });
+  };
+
   const dictHit = lookupDictionaryTerm(term);
   const dictStructured = dictHit ? buildDictionaryExplain(term, meetingContext, dictHit.entry) : null;
+  addTrace(
+    "dictionary_lookup",
+    dictHit ? `ヒット (${dictHit.matchType} / ${dictHit.entry.file})` : "未登録語"
+  );
   if (dictHit && !forceContextualAi) {
+    addTrace("decision", "辞書で即答 (AI不要と判断)");
     const structured = dictStructured!;
     sendJson(res, req, 200, {
+      trace,
       detail: structured.detail,
       brief: structured.brief,
       contextHint: structured.contextHint,
@@ -455,9 +469,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   }
 
   if (preferDictionaryOnly) {
+    addTrace("decision", "辞書限定モード → 文脈推定を表示");
     const detail = estimateTermMeaning(term, meetingContext);
     const structured = fallbackStructuredExplain(term, meetingContext, detail);
     sendJson(res, req, 200, {
+      trace,
       detail: structured.detail,
       brief: structured.brief,
       contextHint: structured.contextHint,
@@ -472,6 +488,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   }
 
   if (hasAzureOpenAiConfig()) {
+    addTrace(
+      "decision",
+      dictHit
+        ? "AI可視化モード → 辞書情報をベースラインに文脈込みAI生成へ委譲"
+        : "辞書未登録 → 文脈込みAI生成へ委譲"
+    );
+    const aiStart = Date.now();
     try {
       const domain = domainField.value || "業務";
       const baseline =
@@ -532,7 +555,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       }
 
       if (brief) {
+        addTrace("ai_explain", `${getConfiguredAiSource() ?? "ai"} 応答 ${Date.now() - aiStart}ms (構造化JSON)`);
         sendJson(res, req, 200, {
+          trace,
           detail: `${brief}\n${contextHint}`,
           hoverTip,
           explain140: brief,
@@ -549,8 +574,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
         return;
       }
     } catch (error) {
+      addTrace("ai_explain", `構造化生成に失敗 (${Date.now() - aiStart}ms) → プレーン応答で再試行`);
       console.warn(`explainTerm fallback: ${String(error)}`);
 
+      const retryStart = Date.now();
       try {
         const domain = domainField.value || "業務";
         const plain = await chatWithAzureOpenAi(
@@ -592,7 +619,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
         const contextHint = dictStructured?.contextHint ?? buildContextHint(term, meetingContext);
         const unknownDetail = dictStructured?.unknownDetail ?? buildUnknownDetail(term, entry, meetingContext);
         const smallTalkExamples = dictStructured?.smallTalkExamples ?? buildSmallTalkExamples(term, meetingContext);
+        addTrace("ai_retry", `${getConfiguredAiSource() ?? "ai"} プレーン応答 ${Date.now() - retryStart}ms`);
         sendJson(res, req, 200, {
+          trace,
           detail: `${cleaned}\n${contextHint}`,
           brief: cleaned,
           contextHint,
@@ -604,6 +633,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
         });
         return;
       } catch (retryError) {
+        addTrace("ai_retry", `再試行も失敗 (${Date.now() - retryStart}ms)`);
         console.warn(`explainTerm plain retry failed: ${String(retryError)}`);
       }
 
@@ -618,7 +648,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       }
 
       if (forceContextualAi && dictStructured) {
+        addTrace("fallback", "辞書補足へフォールバック (UIは止めない)");
         sendJson(res, req, 200, {
+          trace,
           detail: dictStructured.detail,
           brief: dictStructured.brief,
           contextHint: dictStructured.contextHint,
@@ -631,9 +663,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
         return;
       }
       if (forceContextualAi && !dictStructured) {
+        addTrace("fallback", "文脈推定へフォールバック (UIは止めない)");
         const detail = estimateTermMeaning(term, meetingContext);
         const structured = fallbackStructuredExplain(term, meetingContext, detail);
         sendJson(res, req, 200, {
+          trace,
           detail: structured.detail,
           brief: structured.brief,
           contextHint: structured.contextHint,
@@ -657,9 +691,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       });
       return;
     }
+    addTrace("decision", "AI設定が未検出 → 文脈推定を表示");
     const detail = estimateTermMeaning(term, meetingContext);
     const structured = fallbackStructuredExplain(term, meetingContext, detail);
     sendJson(res, req, 200, {
+      trace,
       detail: structured.detail,
       brief: structured.brief,
       contextHint: structured.contextHint,
@@ -672,10 +708,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     return;
   }
 
+  addTrace("decision", "ヒューリスティック推定で応答");
   const detail = estimateTermMeaning(term, meetingContext);
   const structured = fallbackStructuredExplain(term, meetingContext, detail);
 
   sendJson(res, req, 200, {
+    trace,
     detail: structured.detail,
     brief: structured.brief,
     contextHint: structured.contextHint,

@@ -1,0 +1,60 @@
+# CI/CD pipeline: push to main -> build -> canary deploy -> smoke gate -> promote.
+# The new revision receives no production traffic until scripts/smoke_test.sh
+# passes against its tagged URL, so a regressed build never reaches users
+# (e.g. the env-var collapse that briefly disabled Vertex on revision 00004).
+steps:
+  - id: build
+    name: gcr.io/cloud-builders/docker
+    args: ["build", "-t", "${_IMAGE}:${COMMIT_SHA}", "."]
+
+  - id: push
+    name: gcr.io/cloud-builders/docker
+    args: ["push", "${_IMAGE}:${COMMIT_SHA}"]
+
+  - id: deploy-canary
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - ${_SERVICE}
+      - --image=${_IMAGE}:${COMMIT_SHA}
+      - --region=${_REGION}
+      - --project=${PROJECT_ID}
+      - --no-traffic
+      - --tag=candidate
+      - --quiet
+
+  - id: smoke-gate
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: bash
+    args: ["scripts/smoke_test.sh"]
+    env:
+      - SMOKE_BASE_URL=${_CANDIDATE_URL}
+
+  - id: promote
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      - run
+      - services
+      - update-traffic
+      - ${_SERVICE}
+      - --to-latest
+      - --region=${_REGION}
+      - --project=${PROJECT_ID}
+      - --quiet
+
+images:
+  - ${_IMAGE}:${COMMIT_SHA}
+
+substitutions:
+  _SERVICE: meeting-whisperer
+  _REGION: us-central1
+  _IMAGE: us-central1-docker.pkg.dev/meeting-whisperer-prod/cloud-run-source-deploy/meeting-whisperer
+  _CANDIDATE_URL: https://candidate---meeting-whisperer-857039661986.us-central1.run.app
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: 1200s

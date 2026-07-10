@@ -147,6 +147,7 @@ const runStatus = document.querySelector("#runStatus");
 const appMain = document.querySelector(".app-main");
 const dictionaryProfileInfo = document.querySelector("#dictionaryProfileInfo");
 const dispatcherRateInfo = document.querySelector("#dispatcherRateInfo");
+const agentTraceList = document.querySelector("#agentTraceList");
 
 const streamList = document.querySelector("#streamList");
 const streamMeta = document.querySelector("#streamMeta");
@@ -718,6 +719,7 @@ async function transcribeAudioSegment(audioBase64, mimeType) {
     mimeType,
     languageCode: "ja-JP",
   });
+  appendAgentTrace("/transcribeAudio", response);
   return String(response?.text ?? "");
 }
 
@@ -820,8 +822,46 @@ function isExtractSessionActive(contextId) {
   return Boolean(state.playback.running && contextId === state.contextId && contextId > 0);
 }
 
+const AGENT_TRACE_MAX_ENTRIES = 8;
+
+function appendAgentTrace(endpoint, response, label = "") {
+  if (!agentTraceList) return;
+  const steps = Array.isArray(response?.trace) ? response.trace : [];
+  if (steps.length === 0) return;
+
+  const entry = document.createElement("div");
+  entry.className = "agent-trace-entry";
+
+  const head = document.createElement("div");
+  head.className = "agent-trace-head";
+  const now = new Date();
+  const stamp = [now.getHours(), now.getMinutes(), now.getSeconds()]
+    .map((n) => String(n).padStart(2, "0"))
+    .join(":");
+  const totalMs = steps[steps.length - 1]?.ms;
+  head.textContent = `${stamp} ${endpoint}${label ? ` (${label})` : ""}${typeof totalMs === "number" ? ` — ${totalMs}ms` : ""}`;
+  entry.appendChild(head);
+
+  for (const step of steps) {
+    const line = document.createElement("div");
+    line.className = "agent-trace-step";
+    const name = document.createElement("span");
+    name.className = "agent-trace-step-name";
+    name.textContent = String(step?.step ?? "-");
+    line.appendChild(name);
+    line.appendChild(document.createTextNode(`: ${String(step?.detail ?? "")}`));
+    entry.appendChild(line);
+  }
+
+  agentTraceList.prepend(entry);
+  while (agentTraceList.children.length > AGENT_TRACE_MAX_ENTRIES) {
+    agentTraceList.lastChild?.remove();
+  }
+}
+
 function applyExtractResponse(parsed, sourceTag) {
   if (!parsed) return;
+  appendAgentTrace("/extractTerms", parsed);
   const terms = Array.isArray(parsed.terms) ? parsed.terms : [];
   if (terms.length > 0) {
     mergeExtractedTerms(terms);
@@ -1710,6 +1750,7 @@ async function fetchExplainForTerm(term, forceRefresh = false, options = {}) {
     return null;
   }
   const normalized = normalizeExplainResponse(term, response);
+  appendAgentTrace("/explainTerm", response, term);
   state.liveDetails[term] = normalized;
   attachExplainRoute(term, response);
   renderDebugCard();
