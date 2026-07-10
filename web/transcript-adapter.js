@@ -1,8 +1,11 @@
 export function createTranscriptAdapter() {
   let webRecognition = null;
-  let azureRecognizer = null;
   let restartTimer = null;
   let running = false;
+  let googleSession = null;
+
+  const GOOGLE_SEGMENT_MS = 5000;
+  const GOOGLE_MIN_BLOB_BYTES = 1200;
 
   function clearRestartTimer() {
     if (restartTimer) {
@@ -25,16 +28,18 @@ export function createTranscriptAdapter() {
       }
       webRecognition = null;
     }
-    if (azureRecognizer) {
+    if (googleSession) {
+      const session = googleSession;
+      googleSession = null;
       try {
-        azureRecognizer.stopContinuousRecognitionAsync(
-          () => azureRecognizer?.close(),
-          () => azureRecognizer?.close()
-        );
+        if (session.recorder && session.recorder.state !== "inactive") session.recorder.stop();
       } catch {
         // noop
       }
-      azureRecognizer = null;
+      if (session.ownedStream) {
+        for (const track of session.ownedStream.getTracks()) track.stop();
+      }
+      if (session.segmentTimer) clearTimeout(session.segmentTimer);
     }
   }
 
@@ -45,12 +50,106 @@ export function createTranscriptAdapter() {
     });
   }
 
+  function pickRecorderMimeType() {
+    const candidates = ["audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus"];
+    for (const candidate of candidates) {
+      if (window.MediaRecorder?.isTypeSupported?.(candidate)) return candidate;
+    }
+    return "";
+  }
+
+  async function blobToBase64(blob) {
+    const buffer = await blob.arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+    let binary = "";
+    const CHUNK = 0x8000;
+    for (let i = 0; i < bytes.length; i += CHUNK) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
+    }
+    return btoa(binary);
+  }
+
+  // Google Cloud Speech-to-Text route: record short standalone segments
+  // (MediaRecorder restarted per segment so every blob has a full container
+  // header) and relay them through /api/transcribeAudio. Keyless on the
+  // browser side — auth lives on the server (ADC).
+  async function startGoogleSpeech({ source, tabStream, transcribe, onStatus, onFinal, onError, onStarted }) {
+    if (!window.MediaRecorder) throw new Error("このブラウザはMediaRecorderに未対応です。");
+    if (typeof transcribe !== "function") throw new Error("transcribe callback が設定されていません。");
+    const mimeType = pickRecorderMimeType();
+    if (!mimeType) throw new Error("opus録音に対応したブラウザが必要です。");
+
+    let mediaStream;
+    let ownedStream = null;
+    if (source === "tab" && tabStream && tabStream.getAudioTracks().length > 0) {
+      mediaStream = new MediaStream([tabStream.getAudioTracks()[0]]);
+    } else {
+      ownedStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaStream = ownedStream;
+      if (source === "tab") onStatus?.("タブ音声を取得できないためマイク入力に切替しました。");
+    }
+
+    const session = { recorder: null, ownedStream, segmentTimer: null };
+    googleSession = session;
+    running = true;
+
+    const recordSegment = () => {
+      if (!running || googleSession !== session) return;
+      let recorder;
+      try {
+        recorder = new MediaRecorder(mediaStream, { mimeType, audioBitsPerSecond: 32000 });
+      } catch (error) {
+        onError?.(`録音を開始できませんでした: ${String(error)}`);
+        return;
+      }
+      session.recorder = recorder;
+      const chunks = [];
+      recorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) chunks.push(event.data);
+      };
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: mimeType });
+        // Fire the next segment immediately so recording stays continuous
+        // while the previous segment is being transcribed.
+        recordSegment();
+        if (blob.size < GOOGLE_MIN_BLOB_BYTES) return;
+        void (async () => {
+          try {
+            const base64 = await blobToBase64(blob);
+            const text = await transcribe(base64, mimeType);
+            if (!running || googleSession !== session) return;
+            const trimmed = String(text ?? "").trim();
+            if (trimmed) onFinal?.(trimmed);
+          } catch (error) {
+            if (!running || googleSession !== session) return;
+            // A failed segment should not kill the session; report and keep going.
+            onStatus?.(`文字起こし失敗(継続中): ${String(error).slice(0, 120)}`);
+          }
+        })();
+      };
+      recorder.onerror = (event) => {
+        onError?.(`録音エラー: ${String(event?.error ?? "unknown")}`);
+      };
+      try {
+        recorder.start();
+      } catch (error) {
+        onError?.(`録音を開始できませんでした: ${String(error)}`);
+        return;
+      }
+      session.segmentTimer = setTimeout(() => {
+        if (recorder.state !== "inactive") recorder.stop();
+      }, GOOGLE_SEGMENT_MS);
+    };
+
+    recordSegment();
+    onStarted?.("実行中: Google Cloud Speech-to-Text (約5秒ごとに確定)");
+  }
+
   async function start({
     provider,
     source,
     tabStream,
-    speechKey,
-    speechRegion,
+    transcribe,
     onStatus,
     onFinal,
     onInterim,
@@ -58,48 +157,8 @@ export function createTranscriptAdapter() {
     onStarted,
   }) {
     stop();
-    if (provider === "azure") {
-      const sdk = window.SpeechSDK;
-      if (!sdk) throw new Error("Azure Speech SDKが見つかりません。");
-      if (!speechKey || !speechRegion) throw new Error("Speech Key / Region を設定してください。");
-
-      const speechConfig = sdk.SpeechConfig.fromSubscription(speechKey, speechRegion);
-      speechConfig.speechRecognitionLanguage = "ja-JP";
-
-      let audioConfig;
-      if (source === "tab" && tabStream && tabStream.getAudioTracks().length > 0) {
-        try {
-          audioConfig = sdk.AudioConfig.fromStreamInput(tabStream);
-        } catch {
-          audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
-          onStatus?.("タブ音声は未対応のためマイク入力に切替しました。");
-        }
-      } else {
-        audioConfig = sdk.AudioConfig.fromDefaultMicrophoneInput();
-      }
-
-      azureRecognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
-      running = true;
-      azureRecognizer.recognizing = (_sender, event) => {
-        const text = String(event?.result?.text || "").trim();
-        if (text) onInterim?.(text);
-      };
-      azureRecognizer.recognized = (_sender, event) => {
-        const text = String(event?.result?.text || "").trim();
-        if (text) onFinal?.(text);
-      };
-      azureRecognizer.canceled = (_sender, event) => {
-        const detail = event?.errorDetails ? ` ${event.errorDetails}` : "";
-        onError?.(`Azure Speechエラー:${detail}`.trim());
-      };
-      azureRecognizer.sessionStopped = () => {
-        if (running) onError?.("Azure Speechセッションが終了しました。");
-      };
-
-      await new Promise((resolve, reject) => {
-        azureRecognizer.startContinuousRecognitionAsync(resolve, reject);
-      });
-      onStarted?.("実行中: Azure AI Speech");
+    if (provider === "google") {
+      await startGoogleSpeech({ source, tabStream, transcribe, onStatus, onFinal, onError, onStarted });
       return;
     }
 

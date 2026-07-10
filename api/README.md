@@ -1,14 +1,21 @@
-# API Scaffold (Azure Functions)
+# API (Cloud Run / Vercel互換ハンドラ)
 
 ## Endpoints
 - `POST /api/extractTerms`
 - `POST /api/explainTerm`
 - `POST /api/generateNotes`
+- `POST /api/generateMinutes`
+- `POST /api/transcribeAudio`
 
 ## Response Shape
 - `extractTerms`: `{ source, terms: [{ term, summary, score, reasons[] }] }`
 - `explainTerm`: `{ source, detail, style, caution }`
 - `generateNotes`: `{ source, notes, stats }`
+- `generateMinutes`: `{ source, minutes }`
+- `transcribeAudio`: `{ text, languageCode, source: "google_speech_to_text" }`
+
+## Speech-to-Text Relay
+`transcribeAudio` は base64 音声セグメント（webm/ogg opus, wav）を受け取り、Google Cloud Speech-to-Text (`speech.googleapis.com`, sync recognize) に中継する。認証はADC（Cloud Runサービスアカウント / ローカルgcloud ADC）でAPIキー不要。ローカルで使う場合は `GOOGLE_CLOUD_QUOTA_PROJECT` で課金プロジェクトを明示すること。
 
 ## Dictionary Dispatcher (New)
 `extractTerms` now uses deterministic dispatcher before LLM:
@@ -37,25 +44,20 @@ Dictionary files:
 - `api/dict/cloud-azure.json`
 - `api/dict/project-local.json`
 
-## Azure OpenAI Configuration
-Copy `local.settings.example.json` to `local.settings.json` and fill:
+## Azure OpenAI Configuration (legacy fallback)
+本番はVertex AI Gemini。旧構成のフォールバックとして以下を環境変数で設定可能:
 
 - `AZURE_OPENAI_ENDPOINT`
 - `AZURE_OPENAI_API_KEY`
 - `AZURE_OPENAI_DEPLOYMENT`
 - `AZURE_OPENAI_API_VERSION` (default `2024-10-21`)
 
-Environment source rules:
-- Local development: set values in `local.settings.json` under `Values` (loaded into `process.env` by Functions Core Tools).
-- Azure production: set the same keys in Function App Settings (also exposed as `process.env` at runtime).
-
 Security notes:
 - `local.settings.json` is local-only and gitignored. Never commit keys, connection strings, or function keys.
-- If a key leaks, regenerate/rotate it in Azure Portal first, then replace the corresponding Function App Setting and local `Values`.
-- `AzureWebJobsStorage` and `AZURE_OPENAI_API_KEY` are secrets and must not appear in code, docs, or examples as real values.
+- If a key leaks, rotate it at the provider first, then replace local values.
 
 ## OpenAI-Compatible Configuration (Kimi etc.)
-If Azure OpenAI is unavailable, set:
+Another fallback option:
 
 - `OPENAI_COMPAT_BASE_URL` (example: `https://api.moonshot.cn/v1`)
 - `OPENAI_COMPAT_API_KEY`
@@ -84,15 +86,16 @@ Note:
 - If `AZURE_OPENAI_ENDPOINT` is already `.../openai/v1/` (Foundry v1 style), the app automatically treats it as OpenAI-compatible route and uses `AZURE_OPENAI_DEPLOYMENT` as `model`.
 
 ## Local Setup
+リポジトリルートのサーバでAPIごと起動する:
+
 ```powershell
-cd E:\Document\meeting-whisperer\api
+cd E:\Document\meeting-whisperer
 npm install
-npm run build
-func start
+npm run build:server
+npm start
 ```
 
-> `func` requires Azure Functions Core Tools installed locally.
+API base: `http://localhost:8080/api`
 
-## Auth / Rate Limit Defaults
-- HTTP trigger auth defaults to `function` (requires `x-functions-key`) unless `MW_AUTH_LEVEL=anonymous` is set.
+## Rate Limit Defaults
 - Rate limit is enabled by default. Disable only for controlled local tests with `MW_ENABLE_RATE_LIMIT=0`.

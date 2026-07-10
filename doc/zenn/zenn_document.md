@@ -2,7 +2,7 @@
 title: "会議で知ったかするためのAIエージェント「知ったかくん」を作った"
 emoji: "🤓"
 type: "tech"
-topics: ["azure", "ai", "agent", "hackathon", "zenn"]
+topics: ["googlecloud", "gemini", "cloudrun", "ai", "hackathon"]
 published: false
 ---
 
@@ -97,8 +97,8 @@ published: false
 - 会議全体の議事録も作れる
 - 学習ワードを自分辞書に登録できる
 - 自分辞書のメモを編集できる
-- 音声入力Betaとして Web Speech API / Azure AI Speech を選べる
-- Graph取込の導線をMockとして試せる
+- 音声入力Betaとして Web Speech API / Google Cloud Speech-to-Text を選べる
+- Google Meet取込の導線をMockとして試せる
 - Debug表示で、用語がどの経路から来たか見られる
 
 会議中に完璧に理解する必要はない。
@@ -237,11 +237,17 @@ published: false
 ただし、音声入力のBeta導線は入れた。
 
 Web Speech API。
-Azure AI Speech。
+Google Cloud Speech-to-Text。
 マイク入力。
 ブラウザタブ音声。
 
 入れた。
+
+Speech-to-Text の方は、ブラウザで数秒ごとに録音した音声を Cloud Run 経由で中継する方式にした。
+
+認証はサーバ側のADCで完結するので、ブラウザにキーを置かない。
+
+キーレスは正義。
 
 入れたけど、主役にはしない。
 
@@ -255,7 +261,7 @@ Azure AI Speech。
 
 知ったかくんの本体は、その後にある。
 
-【差し込み　画像4】音声入力Betaのタブ。Web Speech API / Azure AI Speech、マイク / ブラウザタブ音声の選択肢が見えるスクショ。キャプションでは「本番品質ではなくBeta」と明記すると誤解が少ない。
+【差し込み　画像4】音声入力Betaのタブ。Web Speech API / Google Cloud Speech-to-Text、マイク / ブラウザタブ音声の選択肢が見えるスクショ。キャプションでは「本番品質ではなくBeta」と明記すると誤解が少ない。
 
 # アーキテクチャ
 
@@ -263,9 +269,9 @@ Azure AI Speech。
 
 ```mermaid
 flowchart TD
-  A["Web UI<br/>演出デモ / 音声入力Beta / Graph Mock"] --> B["会議テキスト"]
+  A["Web UI<br/>演出デモ / 音声入力Beta / Meet Mock"] --> B["会議テキスト"]
   B --> C["Fast抽出<br/>辞書中心 / skipAi"]
-  B --> D["Full抽出<br/>Azure OpenAI / OpenAI互換"]
+  B --> D["Full抽出<br/>Vertex AI Gemini"]
   C --> E["用語チップ"]
   D --> E
   E --> F["explainTerm"]
@@ -279,14 +285,14 @@ flowchart TD
   M --> C
 ```
 
-【差し込み　画像5】全体アーキテクチャ図。上のMermaidを画像化してもOK。Web UI、Azure Functions、辞書、Azure OpenAI、localStorage、自分辞書の関係が見える図。
+【差し込み　画像5】全体アーキテクチャ図。上のMermaidを画像化してもOK。Web UI、Cloud Run、辞書、Vertex AI Gemini、localStorage、自分辞書の関係が見える図。
 
 構成としてはこう。
 
 - フロントエンド: HTML / CSS / Vanilla JS
-- バックエンド: Azure Functions / TypeScript
-- AI接続: Azure OpenAI または OpenAI互換API
-- 音声入力Beta: Web Speech API / Azure AI Speech
+- バックエンド: Cloud Run（Node.js / TypeScript、静的UIとAPIを1コンテナ同居）
+- AI接続: Vertex AI 経由の Gemini 2.5 Flash（APIキーレス・ADC認証）
+- 音声入力Beta: Web Speech API / Google Cloud Speech-to-Text
 - 保存: localStorage / sessionStorage
 - 辞書: 固定辞書 + プロジェクト辞書 + 自分辞書
 
@@ -587,22 +593,23 @@ flowchart TD
 
 【差し込み　画像8】会議終了後の「議事録」と「学習ワードの会議文脈付きまとめ」が並ぶ画面。可能なら、議事録と知ったかまとめの違いがわかるように2枚並べる。
 
-# Microsoft / Azure を使ったところ
+# Google Cloud を使ったところ
 
-今回の実装は、ハッカソン向けに Microsoft / Azure 系の技術を使う前提で構成した。
+今回の構成は、Google Cloud に全部乗せた。
 
-実装の中心に置いたのは Azure Functions だ。
+実装の中心に置いたのは Cloud Run だ。
 
-Azure Functions のHTTP Trigger APIとして、以下の処理を呼び分ける構成にした。
+Cloud Run の1サービスに、静的UIの配信と、以下のAPIを1コンテナで同居させた。
 
 `extractTerms`
 `explainTerm`
 `generateNotes`
 `generateMinutes`
+`transcribeAudio`
 
 このへん。
 
-AI呼び出しは、Azure OpenAI / OpenAI互換のチャットAPIを呼べる構成にしている。
+AI呼び出しは、Vertex AI 経由の Gemini 2.5 Flash。
 
 用語抽出。
 用語説明。
@@ -611,52 +618,49 @@ AI呼び出しは、Azure OpenAI / OpenAI互換のチャットAPIを呼べる構
 
 ここを、それぞれ別のAPIとして分けた。
 
-一方で、Azure AI Speech や Microsoft Graph 連携は、今回は Beta / Mock 導線として扱っている。
+Vertex AI ルートの良いところは、APIキーが一切いらないこと。
+
+Cloud Run のサービスアカウントのADC（Application Default Credentials）で認証するので、コードにも環境変数にもキーが存在しない。
+
+漏れるキーがなければ、キーは漏れない。
+
+当たり前のことを言っているようで、これがいちばん強いセキュリティだと思う。
+
+デプロイは `gcloud run deploy --source .` の一発。
+
+Cloud Build が Dockerfile を拾ってビルドして、Artifact Registry に置いて、リビジョンを切り替えてくれる。
+
+min-instances=0 にしてあるので、誰も使っていない時のコストはゼロ。
+
+ハッカソンの財布に優しい。
+
+一方で、Google Cloud Speech-to-Text や Google Meet 連携は、今回は Beta / Mock 導線として扱っている。
 
 音声入力は試せる。
-Graph取込の流れも見せられる。
+Meet取込の流れも見せられる。
 
-でも本番品質の Teams / Graph 連携として完成させたわけではない。
+でも本番品質の Meet 連携として完成させたわけではない。
 
 そこは正直に分けておきたい。
 
 盛るとあとで自分が苦しくなる。
 
-ハッカソン中って、理想構成だけでは進まない。
+ちなみにこのプロジェクト、最初は別のハッカソン向けに Azure Functions + Azure OpenAI で作っていた。
 
-クォータ。
-リージョン。
-デプロイ名。
-使えるモデル。
-権限。
-ポータルの導線。
+それを今回、Cloud Run + Vertex AI Gemini に丸ごと移行した。
 
-全部ある。
+ハンドラのインターフェースを薄いアダプタで包んで、AIクライアントをプロバイダ切替式にしておいたおかげで、移行の本体は思ったより小さく済んだ。
 
-Azureは強い。
+構成を疎結合にしておくと、クラウドごと引っ越せる。
 
-強いんだけど、広い。
+DevOps的な学びとしては、これが今回いちばん大きかったかもしれない。
 
-広すぎる。
-
-「あれ、昨日ここにあった画面どこ行った？」
-
-みたいな瞬間がある。
-
-人間は弱い。
-
-Azureは広い。
-
-僕は少し泣いた。
-
-でも、短期間でAPIを分けて試せるのはかなり良かった。
-
-ローカルで Functions を立てる。
+ローカルで Node サーバを立てる。
 フロントから叩く。
 辞書で先に返す。
 AIが使える時だけ補う。
 
-この構成にしたおかげで、Azure側が詰まってもUIや辞書の検証は進められた。
+この構成にしたおかげで、クラウド側が詰まってもUIや辞書の検証は進められた。
 
 これは地味に大事だった。
 
@@ -708,21 +712,21 @@ AIが使える時だけ補う。
 
 順番としてはこれでよかったと思う。
 
-## Teams / Graph の本番連携
+## Google Meet の本番連携
 
-Teams や Graph API とつなげば、かなり実用に近づく。
+Google Meet REST API とつなげば、かなり実用に近づく。
 
 本当はやりたい。
 
-会議URLから transcript を取りに行って、そのまま知ったかくんに流す。
+Meet の会議URLから conferenceRecords を解決して、transcript を取りに行って、そのまま知ったかくんに流す。
 
 めちゃくちゃ良い。
 
-でも本番連携は、認証と権限と組織設定が絡む。
+でも本番連携は、OAuth同意とWorkspaceの権限と組織設定が絡む。
 
 ここもハッカソンで沼になりやすい。
 
-なので今回は Graph取込はMock導線にした。
+なので今回は Meet取込はMock導線にした。
 
 「将来こうつながる」の見せ方だけ作って、価値検証の中心は用語抽出と知ったかまとめに置いた。
 
@@ -789,7 +793,7 @@ Zennの記事を書く。
 
 個人参加OKにするなら、もう少し人間の生活というものをですね。
 
-マイクロソフトさん。
+運営の皆さん。
 
 聞こえていますか。
 
@@ -808,7 +812,7 @@ AIに会議ログを渡す以上、最低限のガードは入れた。
 
 会議ログは命令ではなくデータとして扱う。
 入力サイズを制限する。
-APIキーやFunction Keyはコードに書かない。
+APIキーをそもそも持たない（Vertex AI / Speech-to-Text ともにADC認証）。
 Rate Limitを入れる。
 CORSを制御する。
 AIが失敗しても辞書や推定でフォールバックする。
@@ -843,13 +847,13 @@ AIだけに頼ると、たまに何が悪いのかわからなくなる。
 
 今回はハッカソン用のデモとして作ったけど、やりたいことはまだある。
 
-まず、Teams / Graph API との本番連携。
+まず、Google Meet API との本番連携。
 
-本当に会議に接続して、会議中の発言や transcript から用語を拾えるようにしたい。
+本当に会議に接続して、会議終了後の transcript から用語を拾えるようにしたい（ルート設計は済んでいて、あとはOAuth同意フローの実装）。
 
 次に、音声入力の強化。
 
-Azure AI Speech はBeta導線として入れたけど、実用にするなら話者分離、ノイズ、句読点、長時間安定性が必要になる。
+Google Cloud Speech-to-Text はBeta導線として入れたけど、実用にするなら話者分離、ノイズ、句読点、長時間安定性が必要になる。ストリーミング認識への切り替えもここでやりたい。
 
 ここはちゃんとやると別プロジェクトです。
 
@@ -925,8 +929,8 @@ Dictionary Dispatcherで振り分ける。
 
 デモ動画: ここにURL
 
-GitHub: ここにURL
+GitHub: https://github.com/HiranoHiroaki/meeting-whisperer
 
-アプリURL: ここにURL
+アプリURL: https://meeting-whisperer-857039661986.us-central1.run.app
 
-ハッカソン: Microsoft AI Agents Hackathon 2026
+ハッカソン: DevOps × AI Agent Hackathon (Findy) #findy_hackathon

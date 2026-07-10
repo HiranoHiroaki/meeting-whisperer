@@ -6,7 +6,7 @@
 ## Directories
 - `doc/`: 企画・仕様・サンプル会議ログ
 - `web/`: Demo UI (Vanilla JS)
-- `api/`: API functions (TypeScript) — extractTerms / explainTerm / generateNotes / generateMinutes
+- `api/`: API functions (TypeScript) — extractTerms / explainTerm / generateNotes / generateMinutes / transcribeAudio
 - `server/`: Cloud Run 用エントリポイント（静的UI配信 + `/api/*` ルーティング）
 - `scripts/`: 補助スクリプト
 
@@ -26,7 +26,9 @@ gcloud run deploy meeting-whisperer `
 - `MW_EXPLAIN_AI_FIRST=1`: 用語説明を辞書即答ではなく常に Gemini（文脈込み・辞書情報をベースラインに使用）で生成する。AI失敗時は辞書にフォールバック。審査・デモでAI呼び出しを可視化したい時に有効化する
 - `.gcloudignore` は明示管理。gcloud の gitignore 解釈は `assets/images/` を任意階層に誤適用して `web/assets/images`（UI画像）を除外してしまうため、`#!include:.gitignore` を使わないこと
 
-必要なAPI: `run.googleapis.com` / `cloudbuild.googleapis.com` / `artifactregistry.googleapis.com` / `aiplatform.googleapis.com`
+必要なAPI: `run.googleapis.com` / `cloudbuild.googleapis.com` / `artifactregistry.googleapis.com` / `aiplatform.googleapis.com` / `speech.googleapis.com`
+
+音声入力Betaの `Google Cloud Speech-to-Text` は `/api/transcribeAudio` がサーバ側でADC認証して中継する（ブラウザにキーを置かない）。Google Meet 取込はMock導線（設計: `doc/meet-integration-plan.md`）。
 
 ## Quick Start (Local)
 ```powershell

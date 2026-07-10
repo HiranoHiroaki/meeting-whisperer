@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://aka.ms https://csspeechstorage.blob.core.windows.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' http://localhost:7071 https:; font-src 'self' data:; base-uri 'self'; form-action 'self';" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' http://localhost:7071 https:; font-src 'self' data:; base-uri 'self'; form-action 'self';" />
     <link rel="icon" type="image/png" href="./assets/images/favicon.png" />
     <link rel="apple-touch-icon" href="./assets/images/favicon.png" />
     <title>知ったかくん | デモコンソール</title>
@@ -30,7 +30,7 @@
 
             <div class="ingest-tabs">
               <button id="sampleTabBtn" class="ghost tiny active" type="button">サンプル</button>
-              <button id="graphTabBtn" class="ghost tiny" type="button">Graph取込</button>
+              <button id="meetTabBtn" class="ghost tiny" type="button">Meet取込</button>
               <button id="voiceTabBtn" class="ghost tiny" type="button">音声入力</button>
             </div>
             <div class="header-controls">
@@ -40,20 +40,20 @@
                 <select id="sampleSelect" name="sample_select"></select>
               </label>
               </section>
-              <section id="graphIngestPane" class="ingest-pane hidden">
+              <section id="meetIngestPane" class="ingest-pane hidden">
                 <label>
-                  会議URL or meetingId
-                  <input id="meetingInput" name="meeting_input" type="text" placeholder="https://teams.microsoft.com/... or meetingId" />
+                  会議URL or conferenceRecord ID
+                  <input id="meetingInput" name="meeting_input" type="text" placeholder="https://meet.google.com/xxx-yyyy-zzz" />
                 </label>
-                <button id="graphResolveBtn" class="ghost tiny" type="button">Graph導線を実行(Mock)</button>
-                <div id="graphRouteStatus" class="mini-meta">未実行</div>
+                <button id="meetResolveBtn" class="ghost tiny" type="button">Meet導線を実行(Mock)</button>
+                <div id="meetRouteStatus" class="mini-meta">未実行</div>
               </section>
               <section id="voiceIngestPane" class="ingest-pane hidden">
                 <label>
                   文字起こしエンジン
                   <select id="voiceProviderSelect" name="voice_provider_select">
                     <option value="webspeech" selected>Web Speech API</option>
-                    <option value="azure">Azure AI Speech</option>
+                    <option value="google">Google Cloud Speech-to-Text</option>
                   </select>
                 </label>
                 <label>
@@ -296,16 +296,6 @@
           <button id="saveApiBtn" class="ghost" type="button"><span class="btn-border-label">API保存</span></button>
           <button id="pingApiBtn" class="ghost" type="button"><span class="btn-border-label">API疎通確認</span></button>
         </div>
-        <div class="debug-api-row">
-          <label>
-            Azure Speech Key
-            <input id="speechKeyInput" name="speech_key_input" type="password" placeholder="Speech resource key" />
-          </label>
-          <label>
-            Azure Speech Region
-            <input id="speechRegionInput" name="speech_region_input" type="text" placeholder="japaneast" />
-          </label>
-        </div>
       </section>
       <div class="debug-actions">
         <button id="debugProbeBtn" class="ghost tiny" type="button"><span class="btn-border-label">ディスパッチャ検証</span></button>
@@ -315,7 +305,6 @@
       <div id="debugRouteList" class="debug-route-list"></div>
     </aside>
 
-    <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
     <script type="module" src="./main.js"></script>
   </body>
 </html>

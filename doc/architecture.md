@@ -16,6 +16,10 @@
 - 用語抽出 / 説明生成 / まとめ生成 / 議事録生成
 - フォールバック: Azure OpenAI / OpenAI互換API / 辞書+ヒューリスティック
 
+## Speech / Meeting Ingest
+- 音声入力Beta: Web Speech API（ブラウザ完結）/ Google Cloud Speech-to-Text（`/api/transcribeAudio` 中継、ADC認証・キーレス）
+- Google Meet 取込: Mock導線のみ（本番ルート設計は `doc/meet-integration-plan.md`）
+
 ## Storage
 - MVP: localStorage + JSON
 - Future: Firestore / Cloud Storage
@@ -33,7 +37,8 @@
 2. `explainTerm`: 選択用語 + 会議文脈 -> 詳細説明
 3. `generateNotes`: クリック履歴 + 会議テキスト -> 個人向けまとめ
 4. `generateMinutes`: 会議テキスト -> 議事録
-5. profile更新: クリック履歴を知識プロファイルに反映
+5. `transcribeAudio`: 音声セグメント(base64) -> Google STT -> テキスト
+6. profile更新: クリック履歴を知識プロファイルに反映
 
 ## Deployment
 - Cloud Run（min-instances=0、静的UI + API 同一コンテナ）

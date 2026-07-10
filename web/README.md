@@ -12,8 +12,7 @@ Open: `http://localhost:8080/web/`
 
 ## Notes
 - Scripted demo JSON is loaded from `doc/samples/scripted-demo/`.
-- Live API mode calls `http://localhost:7071/api` by default.
-- Start Azure Functions locally first, then switch Mode to `Live API`.
+- Live API mode calls `http://localhost:7071/api` by default (repo-root server: `npm start` なら `http://localhost:8080/api`).
 - `API Base` can be changed and saved from UI.
 - API 側が `MW_AUTH_LEVEL=function` の場合は `x-functions-key` の入力が必要です。
 - API 側のレート制限は既定でONです（`MW_ENABLE_RATE_LIMIT=0` でのみ無効化）。
@@ -24,8 +23,8 @@ Open: `http://localhost:8080/web/`
 - `音声入力(Beta)` タブでリアルタイム文字起こしを会議ログへ追記できます（`マイク` / `ブラウザタブ音声`）。
 - 文字起こし結果は既存の `extractTerms` 導線に流れるため、抽出用語・説明・議事録生成もそのまま利用できます。
 - `ブラウザタブ音声` はブラウザ実装差があります。非対応環境では既定マイク入力として扱われます。
-- `文字起こしエンジン` で `Azure AI Speech` を選ぶと、Azure Speech SDKによる連続認識を利用できます。
-- Debugカード内の `Azure Speech Key` / `Azure Speech Region` を入力して `API保存` を押すとローカル保存されます。
+- `文字起こしエンジン` で `Google Cloud Speech-to-Text` を選ぶと、約5秒ごとに録音した音声を `/api/transcribeAudio` 経由でGoogle STTに中継します（ブラウザ側にキー不要・サーバのADC認証）。
+- `Meet取込` タブはGoogle Meet REST APIルートのMock導線です（設計は `doc/meet-integration-plan.md`）。
 
 ## Debug Mode
 - Config file: `web/debug.config.js`

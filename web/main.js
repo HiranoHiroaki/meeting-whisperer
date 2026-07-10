@@ -40,8 +40,6 @@ const SAMPLE_FILES = [
 const STORAGE_KEY = "meeting_whisperer_profile_v1";
 const API_STORAGE_KEY = "meeting_whisperer_api_base";
 const API_KEY_STORAGE_KEY = "meeting_whisperer_function_key";
-const SPEECH_KEY_STORAGE_KEY = "meeting_whisperer_speech_key";
-const SPEECH_REGION_STORAGE_KEY = "meeting_whisperer_speech_region";
 const SPEECH_PROVIDER_STORAGE_KEY = "meeting_whisperer_speech_provider";
 const PERSONAL_DICT_STORAGE_KEY = "meeting_whisperer_personal_dictionary_v1";
 const PERSONAL_DICT_CLEANUP_KEY = "meeting_whisperer_personal_dictionary_cleanup_v1";
@@ -107,8 +105,6 @@ const state = {
     running: false,
     source: "mic",
     provider: loadSpeechProvider(),
-    speechKey: loadSpeechKey(),
-    speechRegion: loadSpeechRegion(),
   },
   explainPrefetchInFlight: {},
 };
@@ -123,14 +119,14 @@ const personalDictDrawerSaveBtn = document.querySelector("#personalDictDrawerSav
 
 const sampleSelect = document.querySelector("#sampleSelect");
 const sampleTabBtn = document.querySelector("#sampleTabBtn");
-const graphTabBtn = document.querySelector("#graphTabBtn");
+const meetTabBtn = document.querySelector("#meetTabBtn");
 const voiceTabBtn = document.querySelector("#voiceTabBtn");
 const sampleIngestPane = document.querySelector("#sampleIngestPane");
-const graphIngestPane = document.querySelector("#graphIngestPane");
+const meetIngestPane = document.querySelector("#meetIngestPane");
 const voiceIngestPane = document.querySelector("#voiceIngestPane");
 const meetingInput = document.querySelector("#meetingInput");
-const graphResolveBtn = document.querySelector("#graphResolveBtn");
-const graphRouteStatus = document.querySelector("#graphRouteStatus");
+const meetResolveBtn = document.querySelector("#meetResolveBtn");
+const meetRouteStatus = document.querySelector("#meetRouteStatus");
 const voiceProviderSelect = document.querySelector("#voiceProviderSelect");
 const voiceSourceSelect = document.querySelector("#voiceSourceSelect");
 const voiceStartBtn = document.querySelector("#voiceStartBtn");
@@ -141,8 +137,6 @@ const playbackControls = document.querySelector("#playbackControls");
 const speedSelect = document.querySelector("#speedSelect");
 const apiBaseInput = document.querySelector("#apiBaseInput");
 const functionKeyInput = document.querySelector("#functionKeyInput");
-const speechKeyInput = document.querySelector("#speechKeyInput");
-const speechRegionInput = document.querySelector("#speechRegionInput");
 const saveApiBtn = document.querySelector("#saveApiBtn");
 const pingApiBtn = document.querySelector("#pingApiBtn");
 const startBtn = document.querySelector("#startBtn");
@@ -310,8 +304,6 @@ function init() {
 
   apiBaseInput.value = state.apiBase;
   if (functionKeyInput) functionKeyInput.value = state.functionKey || "";
-  if (speechKeyInput) speechKeyInput.value = state.voice.speechKey || "";
-  if (speechRegionInput) speechRegionInput.value = state.voice.speechRegion || "";
   if (voiceProviderSelect) voiceProviderSelect.value = state.voice.provider || "webspeech";
   if (voiceSourceSelect) voiceSourceSelect.value = state.voice.source || "mic";
   streamList.classList.add("is-empty");
@@ -332,14 +324,14 @@ function init() {
   sampleTabBtn?.addEventListener("click", () => {
     setIngestMode("sample");
   });
-  graphTabBtn?.addEventListener("click", () => {
-    setIngestMode("graph_mock");
+  meetTabBtn?.addEventListener("click", () => {
+    setIngestMode("meet_mock");
   });
   voiceTabBtn?.addEventListener("click", () => {
     setIngestMode("voice");
   });
-  graphResolveBtn?.addEventListener("click", async () => {
-    await runGraphMockRoute();
+  meetResolveBtn?.addEventListener("click", async () => {
+    await runMeetMockRoute();
   });
   voiceStartBtn?.addEventListener("click", async () => {
     await startVoiceInput();
@@ -373,14 +365,6 @@ function init() {
     if (functionKeyInput) {
       state.functionKey = String(functionKeyInput.value || "").trim();
       safeSessionSet(API_KEY_STORAGE_KEY, state.functionKey);
-    }
-    if (speechKeyInput) {
-      state.voice.speechKey = String(speechKeyInput.value || "").trim();
-      safeSessionSet(SPEECH_KEY_STORAGE_KEY, state.voice.speechKey);
-    }
-    if (speechRegionInput) {
-      state.voice.speechRegion = String(speechRegionInput.value || "").trim();
-      safeStorageSet(SPEECH_REGION_STORAGE_KEY, state.voice.speechRegion);
     }
     setRunStatus(`API接続先を保存しました: ${next}`);
     updateModeView();
@@ -544,13 +528,13 @@ function init() {
 
 function setIngestMode(mode) {
   const sampleMode = mode === "sample";
-  const graphMode = mode === "graph_mock";
+  const meetMode = mode === "meet_mock";
   const voiceMode = mode === "voice";
   sampleIngestPane?.classList.toggle("hidden", !sampleMode);
-  graphIngestPane?.classList.toggle("hidden", !graphMode);
+  meetIngestPane?.classList.toggle("hidden", !meetMode);
   voiceIngestPane?.classList.toggle("hidden", !voiceMode);
   sampleTabBtn?.classList.toggle("active", sampleMode);
-  graphTabBtn?.classList.toggle("active", graphMode);
+  meetTabBtn?.classList.toggle("active", meetMode);
   voiceTabBtn?.classList.toggle("active", voiceMode);
   playbackControls?.classList.toggle("hidden", voiceMode);
   voiceStatus?.classList.toggle("hidden", !voiceMode);
@@ -588,43 +572,43 @@ function ensurePersonalDictionarySeeded() {
   safeStorageSet(PERSONAL_DICT_STORAGE_KEY, JSON.stringify(merged));
 }
 
-async function runGraphMockRoute() {
+async function runMeetMockRoute() {
   const raw = String(meetingInput?.value ?? "").trim();
   if (!raw) {
-    setRunStatus("meeting URL / meetingId を入力してください。");
+    setRunStatus("Meet URL / conferenceRecord ID を入力してください。");
     return;
   }
-  if (graphResolveBtn) graphResolveBtn.disabled = true;
+  if (meetResolveBtn) meetResolveBtn.disabled = true;
   try {
     const steps = [
       "1. ユーザー入力を受領",
-      "2. Graph APIでonlineMeeting解決 (mock)",
+      "2. Meet APIでconferenceRecords解決 (mock)",
       "3. transcripts一覧取得 (mock)",
-      "4. transcript content取得 (mock)",
-      "5. VTT/text を TranscriptLine[] に変換 (mock)",
+      "4. transcripts.entries取得 (mock)",
+      "5. entries を TranscriptLine[] に変換 (mock)",
       "6. SessionStoreへ流し込み (既存再生導線)"
     ];
     for (const step of steps) {
-      if (graphRouteStatus) graphRouteStatus.textContent = step;
-      setRunStatus(`Graph導線(Mock): ${step}`);
+      if (meetRouteStatus) meetRouteStatus.textContent = step;
+      setRunStatus(`Meet導線(Mock): ${step}`);
       await sleep(240);
     }
 
     const lines = buildMockTranscriptLines(raw);
     applyTranscriptLinesToSession(lines, raw);
-    if (graphRouteStatus) graphRouteStatus.textContent = `完了: ${lines.length}行を読み込みました`;
-    setRunStatus("Graph導線(Mock)完了。開始ボタンで再生できます。");
+    if (meetRouteStatus) meetRouteStatus.textContent = `完了: ${lines.length}行を読み込みました`;
+    setRunStatus("Meet導線(Mock)完了。開始ボタンで再生できます。");
   } finally {
-    if (graphResolveBtn) graphResolveBtn.disabled = false;
+    if (meetResolveBtn) meetResolveBtn.disabled = false;
   }
 }
 
 function buildMockTranscriptLines(sourceTag) {
-  const seed = sanitizeFileSegment(sourceTag).slice(0, 12) || "graph";
+  const seed = sanitizeFileSegment(sourceTag).slice(0, 12) || "meet";
   return [
-    { speaker: "田中", text: `meetingId(${seed}) の transcript を取り込めるか確認します。` },
-    { speaker: "佐藤", text: "onlineMeeting を解決して transcript 一覧を引く流れでいきます。" },
-    { speaker: "高橋", text: "VTT を TranscriptLine[] に正規化して既存 SessionStore に流し込みます。" },
+    { speaker: "田中", text: `会議コード(${seed}) の transcript を取り込めるか確認します。` },
+    { speaker: "佐藤", text: "conferenceRecords を解決して transcripts 一覧を引く流れでいきます。" },
+    { speaker: "高橋", text: "transcripts.entries を TranscriptLine[] に正規化して既存 SessionStore に流し込みます。" },
     { speaker: "村上", text: "再生は既存の会議ログ導線をそのまま使える形に揃えます。" },
   ];
 }
@@ -640,9 +624,9 @@ function applyTranscriptLinesToSession(lines, sourceTag) {
     highlight_terms: [],
   }));
   state.demoData = {
-    id: `graph-mock-${Date.now()}`,
-    source: "graph_mock",
-    title: `Graph Mock: ${sourceTag}`,
+    id: `meet-mock-${Date.now()}`,
+    source: "meet_mock",
+    title: `Meet Mock: ${sourceTag}`,
     events,
   };
   state.totalLines = events.length;
@@ -728,6 +712,15 @@ async function startPlayback() {
   await runScriptedLoop(state.playback.token);
 }
 
+async function transcribeAudioSegment(audioBase64, mimeType) {
+  const response = await postJson(`${state.apiBase}/transcribeAudio`, {
+    audioContent: audioBase64,
+    mimeType,
+    languageCode: "ja-JP",
+  });
+  return String(response?.text ?? "");
+}
+
 async function startVoiceInput() {
   stopPlaybackEngine();
   resetPlayback();
@@ -744,22 +737,11 @@ async function startVoiceInput() {
     }
   }
   try {
-    const speechKey = String(speechKeyInput?.value || state.voice.speechKey || "").trim();
-    const speechRegion = String(speechRegionInput?.value || state.voice.speechRegion || "").trim();
-    if (speechKey) {
-      state.voice.speechKey = speechKey;
-      safeSessionSet(SPEECH_KEY_STORAGE_KEY, speechKey);
-    }
-    if (speechRegion) {
-      state.voice.speechRegion = speechRegion;
-      safeStorageSet(SPEECH_REGION_STORAGE_KEY, speechRegion);
-    }
     await transcriptAdapter.start({
       provider: state.voice.provider,
       source: state.voice.source,
       tabStream: state.voice.stream,
-      speechKey,
-      speechRegion,
+      transcribe: transcribeAudioSegment,
       onStatus: (text) => setVoiceStatus(text),
       onInterim: (text) => setVoiceStatus(`認識中: ${text.slice(0, 80)}`),
       onFinal: (text) => {
@@ -1916,7 +1898,7 @@ function scheduleUnknownExplainPrefetch(term, row) {
     origin === "ai" ||
     source === "ai" ||
     source.includes("openai") ||
-    source.includes("azure_openai");
+    source.includes("gemini");
   if (!isAiUnknown) return;
   if (state.liveDetails?.[term]) return;
   if (state.explainPrefetchInFlight?.[term]) return;
@@ -3433,23 +3415,8 @@ function loadFunctionKey() {
   return typeof raw === "string" ? raw.trim() : "";
 }
 
-function loadSpeechKey() {
-  const raw = safeSessionGet(SPEECH_KEY_STORAGE_KEY) ?? safeStorageGet(SPEECH_KEY_STORAGE_KEY);
-  if (raw) {
-    // Legacy migration: old localStorage key is moved to session-only.
-    safeSessionSet(SPEECH_KEY_STORAGE_KEY, raw);
-    safeStorageRemove(SPEECH_KEY_STORAGE_KEY);
-  }
-  return typeof raw === "string" ? raw.trim() : "";
-}
-
-function loadSpeechRegion() {
-  const raw = safeStorageGet(SPEECH_REGION_STORAGE_KEY);
-  return typeof raw === "string" ? raw.trim() : "";
-}
-
 function loadSpeechProvider() {
   const raw = safeStorageGet(SPEECH_PROVIDER_STORAGE_KEY);
-  if (raw === "azure" || raw === "webspeech") return raw;
+  if (raw === "google" || raw === "webspeech") return raw;
   return "webspeech";
 }

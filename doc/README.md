@@ -19,10 +19,10 @@
 - クリック語を、会議文脈付きで短く説明
 - クリック履歴を蓄積し、個人向けの理解補助を強化
 
-## Why Now / Why Microsoft
-- Azure上でサーバーレスに短期間実装可能
-- Azure OpenAI / Agent系サービスで説明生成・補助文生成を実現
-- Microsoft ecosystem (Teams/Entra/Graph) へ将来連携しやすい
+## Why Now / Why Google Cloud
+- Cloud Run（min-instances=0）でサーバーレスに短期間・低コスト実装可能
+- Vertex AI Gemini で説明生成・補助文生成を実現（APIキーレス・ADC認証）
+- Google Workspace ecosystem (Meet / Speech-to-Text) へ将来連携しやすい
 
 ## Hackathon Fit
 - 新規性: 会議要約ではなく「個人認知ギャップ」へフォーカス

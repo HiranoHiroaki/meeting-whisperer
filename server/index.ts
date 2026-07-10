@@ -10,6 +10,7 @@ import extractTerms from "../api/extractTerms.js";
 import explainTerm from "../api/explainTerm.js";
 import generateNotes from "../api/generateNotes.js";
 import generateMinutes from "../api/generateMinutes.js";
+import transcribeAudio from "../api/transcribeAudio.js";
 
 const PORT = Number(process.env.PORT ?? 8080);
 const MAX_BODY_BYTES = 1_000_000;
@@ -27,7 +28,8 @@ const API_ROUTES: Record<string, ApiHandler> = {
   extractTerms,
   explainTerm,
   generateNotes,
-  generateMinutes
+  generateMinutes,
+  transcribeAudio
 };
 
 const MIME_TYPES: Record<string, string> = {
