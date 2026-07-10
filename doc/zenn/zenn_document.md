@@ -979,7 +979,7 @@ Dictionary Dispatcherで振り分ける。
 
 デモ動画: ここにURL
 
-GitHub: https://github.com/HiranoHiroaki/meeting-whisperer
+GitHub: https://github.com/WildchildLab/meeting-whisperer
 
 アプリURL: https://meeting-whisperer-857039661986.us-central1.run.app
 
