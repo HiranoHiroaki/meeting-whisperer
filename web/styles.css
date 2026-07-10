@@ -1929,6 +1929,20 @@ button.btn-border:hover::before {
 #agentTraceOpenBtn {
   position: relative;
   flex-shrink: 0;
+  box-shadow: none !important;
+  width: auto;
+  min-height: 0;
+  font-weight: 400;
+  transform: none;
+  color: #00c7fe;
+  border: 2px #00c7fe solid;
+  font-size: small;
+  background: #fff;
+  padding: 0.35rem 0.9rem;
+}
+
+#agentTraceOpenBtn::before {
+  content: none;
 }
 
 .agent-trace-badge {
