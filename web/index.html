@@ -125,8 +125,10 @@
           </div>
           <p id="dictionaryProfileInfo" class="mini-meta">会話の流れで自動的に優先する辞書を選びます。</p>
           <p id="dispatcherRateInfo" class="mini-meta"></p>
-          <p class="mini-meta agent-trace-title">エージェント実行ログ（辞書/AIの振り分け判断）</p>
-          <div id="agentTraceList" class="agent-trace-list" aria-live="polite"></div>
+          <div class="agent-trace-launcher">
+            <p class="mini-meta agent-trace-title">エージェント実行ログ（辞書/AIの振り分け判断）</p>
+            <button id="agentTraceOpenBtn" class="ghost tiny" type="button"><span class="btn-border-label">実行ログを開く</span><span id="agentTraceBadge" class="agent-trace-badge hidden">0</span></button>
+          </div>
         </section>
 
         <section class="panel flow-card card-3a">
@@ -305,6 +307,21 @@
       <p id="debugDictionaryInfo" class="mini-meta">Dictionary: -</p>
       <p id="debugPolicyInfo" class="mini-meta">Policy: -</p>
       <div id="debugRouteList" class="debug-route-list"></div>
+    </aside>
+
+    <aside id="agentTraceFloat" class="agent-trace-float hidden" role="dialog" aria-label="エージェント実行ログ">
+      <div id="agentTraceFloatHead" class="agent-trace-float-head">
+        <span class="agent-trace-float-title">エージェント実行ログ</span>
+        <span class="agent-trace-float-hint">ドラッグで移動</span>
+        <div class="agent-trace-float-actions">
+          <button id="agentTraceCollapseBtn" type="button" aria-label="折りたたむ">－</button>
+          <button id="agentTraceCloseBtn" type="button" aria-label="閉じる">×</button>
+        </div>
+      </div>
+      <div class="agent-trace-float-body">
+        <p class="mini-meta agent-trace-float-sub">辞書/AIの振り分け判断がリアルタイムに流れます。</p>
+        <div id="agentTraceList" class="agent-trace-list" aria-live="polite"></div>
+      </div>
     </aside>
 
     <script type="module" src="./main.js"></script>

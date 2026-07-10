@@ -1914,6 +1914,125 @@ button.btn-border:hover::before {
   font-weight: 600;
 }
 
+.agent-trace-launcher {
+  margin-top: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.agent-trace-launcher .agent-trace-title {
+  margin-top: 0;
+}
+
+#agentTraceOpenBtn {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.agent-trace-badge {
+  position: absolute;
+  top: -0.45rem;
+  right: -0.45rem;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0 0.25rem;
+  border-radius: 999px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1.15rem;
+  text-align: center;
+}
+
+.agent-trace-float {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  width: min(440px, calc(100vw - 24px));
+  z-index: 220;
+  background: #fff;
+  border: 1px solid #c7d4ea;
+  border-radius: 0.8rem;
+  box-shadow: 0 12px 32px rgba(15, 40, 90, 0.22);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.agent-trace-float.hidden {
+  display: none;
+}
+
+.agent-trace-float-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.55rem 0.45rem 0.75rem;
+  background: linear-gradient(90deg, #1d4ed8, #3b82f6);
+  color: #fff;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.agent-trace-float-head:active {
+  cursor: grabbing;
+}
+
+.agent-trace-float-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.agent-trace-float-hint {
+  font-size: 0.62rem;
+  opacity: 0.75;
+  margin-right: auto;
+}
+
+.agent-trace-float-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.agent-trace-float-actions button {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  border-radius: 0.35rem;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.agent-trace-float-actions button:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.agent-trace-float-body {
+  padding: 0.5rem 0.65rem 0.65rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.agent-trace-float-sub {
+  margin: 0;
+}
+
+.agent-trace-float.collapsed .agent-trace-float-body {
+  display: none;
+}
+
+.agent-trace-float .agent-trace-list {
+  max-height: min(46vh, 420px);
+}
+
 .agent-trace-list {
   font-family: "JetBrains Mono", "Consolas", monospace;
   font-size: 0.68rem;

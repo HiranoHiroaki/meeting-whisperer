@@ -148,6 +148,12 @@ const appMain = document.querySelector(".app-main");
 const dictionaryProfileInfo = document.querySelector("#dictionaryProfileInfo");
 const dispatcherRateInfo = document.querySelector("#dispatcherRateInfo");
 const agentTraceList = document.querySelector("#agentTraceList");
+const agentTraceFloat = document.querySelector("#agentTraceFloat");
+const agentTraceFloatHead = document.querySelector("#agentTraceFloatHead");
+const agentTraceOpenBtn = document.querySelector("#agentTraceOpenBtn");
+const agentTraceCollapseBtn = document.querySelector("#agentTraceCollapseBtn");
+const agentTraceCloseBtn = document.querySelector("#agentTraceCloseBtn");
+const agentTraceBadge = document.querySelector("#agentTraceBadge");
 
 const streamList = document.querySelector("#streamList");
 const streamMeta = document.querySelector("#streamMeta");
@@ -823,11 +829,147 @@ function isExtractSessionActive(contextId) {
 }
 
 const AGENT_TRACE_MAX_ENTRIES = 8;
+const AGENT_TRACE_FLOAT_STORAGE_KEY = "mw_agent_trace_float";
+
+let agentTraceUnread = 0;
+// Set once the user closes the float; blocks auto-open for the rest of the session.
+let agentTraceUserClosed = false;
+
+function loadAgentTraceFloatState() {
+  try {
+    return JSON.parse(sessionStorage.getItem(AGENT_TRACE_FLOAT_STORAGE_KEY)) ?? {};
+  } catch {
+    return {};
+  }
+}
+
+function saveAgentTraceFloatState(patch) {
+  try {
+    sessionStorage.setItem(
+      AGENT_TRACE_FLOAT_STORAGE_KEY,
+      JSON.stringify({ ...loadAgentTraceFloatState(), ...patch })
+    );
+  } catch {
+    /* storage unavailable */
+  }
+}
+
+function clampAgentTraceFloatPosition(left, top) {
+  const rect = agentTraceFloat.getBoundingClientRect();
+  const maxLeft = Math.max(0, window.innerWidth - rect.width);
+  const maxTop = Math.max(0, window.innerHeight - Math.min(rect.height, 48));
+  return {
+    left: Math.min(Math.max(0, left), maxLeft),
+    top: Math.min(Math.max(0, top), maxTop),
+  };
+}
+
+function applyAgentTraceFloatPosition(left, top) {
+  const pos = clampAgentTraceFloatPosition(left, top);
+  agentTraceFloat.style.left = `${pos.left}px`;
+  agentTraceFloat.style.top = `${pos.top}px`;
+  agentTraceFloat.style.right = "auto";
+  agentTraceFloat.style.bottom = "auto";
+  return pos;
+}
+
+function updateAgentTraceBadge() {
+  if (!agentTraceBadge) return;
+  agentTraceBadge.textContent = String(Math.min(agentTraceUnread, 99));
+  agentTraceBadge.classList.toggle("hidden", agentTraceUnread === 0);
+}
+
+function openAgentTraceFloat() {
+  if (!agentTraceFloat) return;
+  agentTraceFloat.classList.remove("hidden");
+  // Re-clamp: while hidden the panel has no size, so any earlier clamp was a no-op.
+  if (agentTraceFloat.style.left !== "") {
+    const rect = agentTraceFloat.getBoundingClientRect();
+    applyAgentTraceFloatPosition(rect.left, rect.top);
+  }
+  agentTraceUnread = 0;
+  updateAgentTraceBadge();
+  saveAgentTraceFloatState({ open: true });
+}
+
+function closeAgentTraceFloat() {
+  if (!agentTraceFloat) return;
+  agentTraceFloat.classList.add("hidden");
+  agentTraceUserClosed = true;
+  saveAgentTraceFloatState({ open: false });
+}
+
+function setupAgentTraceFloat() {
+  if (!agentTraceFloat || !agentTraceFloatHead) return;
+
+  const saved = loadAgentTraceFloatState();
+  if (typeof saved.left === "number" && typeof saved.top === "number") {
+    applyAgentTraceFloatPosition(saved.left, saved.top);
+  }
+  if (saved.collapsed) {
+    agentTraceFloat.classList.add("collapsed");
+    if (agentTraceCollapseBtn) agentTraceCollapseBtn.textContent = "＋";
+  }
+  if (saved.open) openAgentTraceFloat();
+  if (saved.open === false) agentTraceUserClosed = true;
+
+  agentTraceOpenBtn?.addEventListener("click", () => {
+    agentTraceUserClosed = false;
+    openAgentTraceFloat();
+  });
+  agentTraceCloseBtn?.addEventListener("click", closeAgentTraceFloat);
+  agentTraceCollapseBtn?.addEventListener("click", () => {
+    const collapsed = agentTraceFloat.classList.toggle("collapsed");
+    agentTraceCollapseBtn.textContent = collapsed ? "＋" : "－";
+    saveAgentTraceFloatState({ collapsed });
+  });
+
+  let drag = null;
+  agentTraceFloatHead.addEventListener("pointerdown", (event) => {
+    if (event.target.closest("button")) return;
+    const rect = agentTraceFloat.getBoundingClientRect();
+    drag = { offsetX: event.clientX - rect.left, offsetY: event.clientY - rect.top };
+    agentTraceFloatHead.setPointerCapture(event.pointerId);
+    event.preventDefault();
+  });
+  agentTraceFloatHead.addEventListener("pointermove", (event) => {
+    if (!drag) return;
+    applyAgentTraceFloatPosition(event.clientX - drag.offsetX, event.clientY - drag.offsetY);
+  });
+  const endDrag = (event) => {
+    if (!drag) return;
+    drag = null;
+    if (agentTraceFloatHead.hasPointerCapture(event.pointerId)) {
+      agentTraceFloatHead.releasePointerCapture(event.pointerId);
+    }
+    const rect = agentTraceFloat.getBoundingClientRect();
+    saveAgentTraceFloatState({ left: rect.left, top: rect.top });
+  };
+  agentTraceFloatHead.addEventListener("pointerup", endDrag);
+  agentTraceFloatHead.addEventListener("pointercancel", endDrag);
+
+  window.addEventListener("resize", () => {
+    if (agentTraceFloat.style.left === "") return;
+    const rect = agentTraceFloat.getBoundingClientRect();
+    applyAgentTraceFloatPosition(rect.left, rect.top);
+  });
+}
+
+setupAgentTraceFloat();
 
 function appendAgentTrace(endpoint, response, label = "") {
   if (!agentTraceList) return;
   const steps = Array.isArray(response?.trace) ? response.trace : [];
   if (steps.length === 0) return;
+
+  if (agentTraceFloat?.classList.contains("hidden")) {
+    if (agentTraceUserClosed) {
+      agentTraceUnread += 1;
+      updateAgentTraceBadge();
+    } else {
+      openAgentTraceFloat();
+    }
+  }
 
   const entry = document.createElement("div");
   entry.className = "agent-trace-entry";
