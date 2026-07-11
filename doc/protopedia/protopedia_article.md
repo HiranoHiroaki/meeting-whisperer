@@ -69,7 +69,7 @@ https://meeting-whisperer-857039661986.us-central1.run.app
 
 ## システム構成【画像アップ + Markdown解説】
 
-- **画像**: `doc/protopedia/architecture_gcp.svg` をブラウザで開いてスクリーンショット → PNG でアップロード（ハッカソンルールで構成図は必須）
+- **画像**: `doc/protopedia/architecture_gcp.png`（1280x880・生成済み）をそのままアップロード（ハッカソンルールで構成図は必須）
 - **解説文**: 以下を貼り付け
 
 ```markdown
